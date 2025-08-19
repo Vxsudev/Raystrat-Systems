@@ -13,8 +13,6 @@ export function Marquee() {
       className="relative w-full overflow-hidden py-2"
       style={{
         backgroundColor: '#0b0b0b',
-        backgroundImage:
-          'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\' viewBox=\'0 0 4 4\'%3E%3Cpath fill=\'%23d4af37\' fill-opacity=\'0.05\' d=\'M1 3h1v1H1V3zm2-2h1v1H3V1z\'%3E%3C/path%3E%3C/svg%3E")',
       }}
     >
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0b0b0b] to-transparent z-10" />
@@ -60,7 +58,7 @@ export function Marquee() {
           }
         }
         .animate-marquee-mobile {
-          animation: marquee 25s linear infinite;
+          animation: marquee 20s linear infinite;
         }
         @media (min-width: 768px) {
           .animate-marquee-desktop {
