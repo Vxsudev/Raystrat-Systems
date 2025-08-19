@@ -12,11 +12,11 @@ export function Marquee({ items }: MarqueeProps) {
   ));
 
   return (
-    <div className="relative flex w-full overflow-x-hidden">
-      <div className="flex flex-row animate-marquee whitespace-nowrap">
+    <div className="relative flex w-full overflow-x-hidden justify-center">
+      <div className="flex flex-row animate-marquee whitespace-nowrap space-x-8">
         {marqueeContent}
       </div>
-      <div className="absolute top-0 flex flex-row animate-marquee whitespace-nowrap">
+      <div className="absolute top-0 flex flex-row animate-marquee whitespace-nowrap space-x-8">
         {marqueeContent}
       </div>
     </div>

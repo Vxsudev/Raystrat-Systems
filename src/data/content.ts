@@ -9,10 +9,10 @@ export const navigationLinks = [
 ];
 
 export const marqueeStats = [
-  'reply-rate +15%',
-  'content 60 posts/mo',
-  'invoices 20% faster',
-  '6–12 hrs saved/wk',
+  'REPLY RATE 2–5X',
+  'CONTENT 60 POSTS/MO',
+  'INVOICES 20% FASTER',
+  '6–12 HRS SAVED/WK',
 ];
 
 export const services: { title: string; description: string; icon: LucideIcon }[] = [
