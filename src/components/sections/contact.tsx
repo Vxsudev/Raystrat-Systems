@@ -2,7 +2,7 @@ import { ContactForm } from '@/components/ui/contact-form';
 
 export function Contact() {
   return (
-    <section id="contact" className="w-full bg-secondary">
+    <section id="contact" className="w-full">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">

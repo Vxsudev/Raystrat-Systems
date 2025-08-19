@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 export function Pricing() {
   return (
-    <section id="pricing" className="bg-secondary">
+    <section id="pricing">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">

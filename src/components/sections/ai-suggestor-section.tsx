@@ -3,7 +3,7 @@ import { Lightbulb } from 'lucide-react';
 
 export function AiSuggestorSection() {
   return (
-    <section id="ai-suggestor" className="bg-secondary">
+    <section id="ai-suggestor">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <Lightbulb className="w-12 h-12 mx-auto mb-4 text-primary" />
