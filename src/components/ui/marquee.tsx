@@ -58,11 +58,11 @@ export function Marquee() {
           }
         }
         .animate-marquee-mobile {
-          animation: marquee 20s linear infinite;
+          animation: marquee 5s linear infinite;
         }
         @media (min-width: 768px) {
           .animate-marquee-desktop {
-            animation: marquee 25s linear infinite;
+            animation: marquee 7.5s linear infinite;
           }
         }
       `}</style>
