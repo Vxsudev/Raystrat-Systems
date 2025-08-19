@@ -7,11 +7,14 @@ import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Contact } from '@/components/sections/contact';
+import { ClientOnly } from '@/components/ui/client-only';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <Header />
+      <ClientOnly>
+        <Header />
+      </ClientOnly>
       <main className="flex-1">
         <Hero />
         <Services />
@@ -21,7 +24,9 @@ export default function Home() {
         <Faq />
         <Contact />
       </main>
-      <Footer />
+      <ClientOnly>
+        <Footer />
+      </ClientOnly>
     </div>
   );
 }
