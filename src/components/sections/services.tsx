@@ -10,7 +10,7 @@ export function Services() {
           Automations That Deliver<span className="text-primary">.</span>
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
-          We don&apos;t build for the sake of tech. We build for your bottom line.
+          Engineered to cut waste, reclaim hours, and grow revenue
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
