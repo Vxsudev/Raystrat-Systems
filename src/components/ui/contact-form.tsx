@@ -3,21 +3,13 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Form } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -30,6 +22,7 @@ const formSchema = z.object({
 export function ContactForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,53 +35,16 @@ export function ContactForm() {
     },
   });
 
+  const watch = form.watch();
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     // Placeholder for API submission
-    // In a real app, you would get the App Check token here:
-    // const appCheckToken = await getAppCheckToken();
-    
     console.log('Form values:', values);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // This is where you would make your fetch call to '/api/contact.submit'
-    /*
-    try {
-      const response = await fetch('/api/contact.submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Firebase-AppCheck': appCheckToken, // Include App Check token
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      if (response.status === 202) {
-        toast({
-          title: 'Message Sent!',
-          description: "We've received your message and will be in touch shortly.",
-        });
-        form.reset();
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      toast({
-        title: 'Submission Failed',
-        description: 'Something went wrong. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-    */
-
-    // For demonstration purposes:
     toast({
       title: 'Message Sent!',
       description: "We've received your inquiry and will be in touch shortly.",
@@ -97,81 +53,97 @@ export function ContactForm() {
     setIsSubmitting(false);
   }
 
+  const renderFloatingLabelInput = (name: keyof z.infer<typeof formSchema>, placeholder: string) => {
+    const isFocused = focusedField === name;
+    const hasValue = !!watch[name];
+    const isFloating = isFocused || hasValue;
+    return (
+      <div className="relative">
+        <label
+          htmlFor={name}
+          className={cn(
+            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
+            isFloating
+              ? "text-xs top-1.5 text-primary"
+              : "text-base top-3.5"
+          )}
+        >
+          {placeholder}
+        </label>
+        <input
+          id={name}
+          {...form.register(name)}
+          onFocus={() => setFocusedField(name)}
+          onBlur={() => setFocusedField(null)}
+          className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6"
+        />
+        <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
+      </div>
+    );
+  }
+
+  const renderFloatingLabelTextarea = (name: keyof z.infer<typeof formSchema>, placeholder: string) => {
+    const isFocused = focusedField === name;
+    const hasValue = !!watch[name];
+    const isFloating = isFocused || hasValue;
+    return (
+      <div className="relative">
+        <label
+          htmlFor={name}
+          className={cn(
+            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
+            isFloating
+              ? "text-xs top-1.5 text-primary"
+              : "text-base top-3.5"
+          )}
+        >
+          {placeholder}
+        </label>
+        <textarea
+          id={name}
+          {...form.register(name)}
+          onFocus={() => setFocusedField(name)}
+          onBlur={() => setFocusedField(null)}
+          rows={4}
+          className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
+        />
+         <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
+      </div>
+    );
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="company"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company (Optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Acme Inc." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bottleneck"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Primary Bottleneck</FormLabel>
-              <FormControl>
-                <Textarea placeholder="What's your biggest operational pain point?" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Your Message</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Any additional details..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 animate-spin" />}
-          Send Message
-        </Button>
-      </form>
-    </Form>
+    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-12 px-8 relative">
+       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+            {renderFloatingLabelInput("name", "Full Name")}
+            {renderFloatingLabelInput("email", "Email")}
+          </div>
+          {renderFloatingLabelInput("company", "Company (Optional)")}
+          {renderFloatingLabelTextarea("bottleneck", "Primary Bottleneck")}
+          {renderFloatingLabelTextarea("message", "Your Message")}
+          
+          <Button 
+            type="submit" 
+            className="w-full bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base" 
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <Loader2 className="mr-2 animate-spin" />}
+            Send Message
+          </Button>
+        </form>
+      </Form>
+      <div className="mt-4 text-center">
+        <Link href="#pricing" className="text-sm text-white/50 hover:text-white transition">
+           Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
+        </Link>
+      </div>
+      <div className="flex items-center justify-center gap-2 mt-6 text-xs text-white/40">
+        <Lock size={12} />
+        <span>Your data is safe — no spam, no leaks. Military-grade privacy.</span>
+      </div>
+    </div>
   );
 }
