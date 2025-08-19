@@ -50,10 +50,26 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 
 export const results = {
   stats: [
-    { value: '₹1.2Cr+', label: 'INR Recovered', icon: IndianRupee },
-    { value: '78%', label: 'Avg. Reply Rate', icon: TrendingUp },
-    { value: '40+', label: 'Hours Saved/Mo', icon: Sparkles },
-    { value: '1,200+', label: 'Content Pieces/Mo', icon: BarChart },
+    {
+      value: '5.1%',
+      label: 'Reply rate (Lead Scraper) — common cold outreach benchmark in 2025. Source: Martal B2B email stats, 2025',
+      icon: TrendingUp,
+    },
+    {
+      value: '+10–25%',
+      label: 'Invoice collections speed — optimized dunning cadence automates follow-ups',
+      icon: Banknote,
+    },
+    {
+      value: '30–60',
+      label: 'Content velocity (Repurposing & Long-form) — one recording → multi-platform output',
+      icon: BarChart,
+    },
+    {
+      value: '6+ hours/week',
+      label: 'Hours saved on routine marketing tasks — automation cuts time on email, campaigns, reporting. Source: Firework stats',
+      icon: Sparkles,
+    },
   ],
 };
 
