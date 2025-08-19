@@ -13,7 +13,12 @@ import { useToast } from '@/hooks/use-toast';
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full sm:w-auto">
+    <Button
+      type="submit"
+      disabled={pending}
+      size="lg"
+      className="w-full sm:w-auto bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base"
+    >
       {pending ? (
         <>
           <Loader2 className="mr-2 animate-spin" />
@@ -48,12 +53,13 @@ export function AiSuggestor() {
   }, [state, toast]);
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-8 px-6 relative">
+       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
       <form ref={formRef} action={dispatch} className="space-y-4">
         <Textarea
           name="contentBottleneckDescription"
           placeholder="e.g., 'We spend too much time manually following up on unpaid invoices' or 'I record a podcast but struggle to turn it into blog posts and social media content.'"
-          className="min-h-[120px] text-base"
+          className="min-h-[120px] text-base bg-[#0b0b0b] border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
         />
         {state.errors?.contentBottleneckDescription && (
@@ -61,14 +67,15 @@ export function AiSuggestor() {
             {state.errors.contentBottleneckDescription[0]}
           </p>
         )}
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <SubmitButton />
         </div>
       </form>
 
       {state.data && (
-        <Card className="mt-8 overflow-hidden border-2 border-primary bg-primary/5">
-          <CardHeader className="flex-row items-center gap-4 p-4 border-b bg-primary/10">
+        <Card className="mt-8 overflow-hidden border-2 border-primary bg-transparent shadow-lg shadow-primary/10">
+           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-xl -z-10"></div>
+          <CardHeader className="flex-row items-center gap-4 p-4 border-b border-primary/20 bg-primary/10">
             <Sparkles className="w-8 h-8 text-primary" />
             <div>
               <p className="text-sm font-medium text-primary">AI Recommendation</p>
