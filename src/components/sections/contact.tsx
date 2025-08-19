@@ -10,7 +10,7 @@ export function Contact() {
           </h2>
           <div className="h-0.5 w-12 bg-primary mx-auto mt-4 mb-6"></div>
           <p className="mt-2 text-base max-w-md mx-auto text-foreground/60">
-            Ready to eliminate bottlenecks? Reach out and let&apos;s discuss how we can help.
+            Ready to eliminate bottlenecks? Reach out and let's discuss how we can help.
           </p>
         </div>
         <div className="max-w-xl mx-auto">
