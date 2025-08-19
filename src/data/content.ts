@@ -51,23 +51,23 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 export const results = {
   stats: [
     {
-      value: '10–15% with automation',
-      label: 'Automation doubles the usual 5% cold-response rate',
+      value: '₹1.2 Cr+',
+      label: 'INR Recovered',
+      icon: IndianRupee,
+    },
+    {
+      value: '10–15%',
+      label: 'Reply Rate',
       icon: TrendingUp,
     },
     {
-      value: '+10–25% faster payment recovery',
-      label: 'Automated reminder flows and dunning cadence improve collections',
-      icon: Banknote,
-    },
-    {
-      value: '30–60 posts/month',
-      label: 'One recording fuels multichannel content strategy',
+      value: '30–60',
+      label: 'Posts/Month',
       icon: BarChart,
     },
     {
-      value: '~40 hrs/month reclaimed',
-      label: 'Automation frees ~2 hrs/day for sales and marketing',
+      value: '~40',
+      label: 'Hrs/Month Saved',
       icon: Sparkles,
     },
   ],

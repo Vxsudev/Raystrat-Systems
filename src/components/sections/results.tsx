@@ -1,5 +1,6 @@
 import { results } from '@/data/content';
 import { Card } from '@/components/ui/card';
+import { IndianRupee } from 'lucide-react';
 
 export function Results() {
   return (
