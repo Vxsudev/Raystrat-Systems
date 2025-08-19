@@ -11,8 +11,16 @@ export const navigationLinks = [
 export const marqueeStats = [
   'REPLY RATE 2–5X',
   'CONTENT 60 POSTS/MO',
-  'INVOICES 20% FASTER',
-  '6–12 HRS SAVED/WK',
+  'INVOICES 10–25% FASTER',
+  '~40 HRS/MO SAVED',
+  'HIRING SIGNALS → LEADS',
+  '1 RECORDING → 30 POSTS',
+  'DUNNING ON AUTOPILOT',
+  'INBOX ZERO AUTOMATED',
+  'PILLAR POSTS ON SCHEDULE',
+  'AI RULES ROUTE SLA',
+  'SCRAPE → ENRICH → CRM',
+  'BOOK 15‑MIN AUDIT',
 ];
 
 export const services: { title: string; description: string; icon: LucideIcon }[] = [
@@ -53,21 +61,25 @@ export const results = {
     {
       value: '2–5×',
       label: 'Reply Rate Uplift',
+      caption: 'Automation multiplies reply rates 2–5× above baseline',
       icon: TrendingUp,
     },
     {
       value: '+10–25%',
-      label: 'Invoice Collections Speed',
+      label: 'Invoice collections speed',
+      caption: 'Automated reminder flows increase recovery speed.',
       icon: IndianRupee,
     },
     {
       value: '30–60',
-      label: 'Content Velocity (Posts/Mo)',
+      label: 'Content velocity',
+      caption: 'One recording → multi-platform content via system automation.',
       icon: BarChart,
     },
     {
-      value: '~40',
-      label: 'Hours Saved (Monthly)',
+      value: '~56',
+      label: 'Hours saved (monthly)',
+      caption: 'AI tools save 13 hrs/week (~56 hrs/month) on average',
       icon: Sparkles,
     },
   ],
