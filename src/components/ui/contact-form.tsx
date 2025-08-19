@@ -104,7 +104,7 @@ export function ContactForm() {
           {...form.register(name)}
           onFocus={() => setFocusedField(name)}
           onBlur={() => setFocusedField(null)}
-          rows={3}
+          rows={2}
           className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
         />
          <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
@@ -113,10 +113,10 @@ export function ContactForm() {
   }
 
   return (
-    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-8 px-6 relative">
+    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-6 px-6 relative">
        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
           <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
             {renderFloatingLabelInput("name", "Full Name")}
             {renderFloatingLabelInput("email", "Email")}
@@ -137,12 +137,12 @@ export function ContactForm() {
           </div>
         </form>
       </Form>
-      <div className="mt-4 text-center">
+      <div className="mt-3 text-center">
         <Link href="#pricing" className="text-sm text-white/50 hover:text-white transition">
            Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
         </Link>
       </div>
-      <div className="flex items-center justify-center gap-2 mt-4 text-xs text-white/40">
+      <div className="flex items-center justify-center gap-2 mt-3 text-xs text-white/40">
         <Lock size={12} />
         <span>Your data is safe — no spam, no leaks. Military-grade privacy.</span>
       </div>
