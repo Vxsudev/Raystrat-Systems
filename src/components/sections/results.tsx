@@ -27,7 +27,7 @@ export function Results() {
         ))}
       </div>
       <p className="max-w-3xl mx-auto mt-8 text-xs text-center text-foreground/60">
-        These results reflect documented performance of our standard automation suite. Actual outcomes depend on targeting, execution, and scale. Bespoke automations tailored to your workflows can outperform these benchmarks.
+        <span className="text-primary">*</span>These results reflect documented performance of our standard automation suite. Actual outcomes depend on targeting, execution, and scale. Bespoke automations tailored to your workflows can outperform these benchmarks.
       </p>
     </section>
   );
