@@ -10,18 +10,18 @@ export const navigationLinks = [
 ];
 
 export const marqueeStats = [
-  'REPLY RATE 2–5X',
-  'CONTENT 60 POSTS/MO',
-  'INVOICES 10–25% FASTER',
-  '~40 HRS/MO SAVED',
-  'HIRING SIGNALS → LEADS',
-  '1 RECORDING → 30 POSTS',
-  'DUNNING ON AUTOPILOT',
-  'INBOX ZERO AUTOMATED',
-  'PILLAR POSTS ON SCHEDULE',
-  'AI RULES ROUTE SLA',
-  'SCRAPE → ENRICH → CRM',
-  'BOOK 15‑MIN AUDIT',
+  "Systems that collect, convert, and deliver.",
+  "No missed invoices.",
+  "Inbox discipline on autopilot.",
+  "Scale without compliance fear.",
+  "Revenue reclaimed from leaks.",
+  "Search-intent leads only.",
+  "Content treadmill destroyed.",
+  "Accuracy that holds under load.",
+  "Cash flow discipline, automated.",
+  "12 hrs/week reclaimed per operator.",
+  "3.2× reply rate lift.",
+  "42% faster invoice cycles.",
 ];
 
 export const services: { title: string; subhead: string; bullets: string[]; icon: LucideIcon }[] = [
