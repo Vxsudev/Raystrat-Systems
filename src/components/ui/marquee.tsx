@@ -8,7 +8,7 @@ export function Marquee() {
   const track = [...marqueeStats, ...marqueeStats];
 
   return (
-    <div className="relative w-full overflow-hidden border-t border-b border-white/10 py-2 bg-[#0b0b0b]">
+    <div className="relative w-full overflow-hidden py-2 bg-[#0b0b0b]">
       {/* Edge fade mask */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0b0b0b] to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#0b0b0b] to-transparent z-10" />
@@ -37,7 +37,7 @@ export function Marquee() {
           }
         }
         .animate-marquee {
-          animation: marquee 18s linear infinite;
+          animation: marquee 12s linear infinite;
         }
       `}</style>
     </div>
