@@ -13,9 +13,9 @@ export function Marquee({ items }: MarqueeProps) {
 
   return (
     <div className="relative flex w-full overflow-x-hidden justify-center">
-      <div className="flex flex-row animate-marquee whitespace-nowrap space-x-8">
-        {marqueeContent}
-        {marqueeContent}
+      <div className="flex flex-row animate-marquee whitespace-nowrap">
+        <div className="flex flex-row items-center space-x-8">{marqueeContent}</div>
+        <div className="flex flex-row items-center space-x-8" aria-hidden="true">{marqueeContent}</div>
       </div>
     </div>
   );
