@@ -23,35 +23,55 @@ export const marqueeStats = [
   'BOOK 15‑MIN AUDIT',
 ];
 
-export const services: { title: string; description: string; icon: LucideIcon }[] = [
+export const services: { title: string; description: string[]; icon: LucideIcon }[] = [
   {
     title: 'Search-Intent Lead Scraper',
-    description: 'Prospect where deals are forming. Scrape live hiring pages for buying signals. Deliver enriched leads straight to your CRM.',
+    description: [
+      'Prospect where deals are forming.',
+      'Scrape live hiring pages for buying signals.',
+      'Deliver enriched leads straight to your CRM.'
+    ],
     icon: Search,
   },
   {
     title: 'Repurposing Engine',
-    description: 'One recording → 30 days of content. Auto-clip, caption, and brand your Ads/videos/podcasts. Calendarized posts for LinkedIn, IG, YouTube.',
+    description: [
+      'One recording → 30 days of content.',
+      'Auto-clip, caption, and brand your Ads/videos/podcasts.',
+      'Calendarized posts for LinkedIn, IG, YouTube.'
+    ],
     icon: Recycle,
   },
   {
     title: 'Invoice Collector',
-    description: 'Stop chasing late payers. Automated reminders with intent-aware wording. Stripe/Xero/QuickBooks.. integration for dunning.',
+    description: [
+      'Stop chasing late payers.',
+      'Automated reminders with intent-aware wording.',
+      'Stripe/Xero/QuickBooks.. integration for dunning.'
+    ],
     icon: Banknote,
   },
   {
     title: 'Long-form Generator',
-    description: 'Publish authority on schedule. Automate content research → outline → SEO-ready draft. Bi-weekly or monthly pillar posts prepped and delivered.',
+    description: [
+      'Publish authority on schedule.',
+      'Automate content research → outline → SEO-ready draft.',
+      'Bi-weekly or monthly pillar posts prepped and delivered.'
+    ],
     icon: FileText,
   },
   {
     title: 'Smart Inbox Categorizer',
-    description: 'Inbox zero, automated. AI-powered rules that triage, prioritize, and label incoming emails. Deliverables: structured queues, SLA routing, and follow-up triggers ready-to-use.',
+    description: [
+      'Inbox zero, automated.',
+      'AI-powered rules that triage, prioritize, and label incoming emails.',
+      'Deliverables: structured queues, SLA routing, and follow-up triggers ready-to-use.'
+    ],
     icon: Inbox,
   },
   {
     title: 'Custom AI Automation',
-    description: 'Your specific bottleneck, solved',
+    description: ['Your specific bottleneck, solved.'],
     icon: Cpu,
   },
 ];
@@ -67,7 +87,7 @@ export const results = {
     {
       value: '+10–25%',
       label: 'Invoice collections speed',
-      caption: 'Automated reminder flows increase recovery speed.',
+      caption: 'Optimized reminder flows increase recovery speed.',
       icon: IndianRupee,
     },
     {

@@ -1,5 +1,6 @@
 import { services } from '@/data/content';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Check } from 'lucide-react';
 
 export function Services() {
   return (
@@ -22,7 +23,14 @@ export function Services() {
               <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-foreground/80">{service.description}</p>
+              <ul className="space-y-3">
+                {service.description.map((bullet, index) => (
+                  <li key={index} className="flex items-start">
+                    <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
+                    <span className="text-foreground/80">{bullet}</span>
+                  </li>
+                ))}
+              </ul>
             </CardContent>
           </Card>
         ))}
