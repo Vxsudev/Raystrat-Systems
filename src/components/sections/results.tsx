@@ -7,10 +7,10 @@ export function Results() {
     <section id="results" className="container">
       <div className="max-w-3xl mx-auto mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-          Performance benchmarks with automation in place
+          Performance benchmarks with automations in place
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
-          Metrics reflect actual performance when our systems are live. Live data from /api/metrics takes precedence when available.
+          Performance powered by boring automations.
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
