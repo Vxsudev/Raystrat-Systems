@@ -75,7 +75,7 @@ export const services: { title: string; description: string[]; icon: LucideIcon 
     description: [
       'Eliminate your team’s #1 bottleneck with purpose-built automation.',
       'Automate complex, repetitive workflows no off-the-shelf tool can touch.',
-      'Capture hidden ROI by automating the tasks you think “can’t be automated.'
+      'Capture hidden ROI by automating the tasks you think “can’t be automated”.'
     ],
     icon: Cpu,
   },
