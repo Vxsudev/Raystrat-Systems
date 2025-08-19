@@ -51,23 +51,23 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 export const results = {
   stats: [
     {
-      value: '₹1.2 Cr+',
-      label: 'INR Recovered',
-      icon: IndianRupee,
-    },
-    {
-      value: '10–15%',
-      label: 'Reply Rate',
+      value: '2–5×',
+      label: 'Reply Rate Uplift',
       icon: TrendingUp,
     },
     {
+      value: '+10–25%',
+      label: 'Invoice Collections Speed',
+      icon: IndianRupee,
+    },
+    {
       value: '30–60',
-      label: 'Posts/Month',
+      label: 'Content Velocity (Posts/Mo)',
       icon: BarChart,
     },
     {
       value: '~40',
-      label: 'Hrs/Month Saved',
+      label: 'Hours Saved (Monthly)',
       icon: Sparkles,
     },
   ],
