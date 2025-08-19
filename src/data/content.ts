@@ -52,22 +52,22 @@ export const results = {
   stats: [
     {
       value: '10–15%',
-      label: 'With automation. Intent-driven sequences double reply rates (vs ~5% average). Source: Cold email automation benchmarks, 2025 – Breakcold',
+      label: 'average automation reply rate. Automation doubles the usual 5% cold-response rate. Source: Breakcold 2025 B2B reply benchmarks',
       icon: TrendingUp,
     },
     {
       value: '+10–25%',
-      label: 'Faster recovery. Automated reminders accelerate payment flow.',
+      label: 'faster payment recovery. Automated reminder flows boost payment speed.',
       icon: Banknote,
     },
     {
       value: '30–60',
-      label: 'Posts/month. One recording fuels multi-channel content strategy.',
+      label: 'posts/month. One recording fuels multichannel content output.',
       icon: BarChart,
     },
     {
-      value: '~40 hrs/month',
-      label: 'Automation frees ~2 hrs/day for sales/marketing professionals. Source: Sales automation data, 1Up.ai',
+      value: '~44 hrs/month',
+      label: 'reclaimed. AI automation saves ~11 hrs/week (~44 hrs/month). Source: SuperAGI 2025 marketing automation productivity',
       icon: Sparkles,
     },
   ],

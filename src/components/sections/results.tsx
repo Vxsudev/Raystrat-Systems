@@ -9,7 +9,7 @@ export function Results() {
           Performance benchmarks with automation in place
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
-          Metrics reflect actual performance when our systems are running. Live data from /api/metrics overrides benchmarks when available.
+          Metrics reflect actual performance when our systems are live. Live data from /api/metrics takes precedence when available.
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -26,7 +26,7 @@ export function Results() {
         ))}
       </div>
       <p className="max-w-3xl mx-auto mt-8 text-xs text-center text-foreground/60">
-        These results reflect documented outcomes from our standard automation suite. Actual performance depends on targeting, execution, and volume. Live data from /api/metrics takes precedence. Custom-engineered automations tailored to your workflows and scale can exceed these benchmarks.
+        These results reflect documented performance of our standard automation suite. Actual outcomes depend on targeting, execution, and scale. Live data from /api/metrics overrides benchmarks. Bespoke automations tailored to your workflows can outperform these benchmarks.
       </p>
     </section>
   );
