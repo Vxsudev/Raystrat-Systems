@@ -6,7 +6,7 @@ export function Contact() {
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-            Start the Conversation<span className="text-primary">.</span>
+            Start the Conversation.
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
             Ready to eliminate bottlenecks? Reach out and let&apos;s discuss how we can help.

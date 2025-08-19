@@ -11,7 +11,7 @@ export function Pricing() {
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-            Clear Pricing, Clear Value<span className="text-primary">.</span>
+            Clear Pricing, Clear Value.
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
             Choose the plan that aligns with your automation goals. No hidden fees.
