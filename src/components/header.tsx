@@ -6,7 +6,7 @@ import { Bot, Menu } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
 
 export function Header() {
@@ -64,6 +64,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
+               <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
               <div className="flex flex-col gap-6 p-6 pt-12">
                 {navLinks}
               </div>
