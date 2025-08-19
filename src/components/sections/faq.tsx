@@ -11,7 +11,7 @@ export function Faq() {
     <section id="faq" className="container">
       <div className="max-w-2xl mx-auto mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-          Frequently Asked Questions
+          Frequently Asked Questions<span className="text-primary">.</span>
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
           Clear answers to common inquiries about our process and services.
