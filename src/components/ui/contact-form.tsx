@@ -104,7 +104,7 @@ export function ContactForm() {
           {...form.register(name)}
           onFocus={() => setFocusedField(name)}
           onBlur={() => setFocusedField(null)}
-          rows={4}
+          rows={3}
           className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
         />
          <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
@@ -113,11 +113,11 @@ export function ContactForm() {
   }
 
   return (
-    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-12 px-8 relative">
+    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-8 px-8 relative">
        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
             {renderFloatingLabelInput("name", "Full Name")}
             {renderFloatingLabelInput("email", "Email")}
           </div>
@@ -125,14 +125,16 @@ export function ContactForm() {
           {renderFloatingLabelTextarea("bottleneck", "Primary Bottleneck")}
           {renderFloatingLabelTextarea("message", "Your Message")}
           
-          <Button 
-            type="submit" 
-            className="w-full bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Loader2 className="mr-2 animate-spin" />}
-            Send Message
-          </Button>
+          <div className="pt-2">
+            <Button 
+              type="submit" 
+              className="w-full bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base" 
+              disabled={isSubmitting}
+            >
+              {isSubmitting && <Loader2 className="mr-2 animate-spin" />}
+              Send Message
+            </Button>
+          </div>
         </form>
       </Form>
       <div className="mt-4 text-center">
@@ -140,7 +142,7 @@ export function ContactForm() {
            Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
         </Link>
       </div>
-      <div className="flex items-center justify-center gap-2 mt-6 text-xs text-white/40">
+      <div className="flex items-center justify-center gap-2 mt-4 text-xs text-white/40">
         <Lock size={12} />
         <span>Your data is safe — no spam, no leaks. Military-grade privacy.</span>
       </div>
