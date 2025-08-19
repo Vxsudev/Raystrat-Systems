@@ -10,10 +10,10 @@ export function Hero() {
       <div className="container px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
-            We automate <span className="text-primary">ROI</span> — not noise
+            Systems that <span className="text-primary">collect, convert, and deliver</span>.
           </h1>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
-            Five boring automations that print cashflow while you build. Zero ambiguity, maximum efficiency.
+            Five boring automations that cut wasted hours, recover cash, and open new revenue streams.
           </p>
           <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
             <Button size="lg" asChild>

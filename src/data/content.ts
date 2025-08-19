@@ -18,27 +18,27 @@ export const marqueeStats = [
 export const services: { title: string; description: string; icon: LucideIcon }[] = [
   {
     title: 'Search-Intent Lead Scraper',
-    description: 'Prospect where deals form',
+    description: 'Prospect where deals are forming. Scrape live hiring pages for buying signals and deliver enriched leads straight to your CRM.',
     icon: Search,
   },
   {
     title: 'Repurposing Engine',
-    description: '1 recording → 30-day content',
+    description: 'One recording → 30 days of content. Auto-clip, caption, and brand your videos/podcasts for calendarized posts on LinkedIn, IG, and YouTube.',
     icon: Recycle,
   },
   {
     title: 'Invoice Collector',
-    description: 'Recover overdue cash',
+    description: 'Stop chasing late payers. Automated reminders with intent-aware wording and Stripe/Xero/QuickBooks integration for dunning.',
     icon: Banknote,
   },
   {
     title: 'Long-form Generator',
-    description: 'Publish authority on schedule',
+    description: 'Publish authority on schedule. Automate research to outline to SEO-ready draft, delivering pillar posts bi-weekly or monthly.',
     icon: FileText,
   },
   {
     title: 'Smart Inbox Categorizer',
-    description: 'Inbox zero, automated',
+    description: 'Inbox zero, automated. AI-powered rules triage, prioritize, and label incoming emails, creating structured queues and follow-up triggers.',
     icon: Inbox,
   },
   {
