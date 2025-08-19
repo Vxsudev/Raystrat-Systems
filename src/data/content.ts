@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import { BarChart, Bot, FileText, Inbox, IndianRupee, Recycle, Search, Sparkles, TrendingUp, Cpu, Banknote } from 'lucide-react';
 
@@ -63,15 +64,19 @@ export const services: { title: string; description: string[]; icon: LucideIcon 
   {
     title: 'Smart Inbox Categorizer',
     description: [
-      'Inbox zero, automated.',
+      'Turn email chaos into structured queues.',
       'AI-powered rules that triage, prioritize, and label incoming emails.',
-      'Deliverables: structured queues, SLA routing, and follow-up triggers ready-to-use.'
+      'Clear handoff: urgent-flagged, routine-routed, follow-ups-triggered.'
     ],
     icon: Inbox,
   },
   {
     title: 'Custom AI Automation',
-    description: ['Your specific bottleneck, solved.'],
+    description: [
+      'Eliminate your team’s #1 bottleneck with purpose-built automation.',
+      'Automate complex, repetitive workflows no off-the-shelf tool can touch.',
+      'Capture hidden ROI by automating the tasks you think “can’t be automated.'
+    ],
     icon: Cpu,
   },
 ];
