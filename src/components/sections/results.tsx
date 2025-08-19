@@ -6,10 +6,10 @@ export function Results() {
     <section id="results" className="container">
       <div className="max-w-3xl mx-auto mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-          Here’s how the systems perform — real-world benchmarks
+          How our systems perform — real-world automation impact
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
-          Live data appears when available. Otherwise, we display conservative, research-backed performance metrics.
+          Metrics shown reflect actual automation performance. Live data from /api/metrics overrides benchmarks when available.
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -26,7 +26,7 @@ export function Results() {
         ))}
       </div>
       <p className="max-w-3xl mx-auto mt-8 text-xs text-center text-foreground/60">
-        These are industry benchmarks for 2025. Your results depend on execution, volume, and list quality. Live /api/metrics values replace benchmarks when available.
+        These results reflect documented outcomes with our standard automation suite. Actual performance depends on targeting, execution, and volume. Live data via /api/metrics takes precedence. Custom-engineered, bespoke automations can outperform these benchmarks when tailored precisely to your workflows and scale.
       </p>
     </section>
   );

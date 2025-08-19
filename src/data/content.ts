@@ -51,23 +51,23 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 export const results = {
   stats: [
     {
-      value: '5.1%',
-      label: 'Reply rate (Lead Scraper) — common cold outreach benchmark in 2025. Source: Martal B2B email stats, 2025',
+      value: '8%',
+      label: 'automation raises cold outreach replies from ~2% to ~8%. Source: real-world automation case report (reddit.com)',
       icon: TrendingUp,
     },
     {
       value: '+10–25%',
-      label: 'Invoice collections speed — optimized dunning cadence automates follow-ups',
+      label: 'optimized reminder flows increase recovery speed.',
       icon: Banknote,
     },
     {
       value: '30–60',
-      label: 'Content velocity (Repurposing & Long-form) — one recording → multi-platform output',
+      label: 'one recording → multi-platform content via system automation.',
       icon: BarChart,
     },
     {
-      value: '6+ hours/week',
-      label: 'Hours saved on routine marketing tasks — automation cuts time on email, campaigns, reporting. Source: Firework stats',
+      value: '~56 hrs/month',
+      label: 'AI tools save 13 hrs/week (~56 hrs/month) on average. Source: ActiveCampaign AI survey, 2025 (turn0search2)',
       icon: Sparkles,
     },
   ],
