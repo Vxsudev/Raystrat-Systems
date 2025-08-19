@@ -51,23 +51,23 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 export const results = {
   stats: [
     {
-      value: '8%',
-      label: 'automation raises cold outreach replies from ~2% to ~8%. Source: real-world automation case report (reddit.com)',
+      value: '10–15%',
+      label: 'With automation. Intent-driven sequences double reply rates (vs ~5% average). Source: Cold email automation benchmarks, 2025 – Breakcold',
       icon: TrendingUp,
     },
     {
       value: '+10–25%',
-      label: 'optimized reminder flows increase recovery speed.',
+      label: 'Faster recovery. Automated reminders accelerate payment flow.',
       icon: Banknote,
     },
     {
       value: '30–60',
-      label: 'one recording → multi-platform content via system automation.',
+      label: 'Posts/month. One recording fuels multi-channel content strategy.',
       icon: BarChart,
     },
     {
-      value: '~56 hrs/month',
-      label: 'AI tools save 13 hrs/week (~56 hrs/month) on average. Source: ActiveCampaign AI survey, 2025 (turn0search2)',
+      value: '~40 hrs/month',
+      label: 'Automation frees ~2 hrs/day for sales/marketing professionals. Source: Sales automation data, 1Up.ai',
       icon: Sparkles,
     },
   ],
