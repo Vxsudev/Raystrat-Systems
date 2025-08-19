@@ -7,8 +7,8 @@ import { ArrowRight } from 'lucide-react';
 export function Hero() {
   return (
     <section id="top" className="w-full py-20 md:py-32 lg:py-48">
-      <div className="container px-4 text-center md:px-6">
-        <div className="max-w-3xl mx-auto">
+      <div className="container px-4 md:px-6">
+        <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
             We automate <span className="text-primary">ROI</span> — not noise
           </h1>
