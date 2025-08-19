@@ -6,16 +6,24 @@ type MarqueeProps = {
 
 export function Marquee({ items }: MarqueeProps) {
   const marqueeContent = items.map((item, index) => (
-    <span key={index} className="mx-4 text-sm font-semibold text-foreground/60">
+    <span key={`itemA-${index}`} className="whitespace-nowrap px-8 text-sm font-semibold tracking-wide text-foreground/60">
+      {item.toUpperCase()}
+    </span>
+  ));
+
+  const marqueeContentDuplicate = items.map((item, index) => (
+    <span key={`itemB-${index}`} aria-hidden="true" className="whitespace-nowrap px-8 text-sm font-semibold tracking-wide text-foreground/60">
       {item.toUpperCase()}
     </span>
   ));
 
   return (
-    <div className="relative flex w-full overflow-x-hidden justify-center">
-      <div className="flex flex-row animate-marquee whitespace-nowrap">
-        <div className="flex flex-row items-center space-x-8">{marqueeContent}</div>
-        <div className="flex flex-row items-center space-x-8" aria-hidden="true">{marqueeContent}</div>
+    <div className="flex w-full justify-center overflow-x-hidden">
+      <div className="relative overflow-hidden">
+        <div className="flex animate-marquee will-change-transform">
+          <div className="flex flex-row items-center">{marqueeContent}</div>
+          <div className="flex flex-row items-center" aria-hidden="true">{marqueeContentDuplicate}</div>
+        </div>
       </div>
     </div>
   );
