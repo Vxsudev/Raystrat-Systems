@@ -3,24 +3,40 @@
 
 import { marqueeStats } from '@/data/content';
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 export function Marquee() {
   const track = [...marqueeStats, ...marqueeStats];
 
   return (
     <div className="relative w-full overflow-hidden py-2 bg-[#0b0b0b]">
-      {/* Edge fade mask */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0b0b0b] to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#0b0b0b] to-transparent z-10" />
 
-      <div className="flex whitespace-nowrap will-change-transform animate-marquee motion-reduce:animate-none">
+      {/* Accessibility Fallback */}
+      <div className="sr-only">
+        <ul>
+          {marqueeStats.map((text, i) => (
+            <li key={`sr-${i}`}>{text}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="flex whitespace-nowrap will-change-transform animate-marquee-mobile md:animate-marquee-desktop motion-reduce:animate-none">
         {track.map((text, i) => (
           <div
             key={`item-${i}`}
             className="flex items-center"
             aria-hidden={i >= marqueeStats.length}
           >
-            <span className="mx-6 text-sm font-semibold tracking-wide text-foreground/80 md:text-base">
+            <span
+              className={cn(
+                'mx-6 text-sm font-semibold tracking-wide text-foreground/80 md:text-base',
+                'transition-all duration-300 ease-in-out',
+                'hover:scale-105 hover:text-primary focus-visible:scale-105 focus-visible:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm',
+                'motion-reduce:transition-none'
+              )}
+            >
               {text}
             </span>
             <span className="mx-4 text-primary/50 text-xl">•</span>
@@ -36,8 +52,13 @@ export function Marquee() {
             transform: translateX(-50%);
           }
         }
-        .animate-marquee {
-          animation: marquee 6s linear infinite;
+        .animate-marquee-mobile {
+          animation: marquee 60s linear infinite;
+        }
+        @media (min-width: 768px) {
+          .animate-marquee-desktop {
+            animation: marquee 30s linear infinite;
+          }
         }
       `}</style>
     </div>
