@@ -51,23 +51,23 @@ export const services: { title: string; description: string; icon: LucideIcon }[
 export const results = {
   stats: [
     {
-      value: '10–15%',
-      label: 'average automation reply rate. Automation doubles the usual 5% cold-response rate. Source: Breakcold 2025 B2B reply benchmarks',
+      value: '10–15% with automation',
+      label: 'Automation doubles the usual 5% cold-response rate',
       icon: TrendingUp,
     },
     {
-      value: '+10–25%',
-      label: 'faster payment recovery. Automated reminder flows boost payment speed.',
+      value: '+10–25% faster payment recovery',
+      label: 'Automated reminder flows and dunning cadence improve collections',
       icon: Banknote,
     },
     {
-      value: '30–60',
-      label: 'posts/month. One recording fuels multichannel content output.',
+      value: '30–60 posts/month',
+      label: 'One recording fuels multichannel content strategy',
       icon: BarChart,
     },
     {
-      value: '~44 hrs/month',
-      label: 'reclaimed. AI automation saves ~11 hrs/week (~44 hrs/month). Source: SuperAGI 2025 marketing automation productivity',
+      value: '~40 hrs/month reclaimed',
+      label: 'Automation frees ~2 hrs/day for sales and marketing',
       icon: Sparkles,
     },
   ],
