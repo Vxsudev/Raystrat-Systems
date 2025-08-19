@@ -24,55 +24,61 @@ export const marqueeStats = [
   'BOOK 15‑MIN AUDIT',
 ];
 
-export const services: { title: string; description: string[]; icon: LucideIcon }[] = [
+export const services: { title: string; subhead: string; bullets: string[]; icon: LucideIcon }[] = [
   {
     title: 'Search-Intent Lead Scraper',
-    description: [
-      'Prospect where deals are forming.',
-      'Scrape live hiring pages for buying signals.',
-      'Deliver enriched leads straight to your CRM.'
+    subhead: 'From browsing to booking, without the manual grind.',
+    bullets: [
+      'Pulls high-intent leads at scale — zero wasted hours on “maybe” prospects.',
+      'Filters noise instantly: only revenue-ready leads hit your pipeline.',
+      'Works while you sleep — no burnout, no missed opportunities.'
     ],
     icon: Search,
   },
   {
     title: 'Repurposing Engine',
-    description: [
-      'One recording → 30 days of content.',
-      'Auto-clip, caption, and brand your Ads/videos/podcasts.',
-      'Calendarized posts for LinkedIn, IG, YouTube.'
+    subhead: 'Every asset sweated to its maximum ROI.',
+    bullets: [
+      'Turns one long-form piece into dozens of ready-to-publish formats.',
+      'Keeps your brand consistent without extra creative overhead.',
+      'Destroys the “content treadmill” — scale without more staff or spend.'
     ],
     icon: Recycle,
   },
   {
     title: 'Invoice Collector',
-    description: [
-      'Stop chasing late payers.',
-      'Automated reminders with intent-aware wording.',
-      'Stripe/Xero/QuickBooks.. integration for dunning.'
+    subhead: 'Cash flow discipline, fully automated.',
+    bullets: [
+      'No more chasing clients or forgotten invoices.',
+      'Compliance-safe tracking from issue to payment.',
+      'Restores predictable cash cycles — even at scale.'
     ],
     icon: Banknote,
   },
   {
-    title: 'Long-form Generator',
-    description: [
-      'Publish authority on schedule.',
-      'Automate content research → outline → SEO-ready draft.',
-      'Bi-weekly or monthly pillar posts prepped and delivered.'
+    title: 'Long-Form Generator',
+    subhead: 'Complex content, delivered without bottlenecks.',
+    bullets: [
+      'Drafts reports, whitepapers, or SEO content in hours — not weeks.',
+      'Accuracy + compliance built in (no embarrassing errors).',
+      'Frees teams to think strategy instead of wrangling words.'
     ],
     icon: FileText,
   },
   {
-    title: 'Smart Inbox Categorizer',
-    description: [
-      'Turn email chaos into structured queues.',
-      'AI-powered rules that triage, prioritize, and label incoming emails.',
-      'Clear handoff: urgent-flagged, routine-routed, follow-ups-triggered.'
+    title: 'Smart Inbox Controller',
+    subhead: 'Email chaos eliminated. Focus restored.',
+    bullets: [
+      'Auto-filters clutter → only priority threads stay visible.',
+      'Scales with your volume — accuracy doesn’t drop under pressure.',
+      'Enforces inbox discipline so you never bleed hours on email again.'
     ],
     icon: Inbox,
   },
   {
     title: 'Custom AI Automation',
-    description: [
+    subhead: 'Your specific bottleneck, solved.',
+    bullets: [
       'Eliminate your team’s #1 bottleneck with purpose-built automation.',
       'Automate complex, repetitive workflows no off-the-shelf tool can touch.',
       'Capture hidden ROI by automating the tasks you think “can’t be automated”.'

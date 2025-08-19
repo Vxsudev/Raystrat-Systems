@@ -1,5 +1,5 @@
 import { services } from '@/data/content';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 
 export function Services() {
@@ -20,11 +20,14 @@ export function Services() {
               <div className="p-3 rounded-md bg-primary/10">
                 <service.icon className="w-6 h-6 text-primary" />
               </div>
-              <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
+              <div className="flex flex-col">
+                <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
+              <CardDescription className="mb-4 text-base italic text-foreground/90">{service.subhead}</CardDescription>
               <ul className="space-y-3">
-                {service.description.map((bullet, index) => (
+                {service.bullets.map((bullet, index) => (
                   <li key={index} className="flex items-start">
                     <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
                     <span className="text-foreground/80">{bullet}</span>
