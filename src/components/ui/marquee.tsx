@@ -37,7 +37,7 @@ export function Marquee() {
           }
         }
         .animate-marquee {
-          animation: marquee 12s linear infinite;
+          animation: marquee 8s linear infinite;
         }
       `}</style>
     </div>
