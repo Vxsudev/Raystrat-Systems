@@ -6,6 +6,7 @@ export const navigationLinks = [
   { name: 'Services', href: '#services' },
   { name: 'Results', href: '#results' },
   { name: 'Pricing', href: '#pricing' },
+  { name: 'Bytes', href: '/bytes' },
   { name: 'FAQ', href: '#faq' },
 ];
 
@@ -199,3 +200,24 @@ export const faq = {
     },
   ],
 };
+
+export const bytes = [
+  {
+    slug: 'byte-01-the-real-cost-of-manual-follow-up',
+    title: 'The Real Cost of Manual Follow-Up',
+    summary: 'Every hour spent chasing an invoice is an hour not spent on billable work. We quantify the hidden operational drag of manual accounts receivable and show how automation reclaims that value.',
+    content: 'The content for Byte-01 goes here.',
+  },
+  {
+    slug: 'byte-02-repurposing-content-isnt-optional',
+    title: 'Repurposing Content Isn’t Optional, It’s Asymmetric ROI',
+    summary: 'Content creation is expensive. Not repurposing it is leaving 90% of its value on the table. This byte breaks down the tactical model for turning a single recording into a 30-day content pipeline.',
+    content: 'The content for Byte-02 goes here.',
+  },
+  {
+    slug: 'byte-03-inbox-zero-is-a-system-not-a-skill',
+    title: 'Inbox Zero is a System, Not a Skill',
+    summary: 'An overflowing inbox isn’t a personal failing, it’s a systems failure. We show how a "Smart Inbox" automation acts as a force multiplier for executive focus, filtering signal from noise.',
+    content: 'The content for Byte-03 goes here.',
+  },
+];

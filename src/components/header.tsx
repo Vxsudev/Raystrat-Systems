@@ -1,13 +1,15 @@
+
 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Bot, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
+import { LogoIcon } from './ui/logo-icon';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -45,7 +47,7 @@ export function Header() {
     >
       <div className="container flex items-center h-16">
         <Link href="/" className="flex items-center gap-2 mr-8">
-          <Bot className="w-6 h-6 text-primary" />
+          <LogoIcon className="w-6 h-6" />
           <span className="font-bold font-headline">Raystrat Systems</span>
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
