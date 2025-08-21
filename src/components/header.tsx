@@ -46,7 +46,7 @@ export function Header() {
       <div className="container flex items-center h-16">
         <Link href="/" className="flex items-center gap-2 mr-8">
           <Bot className="w-6 h-6 text-primary" />
-          <span className="font-bold font-headline">Raystrat</span>
+          <span className="font-bold font-headline">Raystrat Systems</span>
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
         <div className="flex items-center justify-end flex-1 gap-4">
@@ -64,7 +64,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-               <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
+              <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
               <div className="flex flex-col gap-6 p-6 pt-12">
                 {navLinks}
               </div>
