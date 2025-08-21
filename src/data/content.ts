@@ -220,4 +220,10 @@ export const bytes = [
     summary: 'An overflowing inbox isn’t a personal failing, it’s a systems failure. We show how a "Smart Inbox" automation acts as a force multiplier for executive focus, filtering signal from noise.',
     content: 'The content for Byte-03 goes here.',
   },
+  {
+    slug: 'byte-04-why-your-best-leads-are-boring',
+    title: 'Why Your Best Leads Are “Boring”',
+    summary: 'High-excitement leads often churn. The most profitable clients come from methodical, intent-driven prospecting. We’ll show you how to find them.',
+    content: 'The content for Byte-04 goes here.',
+  },
 ];
