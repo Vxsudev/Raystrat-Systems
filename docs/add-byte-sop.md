@@ -90,6 +90,8 @@ Now, simply replace the placeholder text in the new block you just pasted.
 
 -   **`content`**: This is the full text that will appear on the Byte's dedicated page. For now, you can put placeholder text here.
 
+**A Note on Numbering:** The `Byte-01`, `Byte-02`, etc., label on the website is generated automatically based on the **order of the items in the list**. The first item is `Byte-01`, the second is `Byte-02`, and so on. You do not need to set the number manually.
+
 **Example of a filled-out new Byte:**
 
 ```javascript
@@ -103,8 +105,21 @@ Now, simply replace the placeholder text in the new block you just pasted.
 
 ---
 
-### **Step 5: Save Your Changes**
+### **Step 5: Save and Verify Your Changes**
 
-Once you have filled in the details for your new Byte, save the file. The website will automatically update to include the new Byte on the page. The system handles the numbering ("Byte-01", "Byte-02") automatically based on the order in the list.
+Once you have filled in the details for your new Byte, save the file. The website will automatically update. Use this checklist to make sure everything worked correctly:
 
-You have successfully added a new Byte.
+-   **[ ] Is the new Byte card visible on the main Bytes page?**
+    -   Go to `https://your-website-url.com/bytes` to check.
+
+-   **[ ] Does the card's title and summary match your new content?**
+    -   Read the text on the card to confirm.
+
+-   **[ ] Does clicking the card open the new detail page?**
+    -   Click on the new card. The URL in your browser should change to something like `/bytes/byte-04-why-your-best-leads-are-boring`.
+
+-   **[ ] Are there any errors in the Firebase Studio console?**
+    -   Look at the console window at the bottom of the editor for any red error messages.
+
+If you can check all these boxes, you have successfully added a new Byte.
+
