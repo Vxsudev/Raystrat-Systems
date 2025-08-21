@@ -170,7 +170,7 @@ export const faq = {
     {
       question: 'What kind of ROI can we expect?',
       answer:
-        "While results vary, clients typically see ROI within the first 3-6 months. This comes from recovered revenue (e.g., invoice collection), increased lead generation, and significant time savings for your team, allowing them to focus on high-value tasks.",
+        "While results vary, clients typically see ROI within the first 1-4 weeks. This comes from recovered revenue (e.g., invoice collection), increased lead generation, and significant time savings for your team, allowing them to focus on high-value tasks.",
     },
     {
       question: 'How long does it take to implement an automation?',
