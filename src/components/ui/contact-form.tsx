@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -5,7 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
@@ -22,7 +32,6 @@ const formSchema = z.object({
 export function ContactForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,8 +43,6 @@ export function ContactForm() {
       bottleneck: '',
     },
   });
-
-  const watch = form.watch();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -53,43 +60,23 @@ export function ContactForm() {
     setIsSubmitting(false);
   }
 
-  const renderFloatingLabelInput = (name: keyof z.infer<typeof formSchema>, placeholder: string) => {
-    const isFocused = focusedField === name;
-    const hasValue = !!watch[name];
+  const FloatingLabelInput = ({ field, label, ...props }: any) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const hasValue = field.value && field.value.length > 0;
     const isFloating = isFocused || hasValue;
-    return (
-      <div className="relative">
-        <label
-          htmlFor={name}
-          className={cn(
-            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
-            isFloating
-              ? "text-xs top-1.5 text-primary"
-              : "text-base top-3.5"
-          )}
-        >
-          {placeholder}
-        </label>
-        <input
-          id={name}
-          {...form.register(name)}
-          onFocus={() => setFocusedField(name)}
-          onBlur={() => setFocusedField(null)}
-          className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6"
-        />
-        <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
-      </div>
-    );
-  }
 
-  const renderFloatingLabelTextarea = (name: keyof z.infer<typeof formSchema>, placeholder: string) => {
-    const isFocused = focusedField === name;
-    const hasValue = !!watch[name];
-    const isFloating = isFocused || hasValue;
     return (
-      <div className="relative">
-        <label
-          htmlFor={name}
+      <FormItem className="relative">
+        <FormControl>
+          <Input
+            {...field}
+            {...props}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition h-auto pt-6"
+          />
+        </FormControl>
+        <FormLabel
           className={cn(
             "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
             isFloating
@@ -97,33 +84,78 @@ export function ContactForm() {
               : "text-base top-3.5"
           )}
         >
-          {placeholder}
-        </label>
-        <textarea
-          id={name}
-          {...form.register(name)}
-          onFocus={() => setFocusedField(name)}
-          onBlur={() => setFocusedField(null)}
-          rows={2}
-          className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
-        />
-         <p className="mt-1 text-xs text-destructive h-4">{form.formState.errors[name]?.message}</p>
-      </div>
+          {label}
+        </FormLabel>
+        <FormMessage className="mt-1 text-xs h-4" />
+      </FormItem>
     );
-  }
+  };
+  
+  const FloatingLabelTextarea = ({ field, label, ...props }: any) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const hasValue = field.value && field.value.length > 0;
+    const isFloating = isFocused || hasValue;
+
+    return (
+      <FormItem className="relative">
+        <FormControl>
+           <Textarea
+            {...field}
+            {...props}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            rows={2}
+            className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
+           />
+        </FormControl>
+        <FormLabel
+          className={cn(
+            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
+            isFloating
+              ? "text-xs top-1.5 text-primary"
+              : "text-base top-3.5"
+          )}
+        >
+          {label}
+        </FormLabel>
+        <FormMessage className="mt-1 text-xs h-4" />
+      </FormItem>
+    );
+  };
+
 
   return (
     <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-6 px-6 relative">
        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
-          <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
-            {renderFloatingLabelInput("name", "Full Name")}
-            {renderFloatingLabelInput("email", "Email")}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => <FloatingLabelInput field={field} label="Full Name" />}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => <FloatingLabelInput field={field} label="Email" />}
+            />
           </div>
-          {renderFloatingLabelInput("company", "Company (Optional)")}
-          {renderFloatingLabelTextarea("bottleneck", "Primary Bottleneck")}
-          {renderFloatingLabelTextarea("message", "Your Message")}
+          <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => <FloatingLabelInput field={field} label="Company (Optional)" />}
+          />
+          <FormField
+            control={form.control}
+            name="bottleneck"
+            render={({ field }) => <FloatingLabelTextarea field={field} label="Primary Bottleneck" />}
+          />
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => <FloatingLabelTextarea field={field} label="Your Message" />}
+          />
           
           <div className="pt-2">
             <Button 
