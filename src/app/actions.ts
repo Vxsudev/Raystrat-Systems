@@ -7,6 +7,9 @@ import {
   SuggestAutomationInput,
 } from '@/ai/flows/suggest-automation';
 import { z } from 'zod';
+import { firestore } from '@/firebase/client';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 
 const suggestionSchema = z.object({
   contentBottleneckDescription: z
@@ -92,16 +95,22 @@ export async function downloadPlaybookAction(
     }
 
     try {
-        // In a real application, you would add the contact to your CRM
-        // or email marketing service here.
-        console.log('New Playbook Lead:', validatedFields.data);
+        const leadsCollection = collection(firestore, 'playbook_leads');
+        await addDoc(leadsCollection, {
+            name: validatedFields.data.name,
+            email: validatedFields.data.email,
+            timestamp: serverTimestamp(),
+        });
+
+        // TODO: Integrate SendGrid or another email provider here
+        // to send the actual playbook PDF to the user.
 
         return { message: 'Success' };
 
     } catch (error) {
         console.error('Playbook Form Error:', error);
         return {
-            message: 'An error occurred on our end. Please try again later.',
+            message: 'An error occurred writing to our database. Please try again later.',
         };
     }
 }
