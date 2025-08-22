@@ -7,9 +7,18 @@ import { Menu } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
 import { LogoIcon } from './ui/logo-icon';
+import { PlaybookForm } from './ui/playbook-form';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -52,9 +61,22 @@ export function Header() {
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
         <div className="flex items-center justify-end flex-1 gap-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/playbook.pdf" target="_blank">Download Playbook</Link>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                Download Playbook
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Download the Playbook</DialogTitle>
+                <DialogDescription>
+                  Enter your details below to get immediate access to the playbook.
+                </DialogDescription>
+              </DialogHeader>
+              <PlaybookForm />
+            </DialogContent>
+          </Dialog>
           <Button size="sm" asChild>
             <Link href="mailto:audit@raystrat.com">Book 15-min Audit</Link>
           </Button>

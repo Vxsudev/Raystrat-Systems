@@ -1,8 +1,18 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Marquee } from '@/components/ui/marquee';
 import { marqueeStats } from '@/data/content';
 import { ArrowRight } from 'lucide-react';
+import { PlaybookForm } from '../ui/playbook-form';
 
 export function Hero() {
   return (
@@ -21,9 +31,22 @@ export function Hero() {
                 Book 15-min Audit <ArrowRight className="ml-2" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/playbook.pdf" target="_blank">Download Playbook</Link>
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" variant="outline">
+                  Download Playbook
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Download the Playbook</DialogTitle>
+                  <DialogDescription>
+                    Enter your details below to get immediate access to the playbook.
+                  </DialogDescription>
+                </DialogHeader>
+                <PlaybookForm />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

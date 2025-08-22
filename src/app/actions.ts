@@ -1,3 +1,4 @@
+
 // src/app/actions.ts
 'use server';
 
@@ -7,7 +8,7 @@ import {
 } from '@/ai/flows/suggest-automation';
 import { z } from 'zod';
 
-const schema = z.object({
+const suggestionSchema = z.object({
   contentBottleneckDescription: z
     .string({
       required_error: 'Please describe your content bottleneck.',
@@ -29,10 +30,10 @@ export type SuggestionState = {
 };
 
 export async function getAutomationSuggestion(
-  prevState: SuggestionState,
+  prevState: SuggestionState | null,
   formData: FormData
 ): Promise<SuggestionState> {
-  const validatedFields = schema.safeParse({
+  const validatedFields = suggestionSchema.safeParse({
     contentBottleneckDescription: formData.get('contentBottleneckDescription'),
   });
 
@@ -57,4 +58,50 @@ export async function getAutomationSuggestion(
         'An error occurred on our end. Please try again later.',
     };
   }
+}
+
+// --- Playbook Download Action ---
+
+const playbookSchema = z.object({
+  name: z.string().min(2, { message: 'Name is required.' }),
+  email: z.string().email({ message: 'A valid email is required.' }),
+});
+
+export type PlaybookFormState = {
+    errors?: {
+        name?: string[];
+        email?: string[];
+    };
+    message?: string | null;
+};
+
+export async function downloadPlaybookAction(
+    prevState: PlaybookFormState | null,
+    formData: FormData
+): Promise<PlaybookFormState> {
+    const validatedFields = playbookSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Invalid input.',
+        };
+    }
+
+    try {
+        // In a real application, you would add the contact to your CRM
+        // or email marketing service here.
+        console.log('New Playbook Lead:', validatedFields.data);
+
+        return { message: 'Success' };
+
+    } catch (error) {
+        console.error('Playbook Form Error:', error);
+        return {
+            message: 'An error occurred on our end. Please try again later.',
+        };
+    }
 }
