@@ -25,7 +25,7 @@ export default function BytesPage() {
                 Raystrat Bytes
               </h1>
               <p className="mt-4 text-lg text-foreground/80 md:text-xl">
-                Precision insights in automation. Small reads, big impact.
+                Precision Insights in AI & Automation. Small Reads, Big Impact.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
