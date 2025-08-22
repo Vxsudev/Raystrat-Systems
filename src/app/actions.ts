@@ -9,7 +9,7 @@ import {
 import { z } from 'zod';
 import { firestore } from '@/firebase/client';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-
+import sgMail from '@sendgrid/mail';
 
 const suggestionSchema = z.object({
   contentBottleneckDescription: z
@@ -94,23 +94,67 @@ export async function downloadPlaybookAction(
         };
     }
 
+    const { name, email } = validatedFields.data;
+
+    // 1. Save lead to Firestore
     try {
         const leadsCollection = collection(firestore, 'playbook_leads');
         await addDoc(leadsCollection, {
-            name: validatedFields.data.name,
-            email: validatedFields.data.email,
+            name,
+            email,
             timestamp: serverTimestamp(),
         });
-
-        // TODO: Integrate SendGrid or another email provider here
-        // to send the actual playbook PDF to the user.
-
-        return { message: 'Success' };
-
     } catch (error) {
-        console.error('Playbook Form Error:', error);
+        console.error('Firestore Write Error:', error);
         return {
             message: 'An error occurred writing to our database. Please try again later.',
         };
     }
+
+    // 2. Send email with SendGrid
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+        console.error('SendGrid environment variables not set.');
+        // This is a server-side error, so we don't want to expose the details to the client.
+        // We still return "Success" to the user, as the lead was captured.
+        // The asset delivery is the part that failed.
+        return { message: 'Success' };
+    }
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+    const msg = {
+        to: email,
+        from: process.env.SENDGRID_FROM_EMAIL,
+        subject: 'Your Raystrat Systems Automation Playbook',
+        html: `
+        <div style="font-family: sans-serif; line-height: 1.6;">
+          <h2>Thank You for Your Interest!</h2>
+          <p>Hi ${name},</p>
+          <p>Here is the automation playbook you requested. It contains the core strategies we use to help businesses like yours eliminate bottlenecks and scale efficiently.</p>
+          <p>
+            <a 
+              href="/playbook.pdf" 
+              style="display: inline-block; padding: 12px 24px; background-color: #f5a623; color: #000; text-decoration: none; border-radius: 5px; font-weight: bold;"
+            >
+              Download the Playbook PDF
+            </a>
+          </p>
+          <p>If you have any questions or are ready to discuss a 15-minute audit, simply reply to this email.</p>
+          <br>
+          <p>Best regards,</p>
+          <p>The Team at Raystrat Systems</p>
+        </div>
+      `,
+    };
+
+    try {
+        await sgMail.send(msg);
+    } catch (error) {
+        console.error('SendGrid Error:', error);
+        // Even if email fails, the lead was captured. Return success to the user.
+        // In a production system, you would add monitoring here to alert you of the failure.
+        return { message: 'Success' };
+    }
+
+    return { message: 'Success' };
 }
