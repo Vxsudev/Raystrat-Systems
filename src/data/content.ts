@@ -135,7 +135,7 @@ export const pricing = {
     },
     {
       name: 'Core',
-      price: '₹1,20,000',
+      price: '₹49,099',
       period: '/month',
       description: 'For businesses ready to scale their core operations.',
       features: [
