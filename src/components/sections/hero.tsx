@@ -12,7 +12,7 @@ import { Marquee } from '@/components/ui/marquee';
 import { marqueeStats } from '@/data/content';
 import { ArrowRight } from 'lucide-react';
 import { PlaybookForm } from '../ui/playbook-form';
-import { CalendlyPopup } from '../ui/calendly-popup';
+import { CalendlyButton } from '../ui/calendly-button';
 
 export function Hero() {
   return (
@@ -26,22 +26,9 @@ export function Hero() {
             Five boring automations that cut wasted hours, recover cash, and open new revenue streams.
           </p>
           <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size="lg">
-                  Book 15-min Audit <ArrowRight className="ml-2" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="p-0 overflow-hidden max-w-4xl">
-                 <DialogHeader className="sr-only">
-                    <DialogTitle>Book a 15-Minute Audit</DialogTitle>
-                    <DialogDescription>
-                    Schedule a time that works for you using the Calendly widget below.
-                    </DialogDescription>
-                </DialogHeader>
-                <CalendlyPopup />
-              </DialogContent>
-            </Dialog>
+            <CalendlyButton size="lg">
+              Book 15-min Audit <ArrowRight className="ml-2" />
+            </CalendlyButton>
             <Dialog>
               <DialogTrigger asChild>
                 <Button size="lg" variant="outline">

@@ -19,7 +19,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { navigationLinks } from '@/data/content';
 import { LogoIcon } from './ui/logo-icon';
 import { PlaybookForm } from './ui/playbook-form';
-import { CalendlyPopup } from './ui/calendly-popup';
+import { CalendlyButton } from './ui/calendly-button';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -78,20 +78,7 @@ export function Header() {
               <PlaybookForm />
             </DialogContent>
           </Dialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="sm">Book 15-min Audit</Button>
-            </DialogTrigger>
-            <DialogContent className="p-0 overflow-hidden max-w-4xl">
-              <DialogHeader className="sr-only">
-                <DialogTitle>Book a 15-Minute Audit</DialogTitle>
-                <DialogDescription>
-                  Schedule a time that works for you using the Calendly widget below.
-                </DialogDescription>
-              </DialogHeader>
-               <CalendlyPopup />
-            </DialogContent>
-          </Dialog>
+          <CalendlyButton size="sm" />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">

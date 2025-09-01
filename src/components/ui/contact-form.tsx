@@ -6,14 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
   Form,
   FormControl,
   FormField,
@@ -27,7 +19,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { CalendlyPopup } from './calendly-popup';
+import { CalendlyButton } from './calendly-button';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -178,22 +170,9 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="text-sm text-white/50 hover:text-white transition">
-              Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
-            </button>
-          </DialogTrigger>
-          <DialogContent className="p-0 overflow-hidden max-w-4xl">
-              <DialogHeader className="sr-only">
-                <DialogTitle>Book a 15-Minute Audit</DialogTitle>
-                <DialogDescription>
-                  Schedule a time that works for you using the Calendly widget below.
-                </DialogDescription>
-              </DialogHeader>
-             <CalendlyPopup />
-          </DialogContent>
-        </Dialog>
+        <CalendlyButton variant="link" className="text-sm text-white/50 hover:text-white transition">
+           Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
+        </CalendlyButton>
       </div>
       <div className="flex items-center justify-center gap-2 mt-3 text-xs text-white/40">
         <Lock size={12} />
