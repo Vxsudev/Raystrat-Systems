@@ -7,8 +7,8 @@ import {
   SuggestAutomationInput,
 } from '@/ai/flows/suggest-automation';
 import { z } from 'zod';
-import { firestore } from '@/firebase/client';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '@/firebase/server'; // Use server-side firestore
+import { FieldValue } from 'firebase-admin/firestore'; // Use server-side timestamp
 import sgMail from '@sendgrid/mail';
 
 const suggestionSchema = z.object({
@@ -98,11 +98,11 @@ export async function downloadPlaybookAction(
 
     // 1. Save lead to Firestore
     try {
-        const leadsCollection = collection(firestore, 'playbook_leads');
-        await addDoc(leadsCollection, {
+        const leadsCollection = firestore.collection('playbook_leads');
+        await leadsCollection.add({
             name,
             email,
-            timestamp: serverTimestamp(),
+            timestamp: FieldValue.serverTimestamp(),
         });
     } catch (error) {
         console.error('Firestore Write Error:', error);
