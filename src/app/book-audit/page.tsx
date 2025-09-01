@@ -1,20 +1,19 @@
 
+'use client';
+
 import { Metadata } from 'next';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ClientOnly } from '@/components/ui/client-only';
+import { InlineWidget } from 'react-calendly';
 
 export const metadata: Metadata = {
   title: 'Book a 15-Minute Audit | Raystrat Systems',
   description: 'Schedule a free, no-obligation 15-minute audit to discover your biggest automation opportunities.',
 };
 
-// --- Calendly Embed Component ---
-// Note: You must install the react-calendly package for this to work.
-// I have added it to your package.json.
-'use client';
-import { InlineWidget } from 'react-calendly';
 
+// --- Calendly Embed Component ---
 const CalendlyEmbed = () => {
   // TODO: Replace with your actual Calendly link.
   const calendlyUrl = "https://calendly.com/your-username/15min";
