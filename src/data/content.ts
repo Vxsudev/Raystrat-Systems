@@ -121,7 +121,7 @@ export const pricing = {
   tiers: [
     {
       name: 'Starter',
-      price: '₹20,000',
+      price: '₹20,099',
       period: '/month',
       description: 'For teams testing the waters of automation.',
       features: [
