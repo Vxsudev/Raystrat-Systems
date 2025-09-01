@@ -4,8 +4,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -20,6 +24,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { CalendlyPopup } from './calendly-popup';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -170,9 +175,16 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <Link href="/book-audit" className="text-sm text-white/50 hover:text-white transition">
-           Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
-        </Link>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="text-sm text-white/50 hover:text-white transition">
+              Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
+            </button>
+          </DialogTrigger>
+          <DialogContent className="p-0 overflow-hidden max-w-4xl">
+             <CalendlyPopup />
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex items-center justify-center gap-2 mt-3 text-xs text-white/40">
         <Lock size={12} />

@@ -19,6 +19,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { navigationLinks } from '@/data/content';
 import { LogoIcon } from './ui/logo-icon';
 import { PlaybookForm } from './ui/playbook-form';
+import { CalendlyPopup } from './ui/calendly-popup';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -77,9 +78,14 @@ export function Header() {
               <PlaybookForm />
             </DialogContent>
           </Dialog>
-          <Button size="sm" asChild>
-            <Link href="/book-audit">Book 15-min Audit</Link>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm">Book 15-min Audit</Button>
+            </DialogTrigger>
+            <DialogContent className="p-0 overflow-hidden max-w-4xl">
+               <CalendlyPopup />
+            </DialogContent>
+          </Dialog>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">

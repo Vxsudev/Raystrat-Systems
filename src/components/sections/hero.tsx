@@ -1,5 +1,4 @@
 
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,6 +12,7 @@ import { Marquee } from '@/components/ui/marquee';
 import { marqueeStats } from '@/data/content';
 import { ArrowRight } from 'lucide-react';
 import { PlaybookForm } from '../ui/playbook-form';
+import { CalendlyPopup } from '../ui/calendly-popup';
 
 export function Hero() {
   return (
@@ -26,11 +26,16 @@ export function Hero() {
             Five boring automations that cut wasted hours, recover cash, and open new revenue streams.
           </p>
           <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
-            <Button size="lg" asChild>
-              <Link href="/book-audit">
-                Book 15-min Audit <ArrowRight className="ml-2" />
-              </Link>
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg">
+                  Book 15-min Audit <ArrowRight className="ml-2" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="p-0 overflow-hidden max-w-4xl">
+                <CalendlyPopup />
+              </DialogContent>
+            </Dialog>
             <Dialog>
               <DialogTrigger asChild>
                 <Button size="lg" variant="outline">
