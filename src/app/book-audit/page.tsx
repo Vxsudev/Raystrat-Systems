@@ -3,32 +3,12 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ClientOnly } from '@/components/ui/client-only';
-import { InlineWidget } from 'react-calendly';
+import { CalendlyEmbed } from '@/components/ui/calendly-embed';
 
 export const metadata: Metadata = {
   title: 'Book a 15-Minute Audit | Raystrat Systems',
   description: 'Schedule a free, no-obligation 15-minute audit to discover your biggest automation opportunities.',
 };
-
-
-// --- Calendly Embed Component ---
-const CalendlyEmbed = () => {
-  // TODO: Replace with your actual Calendly link.
-  const calendlyUrl = "https://calendly.com/your-username/15min";
-
-  return (
-    <div className="h-[700px] md:h-[650px] overflow-hidden">
-       <InlineWidget 
-            url={calendlyUrl} 
-            styles={{
-                height: '1000px',
-                transform: 'translateY(-50px)'
-            }}
-        />
-    </div>
-  );
-};
-
 
 export default function BookAuditPage() {
   return (
