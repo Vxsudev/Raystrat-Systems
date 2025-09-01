@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CalendlyButton } from '../ui/calendly-button';
 
 export function Pricing() {
   return (
@@ -55,9 +56,15 @@ export function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" asChild size="lg" variant={tier.popular ? 'default' : 'outline'}>
-                  <Link href={tier.cta.toLowerCase().includes('sales') ? 'mailto:sales@raystrat.com' : '/book-audit'}>{tier.cta}</Link>
-                </Button>
+                {tier.cta.toLowerCase().includes('sales') ? (
+                  <Button asChild size="lg" className="w-full" variant={tier.popular ? 'default' : 'outline'}>
+                    <Link href="mailto:sales@raystrat.com">{tier.cta}</Link>
+                  </Button>
+                ) : (
+                  <CalendlyButton size="lg" className="w-full" variant={tier.popular ? 'default' : 'outline'}>
+                    {tier.cta}
+                  </CalendlyButton>
+                )}
               </CardFooter>
             </Card>
           ))}
