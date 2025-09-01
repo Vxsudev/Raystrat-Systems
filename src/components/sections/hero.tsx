@@ -33,6 +33,12 @@ export function Hero() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="p-0 overflow-hidden max-w-4xl">
+                 <DialogHeader className="sr-only">
+                    <DialogTitle>Book a 15-Minute Audit</DialogTitle>
+                    <DialogDescription>
+                    Schedule a time that works for you using the Calendly widget below.
+                    </DialogDescription>
+                </DialogHeader>
                 <CalendlyPopup />
               </DialogContent>
             </Dialog>
