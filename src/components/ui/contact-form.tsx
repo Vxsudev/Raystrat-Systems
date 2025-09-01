@@ -20,6 +20,7 @@ import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { CalendlyButton } from './calendly-button';
+import Link from 'next/link';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -170,9 +171,9 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <CalendlyButton variant="link" className="text-sm text-white/50 hover:text-white transition">
+        <Link href="#pricing" className="text-sm text-white/50 hover:text-white transition">
            Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
-        </CalendlyButton>
+        </Link>
       </div>
       <div className="flex items-center justify-center gap-2 mt-3 text-xs text-white/40">
         <Lock size={12} />
