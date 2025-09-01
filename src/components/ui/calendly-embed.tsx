@@ -4,8 +4,7 @@
 import { InlineWidget } from 'react-calendly';
 
 export const CalendlyEmbed = () => {
-    // TODO: Replace with your actual Calendly link.
-    const calendlyUrl = "https://calendly.com/your-username/15min";
+    const calendlyUrl = "https://calendly.com/raystrat?hide_landing_page_details=1&hide_gdpr_banner=1";
   
     return (
       <div className="h-[700px] md:h-[650px] overflow-hidden">
