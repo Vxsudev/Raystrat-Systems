@@ -7,6 +7,7 @@ import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
 import { ClientOnly } from '@/components/ui/client-only';
+import { Contact } from '@/components/sections/contact';
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
         <Results />
         <Pricing />
         <Faq />
+        <Contact />
       </main>
       <ClientOnly>
         <Footer />
