@@ -170,7 +170,7 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <Link href="#pricing" className="text-sm text-white/50 hover:text-white transition">
+        <Link href="/book-audit" className="text-sm text-white/50 hover:text-white transition">
            Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
         </Link>
       </div>

@@ -78,7 +78,7 @@ export function Header() {
             </DialogContent>
           </Dialog>
           <Button size="sm" asChild>
-            <Link href="mailto:audit@raystrat.com">Book 15-min Audit</Link>
+            <Link href="/book-audit">Book 15-min Audit</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>

@@ -27,7 +27,7 @@ export function Hero() {
           </p>
           <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
             <Button size="lg" asChild>
-              <Link href="mailto:audit@raystrat.com">
+              <Link href="/book-audit">
                 Book 15-min Audit <ArrowRight className="ml-2" />
               </Link>
             </Button>

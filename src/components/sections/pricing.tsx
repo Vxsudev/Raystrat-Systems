@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { pricing } from '@/data/content';
 import { Button } from '@/components/ui/button';
@@ -55,7 +56,7 @@ export function Pricing() {
               </CardContent>
               <CardFooter>
                 <Button className="w-full" asChild size="lg" variant={tier.popular ? 'default' : 'outline'}>
-                  <Link href="mailto:audit@raystrat.com">{tier.cta}</Link>
+                  <Link href={tier.cta.toLowerCase().includes('sales') ? 'mailto:sales@raystrat.com' : '/book-audit'}>{tier.cta}</Link>
                 </Button>
               </CardFooter>
             </Card>
