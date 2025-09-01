@@ -19,7 +19,7 @@ export function CalendlyPopup() {
   return (
     <div
       className="calendly-inline-widget"
-      data-url="https://calendly.com/raystrat?hide_landing_page_details=1&hide_gdpr_banner=1"
+      data-url="https://calendly.com/raystrat?hide_landing_page_details=1"
       style={{ minWidth: '320px', height: '700px' }}
     />
   );
