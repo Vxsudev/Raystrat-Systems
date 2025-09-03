@@ -1,4 +1,3 @@
-
 // src/app/actions.ts
 'use server';
 
@@ -10,9 +9,6 @@ import { z } from 'zod';
 import { firestore } from '@/firebase/server'; // Use server-side firestore
 import { FieldValue } from 'firebase-admin/firestore'; // Use server-side timestamp
 import sgMail from '@sendgrid/mail';
-import { config } from 'dotenv';
-
-config(); // Load environment variables
 
 const suggestionSchema = z.object({
   contentBottleneckDescription: z
