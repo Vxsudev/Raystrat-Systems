@@ -1,10 +1,8 @@
-
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { ClientOnly } from '@/components/ui/client-only';
 
 interface BytePageProps {
   params: {
@@ -34,9 +32,7 @@ export default function BytePage({ params }: BytePageProps) {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <ClientOnly>
-        <Header />
-      </ClientOnly>
+      <Header />
       <main className="flex-1">
         <article className="py-16 md:py-24 lg:py-32">
           <div className="container">
@@ -56,9 +52,7 @@ export default function BytePage({ params }: BytePageProps) {
           </div>
         </article>
       </main>
-      <ClientOnly>
-        <Footer />
-      </ClientOnly>
+      <Footer />
     </div>
   );
 }

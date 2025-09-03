@@ -1,10 +1,8 @@
-
 import { Metadata } from 'next';
 import { bytes } from '@/data/content';
 import { ByteCard } from '@/components/ui/byte-card';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { ClientOnly } from '@/components/ui/client-only';
 
 export const metadata: Metadata = {
   title: 'Raystrat Bytes: Atomic Insights in Automation',
@@ -14,9 +12,7 @@ export const metadata: Metadata = {
 export default function BytesPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <ClientOnly>
-        <Header />
-      </ClientOnly>
+      <Header />
       <main className="flex-1">
         <section className="py-16 md:py-24 lg:py-32">
           <div className="container">
@@ -36,9 +32,7 @@ export default function BytesPage() {
           </div>
         </section>
       </main>
-      <ClientOnly>
-        <Footer />
-      </ClientOnly>
+      <Footer />
     </div>
   );
 }

@@ -6,15 +6,12 @@ import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
-import { ClientOnly } from '@/components/ui/client-only';
 import { Contact } from '@/components/sections/contact';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <ClientOnly>
-        <Header />
-      </ClientOnly>
+      <Header />
       <main className="flex-1">
         <Hero />
         <Services />
@@ -24,9 +21,7 @@ export default function Home() {
         <Faq />
         <Contact />
       </main>
-      <ClientOnly>
-        <Footer />
-      </ClientOnly>
+      <Footer />
     </div>
   );
 }
