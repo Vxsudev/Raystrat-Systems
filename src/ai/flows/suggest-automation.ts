@@ -41,6 +41,7 @@ const prompt = ai.definePrompt({
   name: 'suggestAutomationPrompt',
   input: {schema: SuggestAutomationInputSchema},
   output: {schema: SuggestAutomationOutputSchema},
+  model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are an expert AI assistant designed to suggest the most relevant service automation based on a user's description of their content bottlenecks. The available service automations are:
 
 - Search-Intent Lead Scraper: Prospect where deals form
