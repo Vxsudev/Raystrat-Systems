@@ -6,7 +6,7 @@ import { getAutomationSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Bot, Loader2, Sparkles } from 'lucide-react';
+import { ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -34,16 +34,15 @@ function SubmitButton() {
 }
 
 export function AiSuggestor() {
-  const initialState: SuggestionState = { message: null, errors: {} };
-  const [state, dispatch] = useActionState(getAutomationSuggestion, initialState);
+  const [state, dispatch] = useActionState(getAutomationSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state.message === 'Success') {
+    if (state?.message === 'Success') {
       formRef.current?.reset();
     }
-    if (state.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
+    if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
       toast({
         title: 'Error',
         description: state.message,
@@ -62,7 +61,7 @@ export function AiSuggestor() {
           className="min-h-[120px] text-base bg-[#0b0b0b] border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
         />
-        {state.errors?.contentBottleneckDescription && (
+        {state?.errors?.contentBottleneckDescription && (
           <p className="text-sm text-destructive">
             {state.errors.contentBottleneckDescription[0]}
           </p>
@@ -72,7 +71,7 @@ export function AiSuggestor() {
         </div>
       </form>
 
-      {state.data && (
+      {state?.data && (
         <Card className="mt-8 overflow-hidden border-2 border-primary bg-transparent shadow-lg shadow-primary/10">
            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-xl -z-10"></div>
           <CardHeader className="flex-row items-center gap-4 p-4 border-b border-primary/20 bg-primary/10">
