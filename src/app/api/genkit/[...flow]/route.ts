@@ -1,9 +1,8 @@
-// src/app/api/genkit/[...flow]/route.ts
-import {appRoute} from '@genkit-ai/next';
+import 'server-only';
 import {ai} from '@/ai/genkit';
-// Force the import of the flow so that it is available to the runtime.
+import {appRoute} from '@genkit-ai/next';
+
+// Ensure flows are imported so Genkit can register them
 import '@/ai/flows/suggest-automation';
 
-export const {GET, POST, OPTIONS} = appRoute({
-  ai,
-});
+export const {GET, POST} = appRoute({ai});
