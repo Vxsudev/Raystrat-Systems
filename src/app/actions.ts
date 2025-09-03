@@ -6,7 +6,7 @@ import {
   SuggestAutomationInput,
 } from '@/ai/flows/suggest-automation';
 import { z } from 'zod';
-import { firestore } from '@/firebase/server'; // Use server-side firestore
+import { firestore } from '@/lib/firebase/admin'; // Use server-side firestore
 import { FieldValue } from 'firebase-admin/firestore'; // Use server-side timestamp
 import sgMail from '@sendgrid/mail';
 
