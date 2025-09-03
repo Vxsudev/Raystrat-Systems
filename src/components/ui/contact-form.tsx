@@ -129,7 +129,7 @@ export function ContactForm() {
     <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-6 px-6 relative">
        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
             <FormField
               control={form.control}
