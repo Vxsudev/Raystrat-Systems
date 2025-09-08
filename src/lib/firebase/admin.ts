@@ -2,27 +2,25 @@
 import 'server-only';
 import admin from 'firebase-admin';
 
-const serviceAccount: admin.ServiceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-};
-
+// Check if the app is already initialized to prevent re-initialization
 if (!admin.apps.length) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-    console.log('Firebase Admin SDK initialized successfully.');
-  } catch (error: any) {
-    // Log a more helpful error message
-    console.error('Firebase Admin SDK initialization error:', error.message);
-    // To prevent the app from crashing on repeated failed inits (e.g. during dev HMR)
-    // we can check if the code is 'auth/invalid-credential' and handle it.
-    // For now, we'll just log it. A robust app might conditionally throw.
-  }
+  const serviceAccount = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    // The private key must be correctly formatted. The replace function handles the newline characters.
+    privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+  };
+
+  // The credential object is created from the service account.
+  const credential = admin.credential.cert(serviceAccount);
+  
+  // Initialize the app with the credential.
+  admin.initializeApp({
+    credential,
+  });
 }
 
+// Export the initialized services.
 const firestore = admin.firestore();
 const auth = admin.auth();
 
