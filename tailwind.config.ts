@@ -11,9 +11,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['"Space Grotesk"', 'sans-serif'],
-        code: ['monospace'],
+        body: ['var(--font-body)', 'monospace'],
+        headline: ['var(--font-body)', 'monospace'],
+        code: ['var(--font-body)', 'monospace'],
       },
       typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
