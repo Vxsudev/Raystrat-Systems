@@ -9,7 +9,7 @@ export function Services() {
     <section id="services" className="container">
       <div className="max-w-2xl mx-auto mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-          Agents That Deliver<span className="text-primary">.</span>
+          Agents
         </h2>
         <p className="mt-4 text-lg text-foreground/80">
           Engineered to cut waste, reclaim hours, and grow revenue.
