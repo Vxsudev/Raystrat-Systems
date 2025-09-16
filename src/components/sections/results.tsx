@@ -40,7 +40,7 @@ export function Results() {
         {/* Headline & Subheadline */}
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold tracking-tighter font-headline sm:text-5xl md:text-6xl">
-            The Six Engines Every Business Runs On
+            Cut the Fat. Keep the Spine.
           </h2>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
             From bloated headcount to lean control.
