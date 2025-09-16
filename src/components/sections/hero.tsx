@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section id="top" className="w-full min-h-screen flex items-center justify-center bg-background py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="w-full px-4 md:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="mx-auto text-center">
           <h1 className="text-5xl font-bold font-headline md:text-7xl text-foreground">
             Agents Run Business.
           </h1>
