@@ -7,6 +7,7 @@ import { Footer } from '@/components/footer';
 import { Check } from 'lucide-react';
 import { CalendlyButton } from '@/components/ui/calendly-button';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface ServicePageProps {
   params: {
@@ -33,6 +34,11 @@ export default function ServicePage({ params }: ServicePageProps) {
   if (!service) {
     notFound();
   }
+
+  const currentIndex = services.findIndex((s) => s.slug === params.slug);
+  const nextIndex = (currentIndex + 1) % services.length;
+  const nextService = services[nextIndex];
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -77,6 +83,17 @@ export default function ServicePage({ params }: ServicePageProps) {
                 </div>
               </aside>
             </div>
+            {nextService && (
+                <div className="mt-24 text-center">
+                    <Link 
+                        href={`/services/${nextService.slug}`}
+                        className="inline-flex items-center text-lg font-semibold transition-colors text-foreground/80 hover:text-primary group"
+                    >
+                        Explore the next agent: <span className="ml-2 font-bold group-hover:underline">{nextService.title}</span>
+                        <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                </div>
+            )}
           </div>
         </article>
       </main>
@@ -91,5 +108,3 @@ export async function generateStaticParams() {
     slug: service.slug,
   }));
 }
-
-    
