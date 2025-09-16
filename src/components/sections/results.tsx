@@ -3,7 +3,7 @@
 export function Results() {
   const agents = [
     {
-      name: 'Lead Signal Agent',
+      name: 'Leads Hunter Agent',
       replaces: 'Replaces: Full-time SDRs, list-buying budgets',
       benefit: 'Delivers qualified, intent-driven leads automatically, 24/7.',
     },
