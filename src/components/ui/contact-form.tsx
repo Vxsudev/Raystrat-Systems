@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -73,12 +74,12 @@ export function ContactForm() {
             {...props}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition h-auto pt-6"
+            className="bg-background/50 border border-border rounded-xl w-full px-4 py-3 text-foreground placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition h-auto pt-6"
           />
         </FormControl>
         <FormLabel
           className={cn(
-            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
+            "absolute left-4 transition-all duration-300 pointer-events-none text-muted-foreground",
             isFloating
               ? "text-xs top-1.5 text-primary"
               : "text-base top-3.5"
@@ -105,12 +106,12 @@ export function ContactForm() {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             rows={2}
-            className="bg-[#0b0b0b] border border-white/10 rounded-xl w-full px-4 py-3 text-white placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
+            className="bg-background/50 border border-border rounded-xl w-full px-4 py-3 text-foreground placeholder-transparent focus:border-primary focus:ring-2 focus:ring-primary/30 transition pt-6 resize-none"
            />
         </FormControl>
         <FormLabel
           className={cn(
-            "absolute left-4 transition-all duration-300 pointer-events-none text-white/40",
+            "absolute left-4 transition-all duration-300 pointer-events-none text-muted-foreground",
             isFloating
               ? "text-xs top-1.5 text-primary"
               : "text-base top-3.5"
@@ -125,8 +126,8 @@ export function ContactForm() {
 
 
   return (
-    <div className="bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-6 px-6 relative">
-       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
+    <div className="bg-card rounded-2xl shadow-lg border-t-2 border-primary py-6 px-6 relative">
+       <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-2xl -z-10"></div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -160,7 +161,7 @@ export function ContactForm() {
           <div className="pt-2">
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base" 
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl py-3 shadow-md transition h-auto text-base" 
               disabled={isSubmitting}
             >
               {isSubmitting && <Loader2 className="mr-2 animate-spin" />}
@@ -170,11 +171,11 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <Link href="#pricing" className="text-sm text-white/50 hover:text-white transition">
+        <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition">
            Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
         </Link>
       </div>
-      <div className="flex items-center justify-center gap-2 mt-3 text-xs text-white/40">
+      <div className="flex items-center justify-center gap-2 mt-3 text-xs text-muted-foreground/80">
         <Lock size={12} />
         <span>Your data is safe — no spam, no leaks. Military-grade privacy.</span>
       </div>

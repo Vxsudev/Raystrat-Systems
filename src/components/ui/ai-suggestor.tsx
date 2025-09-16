@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useActionState } from 'react';
@@ -17,7 +18,7 @@ function SubmitButton() {
       type="submit"
       disabled={pending}
       size="lg"
-      className="w-full sm:w-auto bg-primary hover:bg-[#b9972f] text-black font-semibold rounded-xl py-3 shadow-md shadow-black/40 transition h-auto text-base"
+      className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl py-3 shadow-md transition h-auto text-base"
     >
       {pending ? (
         <>
@@ -52,13 +53,13 @@ export function AiSuggestor() {
   }, [state, toast]);
 
   return (
-    <div className="max-w-3xl mx-auto bg-[#111] rounded-2xl shadow-lg shadow-black/40 border-t-2 border-primary py-8 px-6 relative">
-       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl -z-10"></div>
+    <div className="max-w-3xl mx-auto bg-card rounded-2xl shadow-lg border-t-2 border-primary py-8 px-6 relative">
+       <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-2xl -z-10"></div>
       <form ref={formRef} action={dispatch} className="space-y-4">
         <Textarea
           name="contentBottleneckDescription"
           placeholder="Describe your bottleneck. e.g., 'Chasing unpaid invoices takes too much time,' or 'Finding qualified leads is a constant struggle.'"
-          className="min-h-[120px] text-base bg-[#0b0b0b] border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
+          className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
         />
         {state?.errors?.contentBottleneckDescription && (
@@ -73,7 +74,7 @@ export function AiSuggestor() {
 
       {state?.data && (
         <Card className="mt-8 overflow-hidden border-2 border-primary bg-transparent shadow-lg shadow-primary/10">
-           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-xl -z-10"></div>
+           <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-xl -z-10"></div>
           <CardHeader className="flex-row items-center gap-4 p-4 border-b border-primary/20 bg-primary/10">
             <Sparkles className="w-8 h-8 text-primary" />
             <div>
