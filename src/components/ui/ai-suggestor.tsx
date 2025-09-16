@@ -6,10 +6,12 @@ import { useFormStatus } from 'react-dom';
 import { getAutomationSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
+import { services } from '@/data/content';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -52,6 +54,17 @@ export function AiSuggestor() {
     }
   }, [state, toast]);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  };
+  
+  const suggestedServiceSlug = state?.data?.suggestedService 
+    ? services.find(s => s.title === state.data!.suggestedService)?.slug 
+    : null;
+
   return (
     <div className="w-full">
       <form ref={formRef} action={dispatch} className="space-y-4">
@@ -60,6 +73,7 @@ export function AiSuggestor() {
           placeholder="Describe your bottleneck. e.g., 'Chasing unpaid invoices takes too much time,' or 'Finding qualified leads is a constant struggle.'"
           className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
+          onKeyDown={handleKeyDown}
         />
         {state?.errors?.contentBottleneckDescription && (
           <p className="text-sm text-destructive">
@@ -87,6 +101,15 @@ export function AiSuggestor() {
             <p className="font-semibold text-foreground">Why this service?</p>
             <p className="text-foreground/80">{state.data.reasoning}</p>
           </CardContent>
+          {suggestedServiceSlug && (
+            <CardFooter className="p-4 bg-primary/10 border-t border-primary/20">
+              <Button asChild className='w-full' variant='outline'>
+                <Link href={`/services/${suggestedServiceSlug}`}>
+                  Learn More <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
+            </CardFooter>
+          )}
         </Card>
       )}
     </div>

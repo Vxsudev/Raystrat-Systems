@@ -89,7 +89,7 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
   {
     slug: 'custom-ai-agent',
     title: 'Custom AI Agent',
-    subhead: 'The Agent built only for you — and locked from your rivals.',
+    subhead: 'Your bottleneck, eliminated. Your edge, protected.',
     bullets: [
         'Curated with you — built alongside your team to eliminate the bottleneck no tool can handle.',
         'Optional SLA lock-in — by subscription, your solution is protected and withheld from rivals.',
@@ -97,8 +97,6 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     ],
     icon: Cpu,
     pageContent: `
-      <p>Every business runs on the five engines our standard Agents secure. But there’s always a sixth problem—the one no template covers. The Custom AI Agent is built for that gap: co-engineered with your team, aligned to impact targets, and hardened as infrastructure. Subscribe to the Exclusive SLA to contract-lock the build from direct competitors.</p>
-      
       <h3>Built for the problem only you face</h3>
       <ul>
         <li><strong>Curated with you</strong> — engineered with your team to remove the bottleneck no tool can touch.</li>
