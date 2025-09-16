@@ -53,8 +53,7 @@ export function AiSuggestor() {
   }, [state, toast]);
 
   return (
-    <div className="max-w-3xl mx-auto bg-card rounded-2xl shadow-lg border-t-2 border-primary py-8 px-6 relative">
-       <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-2xl -z-10"></div>
+    <div className="w-full">
       <form ref={formRef} action={dispatch} className="space-y-4">
         <Textarea
           name="contentBottleneckDescription"

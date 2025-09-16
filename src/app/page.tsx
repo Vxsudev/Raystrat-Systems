@@ -1,7 +1,6 @@
 import { Header } from '@/components/header';
 import { Hero } from '@/components/sections/hero';
 import { Services } from '@/components/sections/services';
-import { AiSuggestorSection } from '@/components/sections/ai-suggestor-section';
 import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
@@ -14,7 +13,6 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Services />
-        <AiSuggestorSection />
         <Results />
         <Pricing />
         <Faq />

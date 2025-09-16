@@ -14,7 +14,10 @@ export function AiSuggestorSection() {
             Describe your biggest content or operational bottleneck, and our AI will suggest the most impactful automation for your business.
           </p>
         </div>
-        <AiSuggestor />
+        <div className="max-w-3xl mx-auto bg-card rounded-2xl shadow-lg border-t-2 border-primary py-8 px-6 relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-2xl -z-10"></div>
+          <AiSuggestor />
+        </div>
       </div>
     </section>
   );
