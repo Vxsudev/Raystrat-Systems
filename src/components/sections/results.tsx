@@ -59,15 +59,16 @@ export function Results() {
           {agents.map((agent) => (
             <div
               key={agent.name}
-              className="grid items-start grid-cols-1 p-6 border rounded-2xl md:grid-cols-3 gap-6 md:gap-8 border-border bg-background/50"
+              className="relative grid grid-cols-1 p-6 border rounded-2xl md:grid-cols-3 gap-6 md:gap-8 border-border bg-background/50"
             >
-              <div className="md:col-span-1">
+              <div className="flex flex-col justify-center md:col-span-1">
                 <h3 className="text-xl font-bold font-headline text-foreground">
                   {agent.name}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">{agent.replaces}</p>
               </div>
-              <div className="pt-4 mt-4 border-t md:col-span-2 md:pt-0 md:mt-0 md:border-t-0 md:border-l md:pl-8 border-border/80">
+              <div className="absolute top-0 bottom-0 left-1/3 -translate-x-1/2 w-px bg-border hidden md:block"></div>
+              <div className="flex items-center md:col-span-2 md:pl-8">
                 <p className="text-lg font-medium text-primary">{agent.benefit}</p>
               </div>
             </div>
