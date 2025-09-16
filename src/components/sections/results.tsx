@@ -1,4 +1,3 @@
-
 // src/components/sections/results.tsx
 
 export function Results() {
@@ -60,7 +59,7 @@ export function Results() {
           {agents.map((agent) => (
             <div
               key={agent.name}
-              className="grid items-start grid-cols-1 p-6 border rounded-2xl md:grid-cols-3 md:gap-8 border-border bg-background/50"
+              className="grid items-start grid-cols-1 p-6 border rounded-2xl md:grid-cols-3 gap-6 md:gap-8 border-border bg-background/50"
             >
               <div className="md:col-span-1">
                 <h3 className="text-xl font-bold font-headline text-foreground">
