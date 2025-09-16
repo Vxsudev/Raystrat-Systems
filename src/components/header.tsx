@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Lightbulb, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,6 @@ import { LogoIcon } from './ui/logo-icon';
 import { PlaybookForm } from './ui/playbook-form';
 import { CalendlyButton } from './ui/calendly-button';
 import { ThemeToggle } from './ui/theme-toggle';
-import { AiSuggestor } from './ui/ai-suggestor';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -64,27 +63,6 @@ export function Header() {
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
         <div className="flex items-center justify-end flex-1 gap-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                AI Suggestor
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-3xl">
-              <DialogHeader className="text-center">
-                 <div className="flex justify-center">
-                  <Lightbulb className="w-12 h-12 mx-auto mb-4 text-primary" />
-                </div>
-                <DialogTitle className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl">Unsure Where To Start?</DialogTitle>
-                <DialogDescription className="text-lg text-foreground/80">
-                  Describe your biggest content or operational bottleneck, and our AI will suggest the most impactful automation for your business.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="px-4 py-2">
-                <AiSuggestor />
-              </div>
-            </DialogContent>
-          </Dialog>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">

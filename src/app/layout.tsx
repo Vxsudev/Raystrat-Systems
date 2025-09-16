@@ -5,6 +5,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
+import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 
 const fontSpaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -76,6 +77,7 @@ export default function RootLayout({
         >
           {children}
           <Toaster />
+          <FloatingAiSuggestor />
         </ThemeProvider>
       </body>
     </html>
