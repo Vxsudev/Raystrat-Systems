@@ -91,9 +91,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     title: 'Custom AI Agent',
     subhead: 'The Agent built only for you — and locked from your rivals.',
     bullets: [
-      'Curated with you — co-engineered alongside your team to target the bottleneck no off-the-shelf tool can handle.',
-      'Optional SLA lock-in — available by subscription; your solution is contract-protected and withheld from direct competitors.',
-      'Permanent leverage — once deployed, the Agent becomes hardened infrastructure inside your business, not a disposable add-on.'
+      'Curated with you — built alongside your team to eliminate the bottleneck no tool can handle.',
+      'Optional SLA lock-in — by subscription, your solution is protected and withheld from rivals.',
+      'Permanent leverage — once deployed, it becomes hardened infrastructure inside your business.',
     ],
     icon: Cpu,
     pageContent: 'This is the detailed page content for Custom AI Agent. This is where you explain your process for identifying, scoping, and building bespoke automations that solve unique and challenging business problems.'
