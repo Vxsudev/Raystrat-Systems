@@ -53,9 +53,10 @@ export default function ServicePage({ params }: ServicePageProps) {
                    </div>
                   <p className="mt-4 text-xl italic text-foreground/80">{service.subhead}</p>
                 </header>
-                <div className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80">
-                  <p>{service.pageContent}</p>
-                </div>
+                <div 
+                  className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                  dangerouslySetInnerHTML={{ __html: service.pageContent }}
+                />
               </div>
               <aside className="lg:col-span-2">
                 <div className="sticky p-8 rounded-lg top-24 bg-card border border-border">
@@ -90,3 +91,5 @@ export async function generateStaticParams() {
     slug: service.slug,
   }));
 }
+
+    
