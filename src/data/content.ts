@@ -3,11 +3,11 @@ import type { LucideIcon } from 'lucide-react';
 import { BarChart, Bot, FileText, Inbox, IndianRupee, Recycle, Search, Sparkles, TrendingUp, Cpu, Banknote, Workflow, Database, MessageSquareShare, ShieldQuestion } from 'lucide-react';
 
 export const navigationLinks = [
-  { name: 'Services', href: '#services' },
-  { name: 'Results', href: '#results' },
-  { name: 'Pricing', href: '#pricing' },
+  { name: 'Services', href: '/#services' },
+  { name: 'Results', href: '/#results' },
+  { name: 'Pricing', href: '/#pricing' },
   { name: 'Bytes', href: '/bytes' },
-  { name: 'FAQ', href: '#faq' },
+  { name: 'FAQ', href: '/#faq' },
 ];
 
 export const marqueeStats = [
