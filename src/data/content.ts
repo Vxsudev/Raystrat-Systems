@@ -25,8 +25,9 @@ export const marqueeStats = [
   "42% faster invoice cycles.",
 ];
 
-export const services: { title: string; subhead: string; bullets: string[]; icon: LucideIcon }[] = [
+export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; }[] = [
   {
+    slug: 'lead-signal-system',
     title: 'Lead Signal System',
     subhead: 'Continuous capture of high-intent demand.',
     bullets: [
@@ -35,8 +36,10 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Streams qualified leads into your pipeline in real time.'
     ],
     icon: Search,
+    pageContent: 'This is the detailed page content for the Lead Signal System. Here we can elaborate on how it scans the web, what buying signals it looks for, and how the scoring model works to deliver high-quality leads directly to you.'
   },
   {
+    slug: 'follow-up-automation-system',
     title: 'Follow-Up Automation System',
     subhead: 'Every lead pursued until closed.',
     bullets: [
@@ -45,8 +48,10 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Tracks engagement and conversion with zero manual effort.'
     ],
     icon: MessageSquareShare,
+    pageContent: 'This is the detailed page content for the Follow-Up Automation System. Describe the power of multi-channel sequencing and how the system intelligently nurtures leads, handling objections and booking meetings autonomously.'
   },
   {
+    slug: 'support-automation-system',
     title: 'Support Automation System',
     subhead: 'Frontline support, always on.',
     bullets: [
@@ -55,8 +60,10 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Logs SLA compliance and customer satisfaction automatically.'
     ],
     icon: ShieldQuestion,
+    pageContent: 'This is the detailed page content for the Support Automation System. Explain how it improves customer satisfaction by providing instant answers while freeing up human agents to handle complex, high-value interactions.'
   },
   {
+    slug: 'operations-automation-system',
     title: 'Operations Automation System',
     subhead: 'Your execution backbone, on rails.',
     bullets: [
@@ -65,8 +72,10 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Provides audit trails for every task executed.'
     ],
     icon: Workflow,
+    pageContent: 'This is the detailed page content for the Operations Automation System. Detail the types of workflows it can automate, from finance to project management, ensuring nothing slips through the cracks and providing perfect operational visibility.'
   },
   {
+    slug: 'data-command-system',
     title: 'Data Command System',
     subhead: 'One source of truth for performance.',
     bullets: [
@@ -75,8 +84,10 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Enables instant exports and decision-ready reporting.'
     ],
     icon: Database,
+    pageContent: 'This is the detailed page content for the Data Command System. Showcase how it connects disparate data sources into a single, cohesive dashboard, giving leaders a real-time, actionable view of the entire business.'
   },
   {
+    slug: 'custom-ai-automation',
     title: 'Custom AI Automation',
     subhead: 'Your specific bottleneck, solved.',
     bullets: [
@@ -85,6 +96,7 @@ export const services: { title: string; subhead: string; bullets: string[]; icon
       'Capture hidden ROI by automating the tasks you think “can’t be automated”.'
     ],
     icon: Cpu,
+    pageContent: 'This is the detailed page content for Custom AI Automation. This is where you explain your process for identifying, scoping, and building bespoke automations that solve unique and challenging business problems.'
   },
 ];
 

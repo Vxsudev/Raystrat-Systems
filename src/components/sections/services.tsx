@@ -1,6 +1,8 @@
+
 import { services } from '@/data/content';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Check } from 'lucide-react';
+import Link from 'next/link';
 
 export function Services() {
   return (
@@ -15,27 +17,29 @@ export function Services() {
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <Card key={service.title} className="flex flex-col transition-all duration-300 border-2 border-transparent hover:border-primary hover:shadow-lg hover:shadow-primary/20">
-            <CardHeader className="flex flex-row items-center gap-4">
-              <div className="p-3 rounded-md bg-primary/10">
-                <service.icon className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex flex-col">
-                <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="mb-4 text-base italic text-foreground/90">{service.subhead}</CardDescription>
-              <ul className="space-y-3">
-                {service.bullets.map((bullet, index) => (
-                  <li key={index} className="flex items-start">
-                    <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
-                    <span className="text-foreground/80">{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <Link key={service.slug} href={`/services/${service.slug}`} className="block group">
+            <Card className="flex flex-col h-full transition-all duration-300 border-2 border-transparent group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/20">
+              <CardHeader className="flex flex-row items-center gap-4">
+                <div className="p-3 rounded-md bg-primary/10">
+                  <service.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex flex-col">
+                  <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="mb-4 text-base italic text-foreground/90">{service.subhead}</CardDescription>
+                <ul className="space-y-3">
+                  {service.bullets.map((bullet, index) => (
+                    <li key={index} className="flex items-start">
+                      <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
+                      <span className="text-foreground/80">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </section>
