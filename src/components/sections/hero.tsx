@@ -19,7 +19,7 @@ export function Hero() {
     <section id="top" className="w-full py-20 md:py-32 lg:py-48">
       <div className="container px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl font-headline">
+          <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl font-headline">
             <span className="text-primary">AI is no more the future. it’s present. Wake up.</span>
           </h1>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
