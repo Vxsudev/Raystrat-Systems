@@ -38,7 +38,7 @@ export function Header() {
         <Link
           key={link.name}
           href={link.href}
-          className="text-sm font-medium transition-colors text-foreground/80 hover:text-foreground"
+          className="text-lg font-medium transition-colors text-foreground/80 hover:text-foreground md:text-sm"
         >
           {link.name}
         </Link>
@@ -57,7 +57,7 @@ export function Header() {
     >
       <div className="container flex items-center h-16">
         <Link href="/" className="flex items-center gap-3 mr-8">
-          <span className="relative flex h-3 w-3">
+           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
           </span>
@@ -67,7 +67,7 @@ export function Header() {
         <div className="flex items-center justify-end flex-1 gap-4">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hidden md:inline-flex">
                 Download Playbook
               </Button>
             </DialogTrigger>
@@ -81,7 +81,7 @@ export function Header() {
               <PlaybookForm />
             </DialogContent>
           </Dialog>
-          <CalendlyButton size="sm" />
+          <CalendlyButton size="sm" className="hidden md:inline-flex" />
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
@@ -92,8 +92,27 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right">
               <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
-              <div className="flex flex-col gap-6 p-6 pt-12">
+              <div className="flex flex-col gap-8 p-6 pt-12">
                 {navLinks}
+                <div className="flex flex-col gap-4 pt-8 border-t border-border">
+                   <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        Download Playbook
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Download the Playbook</DialogTitle>
+                        <DialogDescription>
+                          Enter your details below to get immediate access to the playbook.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <PlaybookForm />
+                    </DialogContent>
+                  </Dialog>
+                  <CalendlyButton />
+                </div>
               </div>
             </SheetContent>
           </Sheet>
