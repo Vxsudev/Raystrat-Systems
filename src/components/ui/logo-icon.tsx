@@ -20,3 +20,4 @@ export function LogoIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
