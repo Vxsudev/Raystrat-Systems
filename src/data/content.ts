@@ -27,8 +27,8 @@ export const marqueeStats = [
 
 export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; }[] = [
   {
-    slug: 'lead-hunter-agent',
-    title: 'Lead Hunter Agent',
+    slug: 'leads-hunter-agent',
+    title: 'Leads Hunter Agent',
     subhead: 'Continuous capture of high-intent demand.',
     bullets: [
       'Scans the web for live buying signals.',
