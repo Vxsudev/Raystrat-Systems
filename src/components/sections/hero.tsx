@@ -23,7 +23,7 @@ export function Hero() {
             <span className="text-primary">AI isn’t the future — it’s present. Wake up.</span>
           </h1>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
-            Five boring automations that cut wasted hours, recover cash, and open new revenue streams.
+            Leads slip. Follow-ups stall. Customers wait. Ops break. Data lies.
           </p>
           <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
             <CalendlyButton size="lg">
