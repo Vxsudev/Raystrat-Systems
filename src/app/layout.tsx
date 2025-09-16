@@ -1,14 +1,18 @@
 
 import type { Metadata } from 'next';
-import { IBM_Plex_Mono } from 'next/font/google';
+import { Space_Grotesk, Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 
-const fontMono = IBM_Plex_Mono({
+const fontSpaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-headline',
+});
+
+const fontInter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -59,7 +63,8 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-background font-body antialiased',
-          fontMono.variable
+          fontSpaceGrotesk.variable,
+          fontInter.variable
         )}
       >
         {children}
