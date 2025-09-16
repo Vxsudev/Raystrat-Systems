@@ -6,7 +6,6 @@ import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
-import { Contact } from '@/components/sections/contact';
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
         <Results />
         <Pricing />
         <Faq />
-        <Contact />
       </main>
       <Footer />
     </div>
