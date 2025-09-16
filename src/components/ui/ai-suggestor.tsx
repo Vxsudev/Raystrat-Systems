@@ -57,7 +57,7 @@ export function AiSuggestor() {
       <form ref={formRef} action={dispatch} className="space-y-4">
         <Textarea
           name="contentBottleneckDescription"
-          placeholder="e.g., 'We spend too much time manually following up on unpaid invoices' or 'I record a podcast but struggle to turn it into blog posts and social media content.'"
+          placeholder="Describe your bottleneck. e.g., 'Chasing unpaid invoices takes too much time,' or 'Finding qualified leads is a constant struggle.'"
           className="min-h-[120px] text-base bg-[#0b0b0b] border-white/10 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
         />
