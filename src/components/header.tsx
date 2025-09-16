@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -19,6 +20,7 @@ import { navigationLinks } from '@/data/content';
 import { LogoIcon } from './ui/logo-icon';
 import { PlaybookForm } from './ui/playbook-form';
 import { CalendlyButton } from './ui/calendly-button';
+import { ThemeToggle } from './ui/theme-toggle';
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -78,6 +80,7 @@ export function Header() {
             </DialogContent>
           </Dialog>
           <CalendlyButton size="sm" />
+          <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
