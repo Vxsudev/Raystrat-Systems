@@ -1,4 +1,5 @@
 
+
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { services } from '@/data/content';
@@ -8,6 +9,7 @@ import { Check } from 'lucide-react';
 import { CalendlyButton } from '@/components/ui/calendly-button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { FavoriteAgentButton } from '@/components/ui/favorite-agent-button';
 
 interface ServicePageProps {
   params: {
@@ -75,10 +77,11 @@ export default function ServicePage({ params }: ServicePageProps) {
                           </li>
                         ))}
                       </ul>
-                      <div className="mt-8">
+                      <div className="mt-8 space-y-3">
                          <CalendlyButton size="lg" className='w-full'>
                             Book a Demo <ArrowRight className="ml-2" />
                         </CalendlyButton>
+                        <FavoriteAgentButton agentName={service.title} agentSlug={service.slug} />
                       </div>
                 </div>
               </aside>
