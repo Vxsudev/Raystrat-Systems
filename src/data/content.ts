@@ -89,7 +89,7 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
   {
     slug: 'custom-ai-agent',
     title: 'Custom AI Agent',
-    subhead: 'Your specific bottleneck, solved.',
+    subhead: 'The Agent built only for you — and locked from your rivals.',
     bullets: [
       'Eliminate your team’s #1 bottleneck with purpose-built automation.',
       'Automate complex, repetitive workflows no off-the-shelf tool can touch.',
