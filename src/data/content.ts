@@ -28,7 +28,7 @@ export const marqueeStats = [
 export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; }[] = [
   {
     slug: 'lead-signal-system',
-    title: 'Lead Signal System',
+    title: 'Lead Signal Agent',
     subhead: 'Continuous capture of high-intent demand.',
     bullets: [
       'Scans the web for live buying signals.',
