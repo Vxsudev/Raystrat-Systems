@@ -5,17 +5,17 @@ export function LogoIcon({ className }: { className?: string }) {
   return (
     <svg
       className={cn("text-foreground", className)}
-      viewBox="0 0 24 24"
+      viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path 
-          d="M5.33331 20L11.3333 4H15.3333L10.6666 16H16.6666L19.3333 20H5.33331Z" 
-          fill="currentColor"
+        d="M20,66 L20,20.4 L31.2,14 L31.2,54.8 L60,54.8 L60,66 L20,66 Z" 
+        fill="currentColor"
       />
       <path 
-          d="M16.6667 16L15.3334 12L19.3334 4H22.6667L16.6667 16Z"
-          className="fill-primary"
+        d="M36.4,49.6 L60,26 L60,14 L36.4,37.6 L36.4,49.6 Z" 
+        className="fill-primary"
       />
     </svg>
   );
