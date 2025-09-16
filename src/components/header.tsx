@@ -56,8 +56,8 @@ export function Header() {
       )}
     >
       <div className="container flex items-center justify-between h-16 md:grid md:grid-cols-3">
-        <div className="md:flex md:items-center">
-            <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
+        <div className="items-center hidden gap-6 md:flex">
+          {navLinks}
         </div>
 
         <div className="flex items-center justify-center md:justify-start">
