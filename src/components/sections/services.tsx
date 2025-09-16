@@ -22,7 +22,7 @@ export function Services() {
             <Card className="flex flex-col h-full transition-all duration-300 border-2 border-transparent group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/20">
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="p-3 rounded-md bg-primary/10">
-                  <service.icon className={cn("w-6 h-6 text-primary animate-pulse group-hover:scale-110 group-hover:-rotate-6", service.iconClassName)} />
+                  <service.icon className={cn("w-6 h-6 animate-pulse group-hover:scale-110 group-hover:-rotate-6", service.iconClassName ? service.iconClassName : 'text-primary')} />
                 </div>
                 <div className="flex flex-col">
                   <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
