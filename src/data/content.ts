@@ -25,7 +25,7 @@ export const marqueeStats = [
   "42% faster invoice cycles.",
 ];
 
-export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; }[] = [
+export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; iconClassName?: string }[] = [
   {
     slug: 'leads-hunter-agent',
     title: 'Leads Hunter Agent',
@@ -96,6 +96,7 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
         'Permanent leverage — once deployed, it becomes hardened infrastructure inside your business.'
     ],
     icon: Cpu,
+    iconClassName: 'text-green-500',
     pageContent: `
       <h3>Built for the problem only you face</h3>
       <ul>
