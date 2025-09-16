@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { BarChart, Bot, FileText, Inbox, IndianRupee, Recycle, Search, Sparkles, TrendingUp, Cpu, Banknote } from 'lucide-react';
+import { BarChart, Bot, FileText, Inbox, IndianRupee, Recycle, Search, Sparkles, TrendingUp, Cpu, Banknote, Workflow, Database, MessageSquareShare, ShieldQuestion } from 'lucide-react';
 
 export const navigationLinks = [
   { name: 'Services', href: '#services' },
@@ -27,54 +27,54 @@ export const marqueeStats = [
 
 export const services: { title: string; subhead: string; bullets: string[]; icon: LucideIcon }[] = [
   {
-    title: 'Search-Intent Lead Scraper',
-    subhead: 'From browsing to booking, without the manual grind.',
+    title: 'Lead Signal System',
+    subhead: 'Continuous capture of high-intent demand.',
     bullets: [
-      'Pulls high-intent leads at scale — zero wasted hours on “maybe” prospects.',
-      'Filters noise instantly: only revenue-ready leads hit your pipeline.',
-      'Works while you sleep — no burnout, no missed opportunities.'
+      'Scans the web for live buying signals.',
+      'Scores urgency, budget, and fit automatically.',
+      'Streams qualified leads into your pipeline in real time.'
     ],
     icon: Search,
   },
   {
-    title: 'Repurposing Engine',
-    subhead: 'Every asset sweated to its maximum ROI.',
+    title: 'Follow-Up Automation System',
+    subhead: 'Every lead pursued until closed.',
     bullets: [
-      'Turns one long-form piece into dozens of ready-to-publish formats.',
-      'Keeps your brand consistent without extra creative overhead.',
-      'Destroys the “content treadmill” — scale without more staff or spend.'
+      'Runs multi-channel sequences across email, SMS, and WhatsApp.',
+      'Books meetings directly into your calendar.',
+      'Tracks engagement and conversion with zero manual effort.'
     ],
-    icon: Recycle,
+    icon: MessageSquareShare,
   },
   {
-    title: 'Invoice Collector',
-    subhead: 'Cash flow discipline, fully automated.',
+    title: 'Support Automation System',
+    subhead: 'Frontline support, always on.',
     bullets: [
-      'No more chasing clients or forgotten invoices.',
-      'Compliance-safe tracking from issue to payment.',
-      'Restores predictable cash cycles — even at scale.'
+      'Resolves FAQs and common tickets instantly.',
+      'Escalates exceptions with full context to your team.',
+      'Logs SLA compliance and customer satisfaction automatically.'
     ],
-    icon: Banknote,
+    icon: ShieldQuestion,
   },
   {
-    title: 'Long-Form Generator',
-    subhead: 'Complex content, delivered without bottlenecks.',
+    title: 'Operations Automation System',
+    subhead: 'Your execution backbone, on rails.',
     bullets: [
-      'Drafts reports, whitepapers, or SEO content in hours — not weeks.',
-      'Accuracy + compliance built in (no embarrassing errors).',
-      'Frees teams to think strategy instead of wrangling words.'
+      'Automates routine workflows: invoicing, notifications, task assignments.',
+      'Orchestrates cross-team processes with precision.',
+      'Provides audit trails for every task executed.'
     ],
-    icon: FileText,
+    icon: Workflow,
   },
   {
-    title: 'Smart Inbox Controller',
-    subhead: 'Email chaos eliminated. Focus restored.',
+    title: 'Data Command System',
+    subhead: 'One source of truth for performance.',
     bullets: [
-      'Auto-filters clutter → only priority threads stay visible.',
-      'Scales with your volume — accuracy doesn’t drop under pressure.',
-      'Enforces inbox discipline so you never bleed hours on email again.'
+      'Centralizes KPIs across leads, sales, ops, and support.',
+      'Provides real-time dashboards and predictive trendlines.',
+      'Enables instant exports and decision-ready reporting.'
     ],
-    icon: Inbox,
+    icon: Database,
   },
   {
     title: 'Custom AI Automation',
