@@ -20,7 +20,7 @@ export function Hero() {
       <div className="container px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
-            <span className="text-primary">AI isn’t the future — it’s present. Wake up.</span>
+            <span className="text-primary">AI isn’t the future — it’s present. <br /> Wake up.</span>
           </h1>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
             Leads slip. Follow-ups stall. Customers wait. Ops break. Data lies.
