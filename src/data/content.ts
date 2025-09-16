@@ -36,7 +36,31 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Streams qualified leads into your pipeline in real time.'
     ],
     icon: Search,
-    pageContent: 'This is the detailed page content for the Lead Signal System. Here we can elaborate on how it scans the web, what buying signals it looks for, and how the scoring model works to deliver high-quality leads directly to you.'
+    pageContent: `### Overview
+
+Every pipeline starts with signals. Most businesses wait until demand reaches them—by then, it’s already diluted. The Lead Signal System inverts that. It continuously scans the web for buying intent, filters out noise, and delivers only prospects who are ready to move. This isn’t a “list.” It’s a living feed. Every record is fresh, scored, and actionable.
+
+### The Problem It Solves
+
+Static lists go stale. Paid ads burn budget on weak clicks. Generic scraping floods you with noise. Without a system to detect true intent, businesses either overspend or operate blind.
+
+### What It Delivers
+
+- **High-Intent Leads Only:** Every record passes urgency, fit, and contactability checks.
+- **Freshness by Design:** Signals are captured and delivered within hours, not weeks.
+- **Clarity at a Glance:** Each lead is scored, summarized, and stripped of dead ends.
+
+### Why It Works
+
+Because demand is always visible if you know where to look. The Lead Signal System continuously maps digital footprints—search queries, posts, mentions, requests—and applies strict qualification gates. What gets through isn’t “noise with potential.” It’s demand with direction.
+
+### Outcome for the Client
+
+A pipeline that never runs dry. Reduced cost-per-lead, since only qualified intent is delivered. Sales teams that focus only on prospects who are already leaning forward.
+
+### Field Principle
+
+> Leads aren’t found—they’re detected. The businesses that win are the ones who see demand first.`
   },
   {
     slug: 'follow-up-automation-system',
