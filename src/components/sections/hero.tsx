@@ -14,9 +14,9 @@ export function Hero() {
             AI isn’t the future — it’s the present. Wake up.
           </h2>
           <p className="max-w-2xl mx-auto mt-6 text-lg md:text-xl text-gray-300">
-            Every leak in your business comes from the same five choke points — 
+            Most losses trace back to the same five systems — 
             leads, follow-up, support, operations, and data. 
-            Our agents take them over permanently.
+            Our agents run them with discipline.
           </p>
           <div className="flex justify-center mt-8">
             <Button asChild variant="outline" size="lg" className="border-primary text-primary px-6 py-3 rounded-2xl hover:bg-[#1a1a1a] transition h-auto">
