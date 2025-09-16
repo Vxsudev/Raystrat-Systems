@@ -4,26 +4,19 @@ import { cn } from "@/lib/utils";
 export function LogoIcon({ className }: { className?: string }) {
   return (
     <svg
-      className={cn("text-primary", className)}
+      className={cn("text-foreground", className)}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M4 12L4 4L12 4V12H4Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 20L12 12L20 12V20H12Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M4 20L4 12" stroke="currentColor" strokeWidth="2" />
-      <path d="M12 4L20 4" stroke="currentColor" strokeWidth="2" />
-      <rect x="8" y="8" width="4" height="4" fill="currentColor" />
+        <path 
+            d="M5.33331 20L11.3333 4H15.3333L10.6666 16H16.6666L19.3333 20H5.33331Z" 
+            fill="white"
+        />
+        <path 
+            d="M16.6667 16L15.3334 12L19.3334 4H22.6667L16.6667 16Z"
+            className="fill-primary"
+        />
     </svg>
   );
 }
