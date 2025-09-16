@@ -1,37 +1,85 @@
 // src/components/sections/results.tsx
 
 export function Results() {
-  const items = [
-    { title: "Lead Signal Agent",  stat: "+25–60 / wk", label: "Qualified leads delivered" },
-    { title: "Follow-Up Agent",    stat: "2–4×",        label: "More meetings booked" },
-    { title: "Support Agent",      stat: "< 2 min",     label: "Median first reply" },
-    { title: "Operations Agent",   stat: "~56 hrs / mo",label: "Manual work removed" },
-    { title: "Data Command Agent", stat: "< 24 h",      label: "Reporting latency" },
+  const agents = [
+    {
+      name: 'Lead Signal Agent',
+      replaces: 'Replaces: Full-time SDRs, list-buying budgets',
+      benefit: 'Delivers qualified, intent-driven leads automatically, 24/7.',
+    },
+    {
+      name: 'Follow-Up Agent',
+      replaces: 'Replaces: Sales assistants, manual CRM jockeys',
+      benefit: 'Executes multi-channel sequences until a meeting is booked.',
+    },
+    {
+      name: 'Support Agent',
+      replaces: 'Replaces: L1 support teams, ticket routing staff',
+      benefit: 'Resolves common customer queries instantly, escalating only exceptions.',
+    },
+    {
+      name: 'Operations Agent',
+      replaces: 'Replaces: Accounts receivable clerks, project coordinators',
+      benefit: 'Automates invoicing, notifications, and cross-team workflows.',
+    },
+    {
+      name: 'Data Command Agent',
+      replaces: 'Replaces: Data analysts, manual report builders',
+      benefit: 'Centralizes KPIs into a single source of truth for decision-making.',
+    },
+     {
+      name: 'Custom AI Agent',
+      replaces: 'Replaces: In-house dev teams for internal tools',
+      benefit: 'Solves the unique, complex bottlenecks no off-the-shelf tool can.',
+    },
   ];
 
   return (
-    <section id="results" className="py-16 md:py-20 bg-card text-foreground">
-      <div className="mx-auto max-w-6xl px-6 text-center">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight font-headline">
-          The Five Engines, Stabilized.
-        </h2>
-        <p className="mt-3 text-muted-foreground">
-          Each Raystrat Agent eliminates one failure point.
-        </p>
+    <section id="results" className="py-16 md:py-24 bg-card text-card-foreground">
+      <div className="container">
+        {/* Headline & Subheadline */}
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold tracking-tighter font-headline sm:text-5xl md:text-6xl">
+            The Six Agents, Stabilized.
+          </h2>
+          <p className="mt-4 text-lg text-foreground/80 md:text-xl">
+            From bloated headcount to lean control.
+          </p>
+        </div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-          {items.map((m) => (
-            <article key={m.title} className="rounded-2xl border border-border bg-background/50 p-6 text-left">
-              <h3 className="text-sm text-muted-foreground">{m.title}</h3>
-              <div className="mt-1 text-primary text-3xl md:text-4xl font-semibold">{m.stat}</div>
-              <div className="mt-1 text-muted-foreground">{m.label}</div>
-            </article>
+        {/* Narrative Intro Block */}
+        <div className="max-w-3xl mx-auto mt-8 text-center">
+          <p className="text-foreground/80">
+            Each Raystrat Agent replaces functions that once required full teams. The result: fewer salaries, higher margins, and growth without drag.
+          </p>
+        </div>
+
+        {/* Agent Grid Presentation */}
+        <div className="max-w-4xl mx-auto mt-12 space-y-4">
+          {agents.map((agent) => (
+            <div
+              key={agent.name}
+              className="grid items-center grid-cols-1 p-4 border rounded-2xl md:grid-cols-2 border-border bg-background/50"
+            >
+              <div className="pr-4">
+                <h3 className="text-lg font-semibold font-headline text-foreground">
+                  {agent.name}
+                </h3>
+                <p className="text-sm text-muted-foreground">{agent.replaces}</p>
+              </div>
+              <div className="pl-4 border-t md:border-t-0 md:border-l border-border/80 mt-4 pt-4 md:mt-0 md:pt-0">
+                <p className="font-medium text-primary">{agent.benefit}</p>
+              </div>
+            </div>
           ))}
         </div>
 
-        <p className="mt-6 text-xs text-foreground/60">
-          Ranges are rolling 28-day medians from tenant delivery logs. Full cohort reports available on request.
-        </p>
+        {/* Bottom Line Block */}
+        <div className="max-w-5xl p-8 mx-auto mt-16 text-center rounded-lg bg-background text-foreground">
+          <p className="text-lg">
+            Where businesses once needed 10–20 staff to hold these choke points, Raystrat clients operate with core personnel only — founders, closers, and strategic operators. The Agents carry the rest.
+          </p>
+        </div>
       </div>
     </section>
   );
