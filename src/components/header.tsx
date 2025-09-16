@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
-import { LogoIcon } from './ui/logo-icon';
 import { PlaybookForm } from './ui/playbook-form';
 import { CalendlyButton } from './ui/calendly-button';
 import { ThemeToggle } from './ui/theme-toggle';
@@ -58,7 +57,6 @@ export function Header() {
     >
       <div className="container flex items-center h-16">
         <Link href="/" className="flex items-center gap-2 mr-8">
-          <LogoIcon className="w-6 h-6" />
           <span className="font-bold font-headline">Raystrat Systems</span>
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
