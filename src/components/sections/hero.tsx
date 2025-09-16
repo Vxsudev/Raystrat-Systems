@@ -7,13 +7,13 @@ export function Hero() {
     <section id="top" className="w-full min-h-screen flex items-center justify-center bg-background py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="w-full">
         <div className="mx-auto text-center">
-          <h1 className="text-5xl font-bold font-headline md:text-7xl text-foreground">
+          <h1 className="text-7xl font-bold font-headline md:text-9xl text-foreground">
             Agents Run Business.
           </h1>
-          <h2 className="mt-4 font-medium text-2xl md:text-3xl font-headline text-primary">
+          <h2 className="mt-4 font-medium text-4xl md:text-5xl font-headline text-primary">
             AI isn’t the future — it’s present. Wake up.
           </h2>
-          <p className="mx-auto mt-6 text-lg md:text-xl text-muted-foreground max-w-3xl">
+          <p className="mx-auto mt-6 text-2xl md:text-3xl text-muted-foreground max-w-4xl">
             Most losses trace back to the same five systems — 
             leads, follow-up, support, operations, and data. 
             Our agents run them with discipline.
