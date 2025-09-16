@@ -55,16 +55,22 @@ export function Header() {
           : 'bg-transparent'
       )}
     >
-      <div className="container flex items-center h-16">
-        <Link href="/" className="flex items-center gap-3 mr-8">
-           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-          </span>
-          <span className="text-lg font-bold font-headline">Raystrat Systems</span>
-        </Link>
-        <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
-        <div className="flex items-center justify-end flex-1 gap-4">
+      <div className="container flex items-center justify-between h-16 md:grid md:grid-cols-3">
+        <div className="md:flex md:items-center">
+            <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
+        </div>
+
+        <div className="flex items-center justify-center">
+             <Link href="/" className="flex items-center gap-3">
+               <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+              <span className="text-xl font-bold font-headline">Raystrat Systems</span>
+            </Link>
+        </div>
+
+        <div className="flex items-center justify-end gap-4">
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="hidden md:inline-flex">
