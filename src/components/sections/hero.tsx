@@ -20,7 +20,7 @@ export function Hero() {
       <div className="container px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl font-headline">
-            Systems that <span className="text-primary">collect, convert, and deliver</span>.
+            Systems that <span className="text-primary">AI isn’t the future — it’s the present. Wake up.</span>.
           </h1>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
             Five boring automations that cut wasted hours, recover cash, and open new revenue streams.
