@@ -36,7 +36,11 @@ function SubmitButton() {
   );
 }
 
-export function AiSuggestor() {
+interface AiSuggestorProps {
+  onSuggestionClick?: () => void;
+}
+
+export function AiSuggestor({ onSuggestionClick }: AiSuggestorProps) {
   const [state, dispatch] = useActionState(getAutomationSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
@@ -103,7 +107,7 @@ export function AiSuggestor() {
           </CardContent>
           {suggestedServiceSlug && (
             <CardFooter className="p-4 bg-primary/10 border-t border-primary/20">
-              <Button asChild className='w-full' variant='outline'>
+              <Button asChild className='w-full' variant='outline' onClick={onSuggestionClick}>
                 <Link href={`/services/${suggestedServiceSlug}`}>
                   Learn More <ArrowRight className="ml-2" />
                 </Link>

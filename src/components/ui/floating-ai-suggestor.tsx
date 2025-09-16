@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -14,8 +15,10 @@ import { Lightbulb } from 'lucide-react';
 import { AiSuggestor } from './ai-suggestor';
 
 export function FloatingAiSuggestor() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           variant="default"
@@ -37,7 +40,7 @@ export function FloatingAiSuggestor() {
           </DialogDescription>
         </DialogHeader>
         <div className="px-4 py-2">
-          <AiSuggestor />
+          <AiSuggestor onSuggestionClick={() => setIsOpen(false)} />
         </div>
       </DialogContent>
     </Dialog>
