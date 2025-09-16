@@ -61,7 +61,7 @@ export function Header() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
           </span>
-          <span className="font-bold font-headline">Raystrat Systems</span>
+          <span className="text-lg font-bold font-headline">Raystrat Systems</span>
         </Link>
         <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
         <div className="flex items-center justify-end flex-1 gap-4">
