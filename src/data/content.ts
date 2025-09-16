@@ -91,12 +91,48 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     title: 'Custom AI Agent',
     subhead: 'The Agent built only for you — and locked from your rivals.',
     bullets: [
-      'Curated with you — built alongside your team to eliminate the bottleneck no tool can handle.',
-      'Optional SLA lock-in — by subscription, your solution is protected and withheld from rivals.',
-      'Permanent leverage — once deployed, it becomes hardened infrastructure inside your business.',
+        'Curated with you — built alongside your team to eliminate the bottleneck no tool can handle.',
+        'Optional SLA lock-in — by subscription, your solution is protected and withheld from rivals.',
+        'Permanent leverage — once deployed, it becomes hardened infrastructure inside your business.'
     ],
     icon: Cpu,
-    pageContent: 'This is the detailed page content for Custom AI Agent. This is where you explain your process for identifying, scoping, and building bespoke automations that solve unique and challenging business problems.'
+    pageContent: `
+      <p>Every business runs on the five engines our standard Agents secure. But there’s always a sixth problem—the one no template covers. The Custom AI Agent is built for that gap: co-engineered with your team, aligned to impact targets, and hardened as infrastructure. Subscribe to the Exclusive SLA to contract-lock the build from direct competitors.</p>
+      
+      <h3>Built for the problem only you face</h3>
+      <ul>
+        <li><strong>Curated with you</strong> — engineered with your team to remove the bottleneck no tool can touch.</li>
+        <li><strong>Optional SLA lock-in</strong> — by subscription, your build is contract-protected and withheld from rivals.</li>
+        <li><strong>Permanent leverage</strong> — once deployed, the Agent becomes hardened infrastructure inside your business.</li>
+      </ul>
+
+      <h3>Exclusive SLA (Optional)</h3>
+      <p>Contract-lock the build to your business. Direct competitors cannot license the same Agent while your subscription is active.</p>
+      <ul>
+        <li>Competitor blackout in your market segment</li>
+        <li>Priority maintenance & change windows</li>
+        <li>Availability targets aligned to your risk profile</li>
+      </ul>
+
+      <h3>What Sets It Apart</h3>
+      <ul>
+        <li><strong>Bespoke scope</strong> — starts with a precision audit of workflows and failure points.</li>
+        <li><strong>Hard impact mapping</strong> — tied to clear metrics: revenue unlocked, hours reclaimed, risk reduced.</li>
+        <li><strong>Infrastructure, not software</strong> — deployed as a system designed to run indefinitely.</li>
+        <li><strong>Strategic exclusivity</strong> — with SLA, your Agent becomes proprietary leverage competitors can’t replicate.</li>
+      </ul>
+
+      <h3>Why Clients Use It</h3>
+      <ul>
+        <li>Regulated industries where off-the-shelf breaks.</li>
+        <li>Complex cross-team workflows needing precision.</li>
+        <li>Hidden ROI in “can’t be automated” tasks.</li>
+        <li>Competitive edge written into contracts.</li>
+      </ul>
+
+      <h3>Bottom Line</h3>
+      <p>The Custom AI Agent eliminates the one constraint only your business faces. Co-engineered with you, optionally locked under SLA, and deployed as permanent infrastructure. This isn’t customization. It’s your moat.</p>
+    `
   },
 ];
 
