@@ -4,7 +4,7 @@ export function Results() {
   const agents = [
     {
       name: 'Leads Hunter Agent',
-      replaces: 'Replaces: Full-time SDRs, list-buying budgets',
+      replaces: 'Replaces: Full-time SDRs, list-building budgets',
       benefit: 'Delivers qualified, intent-driven leads automatically, 24/7.',
     },
     {
