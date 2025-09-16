@@ -60,7 +60,7 @@ export function Header() {
             <nav className="items-center hidden gap-6 md:flex">{navLinks}</nav>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center md:justify-start">
              <Link href="/" className="flex items-center gap-3">
                <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
