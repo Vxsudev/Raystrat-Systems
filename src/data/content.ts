@@ -27,8 +27,8 @@ export const marqueeStats = [
 
 export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; }[] = [
   {
-    slug: 'lead-signal-system',
-    title: 'Lead Signal Agent',
+    slug: 'lead-hunter-agent',
+    title: 'Lead Hunter Agent',
     subhead: 'Continuous capture of high-intent demand.',
     bullets: [
       'Scans the web for live buying signals.',
@@ -36,11 +36,11 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Streams qualified leads into your pipeline in real time.'
     ],
     icon: Search,
-    pageContent: `<h3>Overview</h3><p>Every pipeline starts with signals. Most businesses wait until demand reaches them—by then, it’s already diluted. The Lead Signal System inverts that. It continuously scans the web for buying intent, filters out noise, and delivers only prospects who are ready to move. This isn’t a “list.” It’s a living feed. Every record is fresh, scored, and actionable.</p><h3>The Problem It Solves</h3><p>Static lists go stale. Paid ads burn budget on weak clicks. Generic scraping floods you with noise. Without a system to detect true intent, businesses either overspend or operate blind.</p><h3>What It Delivers</h3><ul><li><strong>High-Intent Leads Only:</strong> Every record passes urgency, fit, and contactability checks.</li><li><strong>Freshness by Design:</strong> Signals are captured and delivered within hours, not weeks.</li><li><strong>Clarity at a Glance:</strong> Each lead is scored, summarized, and stripped of dead ends.</li></ul><h3>Why It Works</h3><p>Because demand is always visible if you know where to look. The Lead Signal System continuously maps digital footprints—search queries, posts, mentions, requests—and applies strict qualification gates. What gets through isn’t “noise with potential.” It’s demand with direction.</p><h3>Outcome for the Client</h3><p>A pipeline that never runs dry. Reduced cost-per-lead, since only qualified intent is delivered. Sales teams that focus only on prospects who are already leaning forward.</p><h3>Field Principle</h3><blockquote>Leads aren’t found—they’re detected. The businesses that win are the ones who see demand first.</blockquote>`
+    pageContent: `<h3>Overview</h3><p>Every pipeline starts with signals. Most businesses wait until demand reaches them—by then, it’s already diluted. The Lead Signal Agent inverts that. It continuously scans the web for buying intent, filters out noise, and delivers only prospects who are ready to move.</p><p>This isn’t a “list.” It’s a living feed. Every record is fresh, scored, and actionable.</p><h3>The Problem It Solves</h3><p>Static lists go stale. Paid ads burn budget on weak clicks. Generic scraping floods you with noise. Without an agent to detect true intent, businesses either overspend or operate blind.</p><h3>What It Delivers</h3><ul><li><strong>High-Intent Leads Only:</strong> Every record passes urgency, fit, and contactability checks.</li><li><strong>Freshness by Design:</strong> Signals are captured and delivered within hours, not weeks.</li><li><strong>Clarity at a Glance:</strong> Each lead is scored, summarized, and stripped of dead ends.</li></ul><h3>Why It Works</h3><p>Because demand is always visible if you know where to look. The Lead Signal Agent continuously maps digital footprints—search queries, posts, mentions, requests—and applies strict qualification gates. What gets through isn’t “noise with potential.” It’s demand with direction.</p><h3>Outcome for the Client</h3><p>A pipeline that never runs dry. Reduced cost-per-lead, since only qualified intent is delivered. Sales teams that focus only on prospects who are already leaning forward.</p><h3>Field Principle</h3><blockquote>Leads aren’t found—they’re detected. The businesses that win are the ones who see demand first.</blockquote>`
   },
   {
-    slug: 'follow-up-automation-system',
-    title: 'Follow-Up Automation System',
+    slug: 'follow-up-agent',
+    title: 'Follow-Up Agent',
     subhead: 'Every lead pursued until closed.',
     bullets: [
       'Runs multi-channel sequences across email, SMS, and WhatsApp.',
@@ -48,11 +48,11 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Tracks engagement and conversion with zero manual effort.'
     ],
     icon: MessageSquareShare,
-    pageContent: 'This is the detailed page content for the Follow-Up Automation System. Describe the power of multi-channel sequencing and how the system intelligently nurtures leads, handling objections and booking meetings autonomously.'
+    pageContent: 'This is the detailed page content for the Follow-Up Agent. Describe the power of multi-channel sequencing and how the system intelligently nurtures leads, handling objections and booking meetings autonomously.'
   },
   {
-    slug: 'support-automation-system',
-    title: 'Support Automation System',
+    slug: 'support-agent',
+    title: 'Support Agent',
     subhead: 'Frontline support, always on.',
     bullets: [
       'Resolves FAQs and common tickets instantly.',
@@ -60,11 +60,11 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Logs SLA compliance and customer satisfaction automatically.'
     ],
     icon: ShieldQuestion,
-    pageContent: 'This is the detailed page content for the Support Automation System. Explain how it improves customer satisfaction by providing instant answers while freeing up human agents to handle complex, high-value interactions.'
+    pageContent: 'This is the detailed page content for the Support Agent. Explain how it improves customer satisfaction by providing instant answers while freeing up human agents to handle complex, high-value interactions.'
   },
   {
-    slug: 'operations-automation-system',
-    title: 'Operations Automation System',
+    slug: 'operations-agent',
+    title: 'Operations Agent',
     subhead: 'Your execution backbone, on rails.',
     bullets: [
       'Automates routine workflows: invoicing, notifications, task assignments.',
@@ -72,11 +72,11 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Provides audit trails for every task executed.'
     ],
     icon: Workflow,
-    pageContent: 'This is the detailed page content for the Operations Automation System. Detail the types of workflows it can automate, from finance to project management, ensuring nothing slips through the cracks and providing perfect operational visibility.'
+    pageContent: 'This is the detailed page content for the Operations Agent. Detail the types of workflows it can automate, from finance to project management, ensuring nothing slips through the cracks and providing perfect operational visibility.'
   },
   {
-    slug: 'data-command-system',
-    title: 'Data Command System',
+    slug: 'data-command-agent',
+    title: 'Data Command Agent',
     subhead: 'One source of truth for performance.',
     bullets: [
       'Centralizes KPIs across leads, sales, ops, and support.',
@@ -84,11 +84,11 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Enables instant exports and decision-ready reporting.'
     ],
     icon: Database,
-    pageContent: 'This is the detailed page content for the Data Command System. Showcase how it connects disparate data sources into a single, cohesive dashboard, giving leaders a real-time, actionable view of the entire business.'
+    pageContent: 'This is the detailed page content for the Data Command Agent. Showcase how it connects disparate data sources into a single, cohesive dashboard, giving leaders a real-time, actionable view of the entire business.'
   },
   {
-    slug: 'custom-ai-automation',
-    title: 'Custom AI Automation',
+    slug: 'custom-ai-agent',
+    title: 'Custom AI Agent',
     subhead: 'Your specific bottleneck, solved.',
     bullets: [
       'Eliminate your team’s #1 bottleneck with purpose-built automation.',
@@ -96,7 +96,7 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       'Capture hidden ROI by automating the tasks you think “can’t be automated”.'
     ],
     icon: Cpu,
-    pageContent: 'This is the detailed page content for Custom AI Automation. This is where you explain your process for identifying, scoping, and building bespoke automations that solve unique and challenging business problems.'
+    pageContent: 'This is the detailed page content for Custom AI Agent. This is where you explain your process for identifying, scoping, and building bespoke automations that solve unique and challenging business problems.'
   },
 ];
 
@@ -196,7 +196,7 @@ export const faq = {
         "Security is paramount. We operate on enterprise-grade infrastructure (Google Cloud & Firebase) with strict IAM controls, data encryption in transit and at rest, and enforced App Check verification. We only require the minimum necessary permissions to operate and adhere to strict data privacy policies.",
     },
     {
-      question: 'What if we need an automation not listed in your services?',
+      question: 'What if we need an automation not listed in our services?',
       answer:
         "Our five core services address the most common business bottlenecks. However, we specialize in creating custom AI automations tailored to unique workflows. Book an audit to discuss your specific needs with our engineering team.",
     },
