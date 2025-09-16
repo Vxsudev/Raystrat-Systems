@@ -56,11 +56,8 @@ export function Header() {
       )}
     >
       <div className="container flex items-center justify-between h-16 md:grid md:grid-cols-3">
-        <div className="items-center hidden gap-6 md:flex">
-          {navLinks}
-        </div>
-
-        <div className="flex items-center justify-center md:justify-start">
+        {/* Desktop: Logo Left */}
+        <div className="hidden md:flex items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
                <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
@@ -70,6 +67,23 @@ export function Header() {
             </Link>
         </div>
 
+        {/* Desktop: Navigation Center */}
+        <div className="items-center hidden gap-6 md:flex justify-center">
+          {navLinks}
+        </div>
+        
+        {/* Mobile: Logo Center */}
+        <div className="flex items-center justify-center md:hidden grow">
+             <Link href="/" className="flex items-center gap-3">
+               <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+              <span className="text-xl font-bold font-headline">Raystrat Systems</span>
+            </Link>
+        </div>
+
+        {/* All sizes: Right side controls */}
         <div className="flex items-center justify-end gap-4">
           <Dialog>
             <DialogTrigger asChild>
