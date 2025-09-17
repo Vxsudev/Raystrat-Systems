@@ -19,7 +19,7 @@ export function Hero() {
             Our agents run them with discipline.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-primary text-primary px-6 py-3 rounded-2xl hover:bg-accent transition h-auto">
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-primary text-primary px-8 py-4 text-lg rounded-2xl hover:bg-accent transition h-auto">
                 <Link href="#services">See The Five Agents</Link>
             </Button>
           </div>
