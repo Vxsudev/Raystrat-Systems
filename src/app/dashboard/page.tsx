@@ -197,7 +197,7 @@ export default function DashboardPage() {
 
 function LeadTable({ leads }: { leads: { id: string; email: string; lastStep: string; snippet: string; received: string; }[] }) {
     if (leads.length === 0) {
-        return <div className="text-center text-muted-foreground py-8">No leads in this category.</div>
+        return <div className="text-center text-muted-foreground py-8">No leads in this category.</div>;
     }
 
     return (
@@ -237,4 +237,3 @@ function LeadTable({ leads }: { leads: { id: string; email: string; lastStep: st
         </Table>
     );
 }
-
