@@ -1,6 +1,4 @@
 // src/app/dashboard/layout.tsx
-import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
-
 export default function DashboardLayout({
   children,
 }: {
@@ -9,7 +7,6 @@ export default function DashboardLayout({
   return (
     <>
       {children}
-      {/* Intentionally not rendering FloatingAiSuggestor here */}
     </>
   );
 }
