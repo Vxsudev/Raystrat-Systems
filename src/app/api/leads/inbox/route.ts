@@ -8,14 +8,15 @@ export async function GET(request: Request) {
   
   const mockLeadsData = {
       newReplies: [
-          { id: 'lead_1', email: 'prospect1@example.com', lastStep: 'S1', snippet: 'Thanks for reaching out, what\'s the pricing?', received: '2h ago' },
-          { id: 'lead_2', email: 'prospect2@domain.com', lastStep: 'S2', snippet: 'Can you send over a case study for a company in...', received: '5h ago' },
+          { id: 'lead_1', email: 'new.prospect@example.com', lastStep: 'S1', snippet: 'Thanks for the updated info. What is the pricing?', received: '1h ago' },
+          { id: 'lead_2', email: 'interested.lead@domain.com', lastStep: 'S2', snippet: 'This looks promising. Can we schedule a demo?', received: '4h ago' },
       ],
       needsHuman: [
-            { id: 'lead_3', email: 'prospect3@corp.com', lastStep: 'S1', snippet: 'Is this an automated message?', received: '1d ago' },
+            { id: 'lead_3', email: 'human.review@corp.com', lastStep: 'S1', snippet: 'Is this an automated message? I have a complex question.', received: '1d ago' },
+            { id: 'lead_5', email: 'edge.case@company.io', lastStep: 'S3', snippet: 'My legal team needs to review your terms of service.', received: '2d ago' },
       ],
       bounced: [
-          { id: 'lead_4', email: 'invalid@baddomain.com', lastStep: 'S0', snippet: 'Error: Address does not exist', received: '3d ago' },
+          { id: 'lead_4', email: 'invalid.email@baddomain.com', lastStep: 'S0', snippet: 'Permanent Failure: Address does not exist', received: '3d ago' },
       ]
   };
 

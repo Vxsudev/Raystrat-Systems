@@ -5,11 +5,11 @@ export async function GET() {
   // In a real application, you would fetch this data from your database (e.g., Firestore)
   // after it has been computed by the Insight/Data Plane.
   const mockSequenceHealthData = [
-      { name: 'Sent', S0: 4000, S1: 3500, S2: 3000 },
-      { name: 'Delivered', S0: 3800, S1: 3325, S2: 2850 },
-      { name: 'Opened', S0: 2000, S1: 1575, S2: 1200 },
-      { name: 'Clicked', S0: 800, S1: 525, S2: 300 },
-      { name: 'Replied', S0: 400, S1: 280, S2: 150 },
+      { name: 'Sent', S0: 5000, S1: 4500, S2: 4000 },
+      { name: 'Delivered', S0: 4800, S1: 4325, S2: 3850 },
+      { name: 'Opened', S0: 2500, S1: 1975, S2: 1500 },
+      { name: 'Clicked', S0: 1000, S1: 625, S2: 400 },
+      { name: 'Replied', S0: 500, S1: 380, S2: 250 },
   ];
 
   // Simulate network delay

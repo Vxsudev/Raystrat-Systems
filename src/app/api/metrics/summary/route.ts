@@ -6,15 +6,15 @@ export async function GET() {
   // after it has been computed by the Insight/Data Plane.
   const mockSummaryData = {
     kpis: [
-      { title: "Leads Enrolled (30d)", value: "1,204" },
-      { title: "In Sequence", value: "312" },
-      { title: "Replies (30d)", value: "488" },
-      { title: "Meetings Booked (30d)", value: "88" },
+      { title: "Leads Enrolled (30d)", value: "1,337" },
+      { title: "In Sequence", value: "412" },
+      { title: "Replies (30d)", value: "521" },
+      { title: "Meetings Booked (30d)", value: "99" },
     ],
     deliverability: {
-      deliverabilityScore: 98.2,
-      bounceRate: 1.1,
-      spamRate: 0.05,
+      deliverabilityScore: 99.1,
+      bounceRate: 0.8,
+      spamRate: 0.01,
     },
   };
 
