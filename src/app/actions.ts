@@ -107,16 +107,21 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
     }
 
     try {
-        // 1. Write lead to Firestore
+        // 1. Write lead to Firestore & Enroll in Sequence
+        const now = new Date();
         await db.collection('favorite_agent_leads').add({
             name,
             email,
             agentName,
             agentSlug,
-            createdAt: new Date().toISOString(),
+            createdAt: now.toISOString(),
+            sequenceState: 'active', // Enroll in sequence
+            currentStep: 0, // Start at step 0
+            lastStepCompletedAt: null,
+            nextStepScheduledAt: now, // Schedule the first step immediately
         });
 
-        // 2. Send email via SendGrid
+        // 2. Send initial confirmation email via SendGrid
         const msg = {
             to: email,
             from: process.env.SENDGRID_FROM_EMAIL,
