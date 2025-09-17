@@ -1,7 +1,7 @@
 // src/components/ui/favorite-agent-form.tsx
 'use client';
 
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
