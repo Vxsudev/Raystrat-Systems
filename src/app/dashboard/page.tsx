@@ -1,3 +1,4 @@
+
 // src/app/dashboard/page.tsx
 'use client';
 
@@ -9,7 +10,7 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { auth } from '@/lib/firebase/client';
-import { LogOut, User, Users, CalendarCheck, TrendingUp, MailWarning, ShieldCheck, PauseCircle, CheckCircle, AlertCircle, Inbox } from 'lucide-react';
+import { LogOut, User, CalendarCheck, TrendingUp, MailWarning, ShieldCheck, PauseCircle, CheckCircle, AlertCircle, Inbox, Users } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from '@/components/ui/badge';
@@ -49,6 +50,60 @@ const leadsData = {
     ]
 };
 
+interface Lead {
+    id: string;
+    email: string;
+    lastStep: string;
+    snippet: string;
+    received: string;
+}
+
+interface LeadTableProps {
+  leads: Lead[];
+}
+
+function LeadTable({ leads }: LeadTableProps) {
+    if (leads.length === 0) {
+        return <div className="text-center text-muted-foreground py-8">No leads in this category.</div>;
+    }
+
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Lead</TableHead>
+                    <TableHead className="hidden md:table-cell">Snippet</TableHead>
+                    <TableHead className="text-right">Actions</Table-Head>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {leads.map((lead) => (
+                    <TableRow key={lead.id}>
+                        <TableCell>
+                            <div className="font-medium">{lead.email}</div>
+                            <div className="text-xs text-muted-foreground">
+                                Last Step: <Badge variant="secondary">{lead.lastStep}</Badge> / {lead.received}
+                            </div>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell max-w-xs truncate">
+                            <span className="text-muted-foreground">{lead.snippet}</span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                             <Button variant="ghost" size="sm" className="mr-1">
+                                <PauseCircle className="h-4 w-4" />
+                                <span className="sr-only">Pause</span>
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                                <CheckCircle className="h-4 w-4" />
+                                <span className="sr-only">Mark Qualified</span>
+                            </Button>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -194,46 +249,4 @@ export default function DashboardPage() {
   );
 }
 
-
-function LeadTable({ leads }: { leads: { id: string; email: string; lastStep: string; snippet: string; received: string; }[] }) {
-    if (leads.length === 0) {
-        return <div className="text-center text-muted-foreground py-8">No leads in this category.</div>;
-    }
-
-    return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Lead</TableHead>
-                    <TableHead className="hidden md:table-cell">Snippet</TableHead>
-                    <TableHead className="text-right">Actions</Table-Head>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {leads.map((lead) => (
-                    <TableRow key={lead.id}>
-                        <TableCell>
-                            <div className="font-medium">{lead.email}</div>
-                            <div className="text-xs text-muted-foreground">
-                                Last Step: <Badge variant="secondary">{lead.lastStep}</Badge> / {lead.received}
-                            </div>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell max-w-xs truncate">
-                            <span className="text-muted-foreground">{lead.snippet}</span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                             <Button variant="ghost" size="sm" className="mr-1">
-                                <PauseCircle className="h-4 w-4" />
-                                <span className="sr-only">Pause</span>
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                                <CheckCircle className="h-4 w-4" />
-                                <span className="sr-only">Mark Qualified</span>
-                            </Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    );
-}
+    
