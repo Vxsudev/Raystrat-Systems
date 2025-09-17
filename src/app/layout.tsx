@@ -5,7 +5,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
-import { AuthProvider } from '@/contexts/auth-context';
+import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 
 const fontSpaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -18,6 +18,7 @@ const fontInter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://raystrat.com'), // Added metadataBase
   title: 'Raystrat Systems — AI Automations Wing',
   description: 'Five boring automations that print cashflow while you build.',
   openGraph: {
@@ -79,10 +80,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          {children}
+          <Toaster />
+          <FloatingAiSuggestor />
         </ThemeProvider>
       </body>
     </html>

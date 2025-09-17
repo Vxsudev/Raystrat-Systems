@@ -1,4 +1,3 @@
-
 // src/app/dashboard/page.tsx
 'use client';
 
@@ -10,13 +9,16 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { auth } from '@/lib/firebase/client';
-import { LogOut, User, CalendarCheck, TrendingUp, MailWarning, ShieldCheck, PauseCircle, CheckCircle, AlertCircle, Inbox, Users } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '@/components/ui/badge';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import type { LucideIcon } from 'lucide-react';
 
-const kpiData = [
+// --- Data Definitions ---
+
+const kpiData: { title: string; value: string; icon: LucideIcon }[] = [
     { title: "Leads Enrolled (30d)", value: "1,204", icon: Users },
     { title: "In Sequence", value: "312", icon: Inbox },
     { title: "Replies (30d)", value: "488", icon: TrendingUp },
@@ -29,7 +31,7 @@ const sequenceHealthData = [
   { name: 'Opened', S0: 2000, S1: 1575, S2: 1200 },
   { name: 'Clicked', S0: 800, S1: 525, S2: 300 },
   { name: 'Replied', S0: 400, S1: 280, S2: 150 },
-]
+];
 
 const deliverabilityData = {
     deliverabilityScore: 98.2,
@@ -50,6 +52,8 @@ const leadsData = {
     ]
 };
 
+// --- Type Definitions for Sub-components ---
+
 interface Lead {
     id: string;
     email: string;
@@ -62,6 +66,8 @@ interface LeadTableProps {
   leads: Lead[];
 }
 
+// --- Sub-components ---
+
 function LeadTable({ leads }: LeadTableProps) {
     if (leads.length === 0) {
         return <div className="text-center text-muted-foreground py-8">No leads in this category.</div>;
@@ -73,7 +79,7 @@ function LeadTable({ leads }: LeadTableProps) {
                 <TableRow>
                     <TableHead>Lead</TableHead>
                     <TableHead className="hidden md:table-cell">Snippet</TableHead>
-                    <TableHead className="text-right">Actions</Table-Head>
+                    <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -104,6 +110,8 @@ function LeadTable({ leads }: LeadTableProps) {
         </Table>
     );
 }
+
+// --- Main Page Component ---
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -248,5 +256,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
