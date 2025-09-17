@@ -11,7 +11,7 @@ export function Hero() {
             Agents Run Business.
           </h1>
           <h2 className="mt-4 font-medium text-2xl sm:text-3xl md:text-4xl font-headline text-primary">
-            AI isn’t the future anymore — it’s present. Wake up.
+            AI isn’t the future anymore — it’s present. Step up.
           </h2>
           <p className="mx-auto mt-6 text-lg md:text-xl text-muted-foreground max-w-4xl">
             Most losses trace back to the same five systems — 
