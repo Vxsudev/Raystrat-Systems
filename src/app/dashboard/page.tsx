@@ -63,12 +63,12 @@ interface LeadTableProps {
 function LeadTable({ leads, isLoading }: LeadTableProps) {
     const handlePause = (leadId: string) => {
         console.log(`Action: Pause sequence for lead ${leadId}`);
-        // Here you would call the API: POST /followup/sequence/pause
+        // Here you would call the API: POST /api/leads/{id}/pause
     };
 
     const handleQualify = (leadId: string) => {
         console.log(`Action: Mark lead ${leadId} as qualified`);
-        // Here you would call the API: POST /leads/{id}/qualify
+         // Here you would call the API: POST /api/leads/{id}/qualify
     };
 
     if (isLoading) {
@@ -143,49 +143,48 @@ export default function DashboardPage() {
 
   useEffect(() => {
       if (user) {
-        // Simulate fetching data from backend API
         const fetchData = async () => {
             setIsLoading(true);
-            // In a real app, you'd use fetch() to call your backend endpoints
-            // e.g., const kpiRes = await fetch('/api/metrics/summary');
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-
-            // Mocked API responses based on our contract
-            setKpiData([
-                { title: "Leads Enrolled (30d)", value: "1,204", icon: Users },
-                { title: "In Sequence", value: "312", icon: Inbox },
-                { title: "Replies (30d)", value: "488", icon: TrendingUp },
-                { title: "Meetings Booked (30d)", value: "88", icon: CalendarCheck },
-            ]);
-
-            setSequenceHealthData([
-                { name: 'Sent', S0: 4000, S1: 3500, S2: 3000 },
-                { name: 'Delivered', S0: 3800, S1: 3325, S2: 2850 },
-                { name: 'Opened', S0: 2000, S1: 1575, S2: 1200 },
-                { name: 'Clicked', S0: 800, S1: 525, S2: 300 },
-                { name: 'Replied', S0: 400, S1: 280, S2: 150 },
-            ]);
             
-            setDeliverabilityData({
-                deliverabilityScore: 98.2,
-                bounceRate: 1.1,
-                spamRate: 0.05,
-            });
+            try {
+                const [summaryRes, sequenceHealthRes, leadsRes] = await Promise.all([
+                    fetch('/api/metrics/summary'),
+                    fetch('/api/metrics/sequence-health'),
+                    fetch('/api/leads/inbox')
+                ]);
 
-            setLeadsData({
-                newReplies: [
-                    { id: 'lead_1', email: 'prospect1@example.com', lastStep: 'S1', snippet: 'Thanks for reaching out, what\'s the pricing?', received: '2h ago' },
-                    { id: 'lead_2', email: 'prospect2@domain.com', lastStep: 'S2', snippet: 'Can you send over a case study for a company in...', received: '5h ago' },
-                ],
-                needsHuman: [
-                     { id: 'lead_3', email: 'prospect3@corp.com', lastStep: 'S1', snippet: 'Is this an automated message?', received: '1d ago' },
-                ],
-                bounced: [
-                    { id: 'lead_4', email: 'invalid@baddomain.com', lastStep: 'S0', snippet: 'Error: Address does not exist', received: '3d ago' },
-                ]
-            });
+                if (!summaryRes.ok || !sequenceHealthRes.ok || !leadsRes.ok) {
+                    throw new Error('Failed to fetch dashboard data');
+                }
 
-            setIsLoading(false);
+                const summaryData = await summaryRes.json();
+                const sequenceHealthData = await sequenceHealthRes.json();
+                const leadsData = await leadsRes.json();
+                
+                // Map icons client-side
+                const kpiIcons: { [key: string]: LucideIcon } = {
+                    "Leads Enrolled (30d)": Users,
+                    "In Sequence": Inbox,
+                    "Replies (30d)": TrendingUp,
+                    "Meetings Booked (30d)": CalendarCheck
+                };
+                
+                const mappedKpiData = summaryData.kpis.map((kpi: { title: string; value: string; }) => ({
+                    ...kpi,
+                    icon: kpiIcons[kpi.title] || Users
+                }));
+
+                setKpiData(mappedKpiData);
+                setDeliverabilityData(summaryData.deliverability);
+                setSequenceHealthData(sequenceHealthData);
+                setLeadsData(leadsData);
+
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+                // Handle error state in UI, e.g., show a toast notification
+            } finally {
+                setIsLoading(false);
+            }
         };
 
         fetchData();
@@ -194,9 +193,10 @@ export default function DashboardPage() {
 
 
   if (authLoading || !user) {
+    // AuthProvider now handles the main loading state, but this is a good fallback.
     return (
         <div className="flex items-center justify-center h-screen">
-            <p>Loading...</p>
+            <p>Authenticating...</p>
         </div>
     );
   }
@@ -222,7 +222,7 @@ export default function DashboardPage() {
             {isLoading ? (
                 Array.from({ length: 4 }).map((_, index) => (
                     <Card key={index}>
-                        <CardHeader>
+                        <CardHeader className='pb-2'>
                             <Skeleton className="h-4 w-3/4" />
                         </CardHeader>
                         <CardContent>
