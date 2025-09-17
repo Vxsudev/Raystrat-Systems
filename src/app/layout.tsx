@@ -5,7 +5,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
-import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 import { AuthProvider } from '@/contexts/auth-context';
 
 const fontSpaceGrotesk = Space_Grotesk({
@@ -83,7 +82,6 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <Toaster />
-            <FloatingAiSuggestor />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -4,6 +4,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Menu, LogIn, UserPlus } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -36,6 +37,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
   const { user } = useAuth();
+  const pathname = usePathname();
+  const isDashboard = pathname.startsWith('/dashboard');
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -123,9 +126,11 @@ export function Header() {
             </span>
             <span className="text-xl font-bold font-headline">Raystrat Systems</span>
           </Link>
-          <nav className="items-center hidden gap-6 md:flex">
-            {navLinks}
-          </nav>
+          {!isDashboard && (
+            <nav className="items-center hidden gap-6 md:flex">
+              {navLinks}
+            </nav>
+          )}
         </div>
 
         {/* Mobile: Centered Logo */}
@@ -155,7 +160,7 @@ export function Header() {
             <SheetContent side="right">
               <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
               <div className="flex flex-col gap-8 p-6 pt-12">
-                {navLinks}
+                {!isDashboard && navLinks}
                  <div className="flex flex-col gap-4 pt-8 border-t border-border">
                   {user ? (
                     <>
@@ -173,25 +178,27 @@ export function Header() {
                     </>
                   )}
                 </div>
-                <div className="flex flex-col gap-4 pt-8 border-t border-border">
-                   <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline">
-                        Download Playbook
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Download the Playbook</DialogTitle>
-                        <DialogDescription>
-                          Enter your details below to get immediate access to the playbook.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <PlaybookForm />
-                    </DialogContent>
-                  </Dialog>
-                  <CalendlyButton />
-                </div>
+                {!isDashboard && (
+                  <div className="flex flex-col gap-4 pt-8 border-t border-border">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">
+                          Download Playbook
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Download the Playbook</DialogTitle>
+                          <DialogDescription>
+                            Enter your details below to get immediate access to the playbook.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <PlaybookForm />
+                      </DialogContent>
+                    </Dialog>
+                    <CalendlyButton />
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>

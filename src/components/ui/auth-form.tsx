@@ -58,6 +58,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         toast({ title: 'Success', description: 'Your account has been created.' });
       }
       router.push('/dashboard');
+      router.refresh(); // This forces a refresh to ensure auth state is updated in the header
     } catch (error: any) {
       console.error('Authentication Error:', error);
       toast({
@@ -77,6 +78,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         await signInWithPopup(auth, provider);
         toast({ title: 'Success', description: "You're now logged in with Google." });
         router.push('/dashboard');
+        router.refresh(); // This forces a refresh to ensure auth state is updated in the header
     } catch (error: any) {
         console.error('Google Sign-In Error:', error);
         toast({
