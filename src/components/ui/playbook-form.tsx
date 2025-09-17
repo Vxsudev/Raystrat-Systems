@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { downloadPlaybookAction } from '@/app/actions';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -39,31 +38,41 @@ export function PlaybookForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append('name', values.name);
-    formData.append('email', values.email);
+    
+    try {
+      const response = await fetch('/api/playbook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-    const result = await downloadPlaybookAction(null, formData);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Something went wrong.');
+      }
 
-    if (result?.message === 'Success') {
       toast({
         title: 'Success!',
-        description: "Your download will begin shortly. We've also sent a copy to your email.",
+        description: "We've received your request. The playbook will be sent to your email shortly.",
       });
+
       setIsSubmitted(true);
-      // In a real app, this would trigger a download or be handled by an autoresponder
-      console.log('Form submitted successfully:', values);
-      window.open('/playbook.pdf', '_blank');
       form.reset();
-    } else {
-      toast({
+      
+      // Open the PDF in a new tab upon successful submission
+      window.open('/playbook.pdf', '_blank');
+
+    } catch (error: any) {
+       toast({
         title: 'Error',
-        description: result?.message || 'An unexpected error occurred.',
+        description: error.message || 'Failed to submit your request. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   }
 
   if (isSubmitted) {
@@ -116,4 +125,3 @@ export function PlaybookForm() {
     </Form>
   );
 }
-
