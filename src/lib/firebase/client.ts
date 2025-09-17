@@ -4,12 +4,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  projectId: "raystrat-systems",
-  appId: "1:120940808370:web:95959bce4810f0e8a521ab",
-  storageBucket: "raystrat-systems.firebasestorage.app",
-  apiKey: "AIzaSyBwXPewYIPGS9SUEqv29EHfBUcjbu7z5xQ",
-  authDomain: "raystrat-systems.firebaseapp.com",
-  messagingSenderId: "120940808370"
+  "projectId": "raystrat-systems",
+  "appId": "1:120940808370:web:95959bce4810f0e8a521ab",
+  "storageBucket": "raystrat-systems.firebasestorage.app",
+  "apiKey": "AIzaSyBwXPewYIPGS9SUEqv29EHfBUcjbu7z5xQ",
+  "authDomain": "raystrat-systems.firebaseapp.com",
+  "measurementId": "G-9W572H16P3",
+  "messagingSenderId": "120940808370"
 };
 
 // Initialize Firebase
