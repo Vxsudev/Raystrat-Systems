@@ -25,7 +25,7 @@ export function FloatingAiSuggestor() {
           size="icon"
           className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
         >
-          <Lightbulb className="h-8 w-8 text-primary-foreground" />
+          <Lightbulb className="h-10 w-10 text-primary-foreground" />
           <span className="sr-only">Open AI Suggestor</span>
         </Button>
       </DialogTrigger>
