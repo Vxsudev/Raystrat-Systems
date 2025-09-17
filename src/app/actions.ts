@@ -9,6 +9,53 @@ import { z } from 'zod';
 import { firestore } from '@/lib/firebase/admin'; // Use server-side firestore
 import { FieldValue } from 'firebase-admin/firestore'; // Use server-side timestamp
 import sgMail from '@sendgrid/mail';
+import crypto from 'crypto';
+
+const ALGORITHM = 'aes-256-gcm';
+const IV_LENGTH = 16;
+const SALT_LENGTH = 64;
+const TAG_LENGTH = 16;
+const KEY_LENGTH = 32;
+const SCRYPT_iterations = 1; // Keep low for serverless functions
+
+// --- Encryption/Decryption Helpers for Tenant API Keys ---
+
+function encrypt(text: string): string {
+  const secretKey = process.env.ENCRYPTION_KEY;
+  if (!secretKey) throw new Error('ENCRYPTION_KEY is not set');
+
+  const iv = crypto.randomBytes(IV_LENGTH);
+  const salt = crypto.randomBytes(SALT_LENGTH);
+
+  const key = crypto.scryptSync(secretKey, salt, KEY_LENGTH, { N: SCRYPT_iterations });
+
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
+  const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+
+  return Buffer.concat([salt, iv, tag, encrypted]).toString('hex');
+}
+
+function decrypt(encryptedText: string): string {
+  const secretKey = process.env.ENCRYPTION_KEY;
+  if (!secretKey) throw new Error('ENCRYPTION_KEY is not set');
+
+  const encryptedBuffer = Buffer.from(encryptedText, 'hex');
+  const salt = encryptedBuffer.subarray(0, SALT_LENGTH);
+  const iv = encryptedBuffer.subarray(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
+  const tag = encryptedBuffer.subarray(SALT_LENGTH + IV_LENGTH, SALT_LENGTH + IV_LENGTH + TAG_LENGTH);
+  const encrypted = encryptedBuffer.subarray(SALT_LENGTH + IV_LENGTH + TAG_LENGTH);
+
+  const key = crypto.scryptSync(secretKey, salt, KEY_LENGTH, { N: SCRYPT_iterations });
+
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+  decipher.setAuthTag(tag);
+
+  return decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
+}
+
+
+// --- AI Suggestion Action ---
 
 const suggestionSchema = z.object({
   contentBottleneckDescription: z
@@ -77,6 +124,45 @@ export type PlaybookFormState = {
     message?: string | null;
 };
 
+// This function demonstrates the pattern for multi-tenant API key handling.
+// For this specific action, it still uses the global Raystrat key.
+async function sendEmailForTenant(
+  tenantId: string | null, // null tenantId means use the system's global config
+  msg: { to: string; from: string; subject: string; html: string; }
+) {
+  let apiKey: string | undefined;
+
+  if (tenantId) {
+    // In a real multi-tenant scenario, you'd fetch the tenant's settings
+    const tenantDoc = await firestore.collection('tenants').doc(tenantId).get();
+    if (!tenantDoc.exists) throw new Error(`Tenant ${tenantId} not found.`);
+    const settings = tenantDoc.data()?.settings;
+    if (!settings?.encryptedSendGridApiKey) throw new Error(`API key not configured for tenant ${tenantId}.`);
+    
+    // Decrypt the key before use
+    apiKey = decrypt(settings.encryptedSendGridApiKey);
+  } else {
+    // Fallback to the global key for system emails (like the playbook download)
+    apiKey = process.env.SENDGRID_API_KEY;
+  }
+
+  if (!apiKey) {
+    console.error('SendGrid API Key is missing.');
+    // Fail gracefully, as the lead is already captured.
+    return;
+  }
+
+  try {
+    sgMail.setApiKey(apiKey);
+    await sgMail.send(msg);
+  } catch (error) {
+    console.error('SendGrid Error:', error);
+    // In a production system, you would add monitoring here.
+    // We don't throw, because capturing the lead is the most important part.
+  }
+}
+
+
 export async function downloadPlaybookAction(
     prevState: PlaybookFormState | null,
     formData: FormData
@@ -110,20 +196,16 @@ export async function downloadPlaybookAction(
         };
     }
 
-    // 2. Send email with SendGrid
-    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
-        console.error('SendGrid environment variables not set.');
-        // This is a server-side error, so we don't want to expose the details to the client.
-        // We still return "Success" to the user, as the lead was captured.
-        // The asset delivery is the part that failed.
-        return { message: 'Success' };
+    // 2. Send email using the tenant-aware email function
+    // For this system-level action, we pass `null` for the tenantId to use the global key.
+    if (!process.env.SENDGRID_FROM_EMAIL) {
+        console.error("SENDGRID_FROM_EMAIL not set");
+        return { message: 'Success' }; // Still success, lead was captured
     }
-
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+    
     const msg = {
         to: email,
-        from: process.env.SENDGRID_FROM_EMAIL,
+        from: process.env.SENDGRID_FROM_EMAIL, // System emails come from the global 'from' address
         subject: 'Your Raystrat Systems Automation Playbook',
         html: `
         <div style="font-family: sans-serif; line-height: 1.6;">
@@ -146,14 +228,7 @@ export async function downloadPlaybookAction(
       `,
     };
 
-    try {
-        await sgMail.send(msg);
-    } catch (error) {
-        console.error('SendGrid Error:', error);
-        // Even if email fails, the lead was captured. Return success to the user.
-        // In a production system, you would add monitoring here to alert you of the failure.
-        return { message: 'Success' };
-    }
+    await sendEmailForTenant(null, msg);
 
     return { message: 'Success' };
 }
