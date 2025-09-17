@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Menu, LogIn, UserPlus } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
