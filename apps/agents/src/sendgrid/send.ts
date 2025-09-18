@@ -50,13 +50,17 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       // SendGrid often returns 202 for accepted.
-      const requestId = res.headers['x-message-id'] ?? undefined;
+      const requestId = res.headers['x-message-id'] ? String(res.headers['x-message-id']) : undefined;
       return { ok: true, status: res.statusCode, requestId };
     }
     
     let details: unknown;
     try {
-      details = JSON.parse(res.body);
+      if (typeof res.body === 'string') {
+        details = JSON.parse(res.body);
+      } else {
+        details = res.body;
+      }
     } catch {
       details = res.body;
     }
@@ -69,11 +73,25 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     };
 
   } catch (error: any) {
+    let errorDetails: any = error.message;
+    if (error.response && error.response.body) {
+        try {
+            // response.body can be a string or an object
+            if (typeof error.response.body === 'string') {
+                 errorDetails = JSON.parse(error.response.body).errors;
+            } else {
+                errorDetails = error.response.body.errors || error.response.body;
+            }
+        } catch (e) {
+            errorDetails = error.response.body;
+        }
+    }
+    
     return {
       ok: false,
       status: error?.code ?? 500,
       code: 'SENDGRID_EXCEPTION',
-      details: error.response?.body?.errors ?? error.message
+      details: errorDetails
     }
   }
 }
