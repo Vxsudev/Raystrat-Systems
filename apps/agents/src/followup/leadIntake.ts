@@ -1,7 +1,7 @@
 import type { Express } from 'express';
 import { db } from '../firestore.js';
 import { requireRole } from '../auth/verifyToken.js';
-import type { LeadIntakeRequest, ApiResult, LeadDoc, LeadSequence, SequenceStep } from '../types';
+import type { LeadIntakeRequest, ApiResult, LeadDoc, LeadSequence, SequenceStep } from '../types.js';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
