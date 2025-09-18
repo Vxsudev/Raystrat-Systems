@@ -29,7 +29,7 @@ fi
 
 # --- Dynamic Variables ---
 echo "Generating a random CRON_SECRET..."
-CRON_SECRET=$(openssl rand -base64 32)
+CRON_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)
 IMAGE_TAG=$(date +%Y%m%d-%H%M%S)
 IMAGE="$REGION-docker.pkg.dev/$PROJECT/cloud-run-source-deploy/followup-agent:$IMAGE_TAG"
 
@@ -45,7 +45,7 @@ gcloud run deploy followup-agent \
   --project "$PROJECT" \
   --allow-unauthenticated \
   --service-account "$SA@$PROJECT.iam.gserviceaccount.com" \
-  --update-env-vars "CRON_SECRET=$CRON_SECRET,SERVICE_VERSION=phase1,TENANTS=tenant_a,tenant_b" \
+  --update-env-vars="CRON_SECRET=$CRON_SECRET,SERVICE_VERSION=phase1,TENANTS=tenant_a,tenant_b" \
   --memory 512Mi \
   --cpu 1 \
   --concurrency 80 \
