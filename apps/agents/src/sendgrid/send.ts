@@ -1,7 +1,6 @@
 import { accessTenantSecret } from '../secrets/secretManager.js';
 import type { SendRequest, SendResult } from '../types.js';
-
-const SENDGRID_ENDPOINT = 'https://api.sendgrid.com/v3/mail/send';
+import sgMail from '@sendgrid/mail';
 
 /**
  * Sends an email via SendGrid using a per-tenant API key loaded from Secret Manager.
@@ -24,6 +23,7 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
   let apiKey: string;
   try {
     apiKey = await accessTenantSecret(process.env.GOOGLE_CLOUD_PROJECT || "", secretName);
+    sgMail.setApiKey(apiKey);
   } catch (e) {
     return {
       ok: false,
@@ -33,39 +33,46 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     };
   }
   
-  const [res] = await (sg as any).send({
-    to: message.to,
-    from: message.from,
-    subject: message.subject,
-    text: message.text,
-    html: message.html,
-    headers: message.headers,
-    customArgs: message.customArgs,
-    idempotencyKey: idempotencyKey,
-  }, (err: any, result: any) => {
-    if (err) {
-      // Not using custom error type for now
-    }
-  }, apiKey);
-
-
-  if (res.statusCode >= 200 && res.statusCode < 300) {
-    // SendGrid often returns 202 for accepted.
-    const requestId = res.headers['x-message-id'] ?? undefined;
-    return { ok: true, status: res.statusCode, requestId };
-  }
-
-  let details: unknown;
   try {
-    details = JSON.parse(res.body);
-  } catch {
-    details = res.body;
-  }
+    const [res] = await sgMail.send({
+      to: message.to,
+      from: message.from,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+      headers: {
+        ...message.headers,
+        'Idempotency-Key': idempotencyKey,
+      },
+      customArgs: message.customArgs,
+    });
 
-  return {
-    ok: false,
-    status: res.statusCode,
-    code: 'SENDGRID_SEND_FAILED',
-    details,
-  };
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      // SendGrid often returns 202 for accepted.
+      const requestId = res.headers['x-message-id'] ?? undefined;
+      return { ok: true, status: res.statusCode, requestId };
+    }
+    
+    let details: unknown;
+    try {
+      details = JSON.parse(res.body);
+    } catch {
+      details = res.body;
+    }
+
+    return {
+        ok: false,
+        status: res.statusCode,
+        code: 'SENDGRID_SEND_FAILED',
+        details,
+    };
+
+  } catch (error: any) {
+    return {
+      ok: false,
+      status: error?.code ?? 500,
+      code: 'SENDGRID_EXCEPTION',
+      details: error.response?.body?.errors ?? error.message
+    }
+  }
 }

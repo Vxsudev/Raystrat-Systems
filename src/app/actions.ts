@@ -114,7 +114,7 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
             email,
             agentName,
             agentSlug,
-            createdAt: now.toISOString(),
+            createdAt: now,
             sequenceState: 'active', // Enroll in sequence
             currentStep: 0, // Start at step 0
             lastStepCompletedAt: null,

@@ -1,26 +1,4 @@
 
-export type SequenceStep = { id: string; waitMs: number; channel: "email"; templateKey: string; abKey?: string };
-
-export type TenantSettings = {
-  id: string;
-  fromName: string;
-  fromEmail: string;
-  replyTo?: string;
-  templateIds: Record<string, string>;
-  sequences: Record<string, { name: string; steps: SequenceStep[] }>;
-};
-
-// SendGrid outbound message shape (minimal for our use)
-export type OutboundEmail = {
-  from: { email: string; name?: string };
-  to: { email: string; name?: string }[];
-  subject: string;
-  text?: string;
-  html?: string;
-  headers?: Record<string, string>;
-  customArgs?: Record<string, string | number | boolean>;
-};
-
 export type SendRequest = {
   tenantId: string;
   idempotencyKey: string;     // required per Critical Requirements
@@ -50,6 +28,17 @@ export type LeadDoc = {
   lastInboundReplyAt?: number; // ms epoch
 };
 
+export type SequenceStep = {
+  stepIndex: number;
+  templateSubject: string;
+  templateHtml?: string;
+  templateText?: string;
+  delayMinutes: number; // delay to next step when success
+  suppressIfRepliedMinutes?: number; // default 72h if unset
+  maxRetries?: number; // default 3
+  backoffSeconds?: number; // default 30
+};
+
 export type LeadSequence = {
   id: string;
   tenantId: string;
@@ -61,7 +50,6 @@ export type LeadSequence = {
   lastAttemptAt?: number;
   pauseReason?: string;
   rateLimitPerMin?: number; // optional tenant override
-  // Not a persisted field, just for engine logic
   attemptCount?: number;
 };
 
@@ -76,3 +64,13 @@ export type EngineRunResult = {
   errors: number;
   durationMs: number;
 };
+export type OutboundEmail = {
+  from: { email: string; name?: string };
+  to: { email: string; name?: string }[];
+  subject: string;
+  text?: string;
+  html?: string;
+  headers?: Record<string, string>;
+  customArgs?: Record<string, string | number | boolean>;
+};
+
