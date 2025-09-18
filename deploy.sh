@@ -35,7 +35,7 @@ IMAGE="$REGION-docker.pkg.dev/$PROJECT/cloud-run-source-deploy/followup-agent:$I
 
 # --- Build Step ---
 echo "Building image: $IMAGE"
-gcloud builds submit --tag "$IMAGE" --project "$PROJECT" -f "apps/agents/Dockerfile" .
+gcloud builds submit --tag "$IMAGE" --project "$PROJECT" --file="apps/agents/Dockerfile" .
 
 # --- Deploy Step ---
 echo "Deploying to Cloud Run in region $REGION..."
