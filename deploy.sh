@@ -31,11 +31,11 @@ fi
 echo "Generating a random CRON_SECRET..."
 CRON_SECRET=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)
 IMAGE_TAG=$(date +%Y%m%d-%H%M%S)
-IMAGE="$REGION-docker.pkg.dev/$PROJECT/cloud-run-source-deploy/followup-agent:$IMAGE_TAG"
+export IMAGE="$REGION-docker.pkg.dev/$PROJECT/cloud-run-source-deploy/followup-agent:$IMAGE_TAG"
 
 # --- Build Step ---
 echo "Building image: $IMAGE"
-gcloud builds submit --tag "$IMAGE" --project "$PROJECT" --file="apps/agents/Dockerfile" .
+gcloud builds submit --config cloudbuild.yaml . --project "$PROJECT"
 
 # --- Deploy Step ---
 echo "Deploying to Cloud Run in region $REGION..."
