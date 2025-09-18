@@ -22,7 +22,8 @@ export async function accessTenantSecret(projectId: string, name: string): Promi
     name: `projects/${projectId}/secrets/${name}/versions/latest`,
   });
   
-  const secretValue = version.payload?.data?.toString("utf8") || "";
+  const payloadData = version.payload?.data;
+  const secretValue = payloadData ? Buffer.from(payloadData).toString('utf8') : "";
   
   if (secretValue) {
     secretCache.set(name, {
