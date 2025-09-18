@@ -4,8 +4,10 @@ import { verifySignedEvent } from '../sendgrid/verifySignature.js';
 import { db } from '../firestore.js';
 import type { ApiResult } from '../types.js';
 
+const RAW_LIMIT = '256kb';
+
 export function bindWebhookEventsRoute(app: Express) {
-  app.post('/webhooks/sendgrid/:tenantId', express.raw({ type: 'application/json' }), async (req, res) => {
+  app.post('/webhooks/sendgrid/:tenantId', express.raw({ type: 'application/json', limit: RAW_LIMIT }), async (req, res) => {
     const t0 = Date.now();
     const tenantId = req.params.tenantId;
 

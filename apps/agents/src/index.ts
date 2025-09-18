@@ -52,6 +52,11 @@ app.use(cors({
 }));
 app.use((req, res, next) => { res.setHeader('Vary', 'Origin'); next(); });
 
+// Explicit preflight handler
+app.options('*', (_req, res) => {
+  res.status(204).end();
+});
+
 // 4) Webhook route with RAW body is bound within its own module now
 
 // 5) JSON parser for the rest
