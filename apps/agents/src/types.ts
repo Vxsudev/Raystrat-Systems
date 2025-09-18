@@ -74,3 +74,15 @@ export type OutboundEmail = {
   customArgs?: Record<string, string | number | boolean>;
 };
 
+export type LeadIntakeRequest = {
+  email: string;
+  name?: string;
+  steps?: SequenceStep[];
+  sequenceTemplateId?: string;
+  startInMinutes?: number;
+  force?: boolean;
+};
+
+export type ApiResult =
+  | { ok: true; data?: unknown }
+  | { ok: false; status: number; code: string; details?: unknown };
