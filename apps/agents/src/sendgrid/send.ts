@@ -16,14 +16,18 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     return { ok: false, status: 400, code: 'TENANT_REQUIRED' };
   }
   if (!idempotencyKey) {
-    return { ok: false, status: 400, code: 'IDEMPOTENCY_KEY_REQUIRED' };
+    return { ok: false: true, status: 400, code: 'IDEMPOTENCY_KEY_REQUIRED' };
   }
 
   // Secret name convention: sg_key__TENANT_<tenantId>
   const secretName = `sg_key__TENANT_${tenantId}`;
   let apiKey: string;
   try {
-    apiKey = await accessTenantSecret(process.env.GOOGLE_CLOUD_PROJECT || "", secretName);
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT || "";
+    if (!projectId) {
+      return { ok: false, status: 500, code: 'PROJECT_ID_MISSING' };
+    }
+    apiKey = await accessTenantSecret(projectId, secretName);
     sgMail.setApiKey(apiKey);
   } catch (e) {
     return {
@@ -35,7 +39,7 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
   }
   
   try {
-    const content = [];
+    const content: sgMail.MailContent[] = [];
     if (message.text) {
       content.push({ type: 'text/plain', value: message.text });
     }
@@ -51,7 +55,7 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
       to: message.to,
       from: message.from,
       subject: message.subject,
-      content: content,
+      content: content as [sgMail.MailContent, ...sgMail.MailContent[]], // Type assertion
       headers: {
         ...message.headers,
         'Idempotency-Key': idempotencyKey,
