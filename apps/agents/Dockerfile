@@ -1,35 +1,35 @@
-# Stage 1: Build the application
-FROM node:20-slim AS build
+# Stage 1: Builder
+# This stage installs all dependencies (including dev) and builds the TypeScript code.
+FROM node:20-slim AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
+# Copy package files and install all dependencies
+COPY package.json ./
 RUN npm install
 
-# Copy source code
+# Copy the rest of the source code
 COPY . .
 
-# Build the TypeScript code
+# Build the TypeScript project
 RUN npm run build
 
-# Stage 2: Create the production image
-FROM node:20-slim
 
-# Set Node environment to production
-ENV NODE_ENV=production
+# Stage 2: Runtime
+# This stage creates the lean, final image with only production code and dependencies.
+FROM node:20-slim AS runtime
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and install production dependencies only
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Copy the built application from the build stage
-COPY --from=build /usr/src/app/dist ./dist
+# Copy production dependencies from the builder stage
+COPY --from=builder /app/node_modules ./node_modules
+# Copy the compiled JavaScript output from the builder stage
+COPY --from=builder /app/dist ./dist
+# Copy package.json for runtime context (e.g., name, version)
+COPY package.json .
 
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the application
-CMD [ "node", "dist/index.js" ]
+# The command to run the application
+CMD [ "npm", "run", "start" ]
