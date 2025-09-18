@@ -1,3 +1,4 @@
+
 import { accessTenantSecret } from '../secrets/secretManager.js';
 import type { SendRequest, SendResult } from '../types.js';
 import sgMail from '@sendgrid/mail';
