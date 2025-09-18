@@ -3,11 +3,11 @@ steps:
   args:
   - 'build'
   - '-t'
-  - '${_IMAGE}'
+  - '$_IMAGE'
   - '.'
   - '-f'
   - 'apps/agents/Dockerfile'
-substitutions:
-  _IMAGE: '$IMAGE'
 images:
-- '${_IMAGE}'
+- '$_IMAGE'
+substitutions:
+  _IMAGE: ''

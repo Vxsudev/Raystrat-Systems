@@ -35,7 +35,7 @@ export IMAGE="$REGION-docker.pkg.dev/$PROJECT/cloud-run-source-deploy/followup-a
 
 # --- Build Step ---
 echo "Building image: $IMAGE"
-gcloud builds submit --config cloudbuild.yaml . --project "$PROJECT"
+gcloud builds submit --config cloudbuild.yaml --substitutions=_IMAGE="$IMAGE" . --project "$PROJECT"
 
 # --- Deploy Step ---
 echo "Deploying to Cloud Run in region $REGION..."
