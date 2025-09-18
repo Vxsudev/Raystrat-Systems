@@ -35,18 +35,25 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
   }
   
   try {
-    const [res] = await sgMail.send({
+    const sgMessage: sgMail.MailDataRequired = {
       to: message.to,
       from: message.from,
       subject: message.subject,
-      text: message.text,
-      html: message.html,
       headers: {
         ...message.headers,
         'Idempotency-Key': idempotencyKey,
       },
       customArgs: message.customArgs,
-    });
+    };
+
+    if (message.text) {
+      sgMessage.text = message.text;
+    }
+    if (message.html) {
+      sgMessage.html = message.html;
+    }
+    
+    const [res] = await sgMail.send(sgMessage);
 
     if (res.statusCode >= 200 && res.statusCode < 300) {
       // SendGrid often returns 202 for accepted.
