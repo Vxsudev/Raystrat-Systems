@@ -35,23 +35,29 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
   }
   
   try {
+    const content = [];
+    if (message.text) {
+      content.push({ type: 'text/plain', value: message.text });
+    }
+    if (message.html) {
+      content.push({ type: 'text/html', value: message.html });
+    }
+
+    if (content.length === 0) {
+      return { ok: false, status: 400, code: 'NO_CONTENT', details: 'Email must have either a text or html body.' };
+    }
+
     const sgMessage: sgMail.MailDataRequired = {
       to: message.to,
       from: message.from,
       subject: message.subject,
+      content: content,
       headers: {
         ...message.headers,
         'Idempotency-Key': idempotencyKey,
       },
       customArgs: message.customArgs,
     };
-
-    if (message.text) {
-      sgMessage.text = message.text;
-    }
-    if (message.html) {
-      sgMessage.html = message.html;
-    }
     
     const [res] = await sgMail.send(sgMessage);
 
