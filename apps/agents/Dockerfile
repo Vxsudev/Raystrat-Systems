@@ -1,35 +1,36 @@
 # Stage 1: Builder
-# This stage installs all dependencies (including dev) and builds the TypeScript code.
+# This stage installs all dependencies (dev too) and builds the TypeScript code.
 FROM node:20-slim AS builder
-
 WORKDIR /app
 
-# Copy package files and install all dependencies
-COPY package.json ./
+# Copy only the package files for the agents app
+COPY apps/agents/package.json ./
 RUN npm install
 
-# Copy the rest of the source code
-COPY . .
+# Copy the rest of the agent source code
+COPY apps/agents/ ./
 
-# Build the TypeScript project
+# Build the TypeScript code
 RUN npm run build
 
 
 # Stage 2: Runtime
-# This stage creates the lean, final image with only production code and dependencies.
-FROM node:20-slim AS runtime
-
+# This stage creates the lean, final image for production.
+FROM node:20-slim
 WORKDIR /app
 
-# Copy production dependencies from the builder stage
-COPY --from=builder /app/node_modules ./node_modules
-# Copy the compiled JavaScript output from the builder stage
+# Set NODE_ENV to production
+ENV NODE_ENV production
+
+# Copy package.json to install only production dependencies
+COPY apps/agents/package.json ./
+RUN npm install --omit=dev
+
+# Copy the compiled code from the builder stage
 COPY --from=builder /app/dist ./dist
-# Copy package.json for runtime context (e.g., name, version)
-COPY package.json .
 
 # Expose the port the app runs on
 EXPOSE 8080
 
 # The command to run the application
-CMD [ "npm", "run", "start" ]
+CMD ["npm", "start"]
