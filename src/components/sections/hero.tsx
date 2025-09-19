@@ -1,11 +1,13 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { WavyBackground } from '@/components/ui/wavy-background';
 
 export function Hero() {
   return (
-    <section id="top" className="w-full min-h-screen flex items-center justify-center bg-background py-12 sm:py-16 md:py-20 lg:py-24">
-      <div className="w-full container">
+    <section id="top" className="relative w-full min-h-screen flex items-center justify-center bg-background py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
+      <WavyBackground className="absolute inset-0" />
+      <div className="w-full container relative z-10">
         <div className="mx-auto text-center">
           <h1 className="text-5xl font-bold font-headline sm:text-6xl md:text-8xl text-foreground">
             Agents Run Business.
