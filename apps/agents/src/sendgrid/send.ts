@@ -1,13 +1,15 @@
-
+// apps/agents/src/sendgrid/send.ts
 import { accessTenantSecret } from '../secrets/secretManager.js';
 import type { SendRequest, SendResult } from '../types.js';
-import sgMail, { MailDataRequired, ClientResponse } from '@sendgrid/mail';
+import sgMail, {
+  type MailDataRequired,
+  type ClientResponse,
+} from '@sendgrid/mail';
 
 /**
  * Sends an email via SendGrid using a per-tenant API key loaded from Secret Manager.
- * Requirements:
- *  - Per-tenant key name: sg_key__TENANT_<tenantId>
- *  - Caller supplies a strong Idempotency-Key (e.g., sequenceEventId)
+ * - Secret name convention: sg_key__TENANT_<tenantId>
+ * - Caller must supply a strong Idempotency-Key (e.g., sequenceEventId)
  */
 export async function sendEmail(req: SendRequest): Promise<SendResult> {
   const { tenantId, idempotencyKey, message } = req;
@@ -19,7 +21,7 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     return { ok: false, status: 400, code: 'IDEMPOTENCY_KEY_REQUIRED' };
   }
 
-  // Secret name convention: sg_key__TENANT_<tenantId>
+  // Load per-tenant API key
   const secretName = `sg_key__TENANT_${tenantId}`;
   try {
     const projectId = process.env.GOOGLE_CLOUD_PROJECT || '';
@@ -37,8 +39,24 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     };
   }
 
-  // Build message using standard fields; no MailContent[] type required.
-  if (!message.text && !message.html) {
+  // Build base payload using Partial<MailDataRequired> to avoid version-specific types.
+  const base: Partial<MailDataRequired> = {
+    to: message.to,
+    from: message.from,
+    subject: message.subject,
+    headers: {
+      ...(message.headers ?? {}),
+      'Idempotency-Key': idempotencyKey,
+    },
+    customArgs: message.customArgs,
+  };
+
+  // Conditionally add body (text/html). At least one is required.
+  const body: Partial<MailDataRequired> = {};
+  if (message.text) (body as any).text = message.text;
+  if (message.html) (body as any).html = message.html;
+
+  if (!(body as any).text && !(body as any).html) {
     return {
       ok: false,
       status: 400,
@@ -47,25 +65,12 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
     };
   }
 
-  const sgMessage: MailDataRequired = {
-    to: message.to,
-    from: message.from,
-    subject: message.subject,
-    text: message.text,
-    html: message.html,
-    headers: {
-      ...(message.headers ?? {}),
-      'Idempotency-Key': idempotencyKey,
-    },
-    customArgs: message.customArgs,
-  };
+  const sgMessage = { ...base, ...body } as MailDataRequired;
 
   try {
     const [res] = (await sgMail.send(sgMessage)) as [ClientResponse, unknown];
 
-    // 2xx considered success; SendGrid often returns 202.
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      // Try to pull request id if present (header keys may vary in case)
       const hdrs = res.headers || {};
       const requestId =
         (hdrs['x-message-id'] as string | undefined) ??
@@ -75,7 +80,6 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
       return { ok: true, status: res.statusCode, requestId };
     }
 
-    // Include response body (string or object) for diagnostics
     let details: unknown = res.body;
     if (typeof res.body === 'string') {
       try {
@@ -92,11 +96,8 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
       details,
     };
   } catch (error: any) {
-    // Normalize error details from @sendgrid/mail
-    let status =
-      typeof error?.code === 'number'
-        ? (error.code as number)
-        : 500;
+    const status =
+      typeof error?.code === 'number' ? (error.code as number) : 500;
 
     let details: unknown = error?.message;
     const respBody = error?.response?.body;
