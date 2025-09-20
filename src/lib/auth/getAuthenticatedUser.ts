@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import { verifySessionCookie } from '@/lib/firebase/admin';
 
 export async function getAuthenticatedUser() {
-  const jar = await cookies();
+  const jar = cookies();
   const cookie = jar.get('__session')?.value || '';
   if (!cookie) return null;
   try {

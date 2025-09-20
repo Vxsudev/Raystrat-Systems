@@ -45,5 +45,5 @@ export const db = getFirestore(getAdmin().app);
 // Verify the __session cookie and return the decoded token
 export async function verifySessionCookie(cookie: string) {
   if (!cookie) throw new Error('No session cookie');
-  return await adminAuth()().verifySessionCookie(cookie, true);
+  return await adminAuth().verifySessionCookie(cookie, true);
 }
