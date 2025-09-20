@@ -1,3 +1,4 @@
+
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
@@ -87,11 +88,11 @@ function AiServiceSuggester() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <FloatingAiButton />
+      <FloatingAiButton tooltipText="Have a bottleneck? I can suggest an agent." />
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
            <div className="flex justify-center">
-            <Sparkles className="w-12 h-12 mx-auto mb-4 text-primary" />
+            <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
           </div>
           <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Find Your Agent</DialogTitle>
           <DialogDescription className="text-lg text-center text-foreground/80">
@@ -145,11 +146,11 @@ function ContextualAssistant() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <FloatingAiButton />
+      <FloatingAiButton tooltipText="Need help? I have context on this page." />
       <SheetContent className="sm:max-w-lg w-full flex flex-col">
         <SheetHeader className="text-center">
           <div className="flex justify-center">
-            <Lightbulb className="w-12 h-12 mx-auto mb-4 text-primary" />
+             <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
           </div>
           <SheetTitle className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl">Raystrat AI Assistant</SheetTitle>
           <SheetDescription className="text-lg text-foreground/80">
@@ -170,7 +171,7 @@ function ContextualAssistant() {
 
 // --- Shared Floating Button and Logic ---
 
-function FloatingAiButton() {
+function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   useEffect(() => {
@@ -209,7 +210,7 @@ function FloatingAiButton() {
             'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
           )}
         >
-          <p className="font-semibold">Need help? Our AI can guide you.</p>
+          <p className="font-semibold">{tooltipText}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
