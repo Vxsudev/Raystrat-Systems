@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -97,7 +96,7 @@ export function Header() {
                 <Link href="/dashboard">Dashboard</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-                <Link href="/account">Account Settings</Link>
+                <Link href="/dashboard/settings">Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => auth.signOut()}>
@@ -162,6 +161,7 @@ export function Header() {
                   {user ? (
                     <>
                        <Link href="/dashboard" className={cn(buttonVariants({ variant: 'default' }))}>Dashboard</Link>
+                       <Link href="/dashboard/settings" className={cn(buttonVariants({ variant: 'outline' }))}>Settings</Link>
                        <Button variant="secondary" onClick={() => auth.signOut()}>Log out</Button>
                     </>
                   ) : (
