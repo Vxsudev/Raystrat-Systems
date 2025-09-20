@@ -11,7 +11,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { createStreamableValue } from 'ai/rsc';
 
 const ContextualAssistantInputSchema = z.object({
   query: z

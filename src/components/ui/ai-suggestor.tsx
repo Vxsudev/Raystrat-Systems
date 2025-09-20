@@ -7,10 +7,7 @@ import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Loader2, Send, User, Brain } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { createStreamableValue, useStreamableValue } from 'ai/rsc';
+import { ArrowRight, Loader2, Send, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -74,48 +71,57 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const { toast } = useToast();
-  const [data] = useStreamableValue(state?.data);
 
   useEffect(() => {
-    if (state?.message === 'Success' && data) {
-      const lastTurn = conversation[conversation.length - 1];
+    if (state?.message === 'Success' && state.data) {
+       const aiResponse = state.data.response || 'Sorry, I could not generate a response.';
+       const lastTurn = conversation[conversation.length - 1];
        if (lastTurn && lastTurn.actor === 'ai') {
-        lastTurn.text = (data as any).response;
+        // Update the loading state with the actual response
+        lastTurn.text = aiResponse;
         setConversation([...conversation]);
       } else {
+         // This case might happen on first load, though unlikely with current flow
          setConversation(prev => [
           ...prev,
-          { actor: 'ai', text: (data as any).response },
+          { actor: 'ai', text: aiResponse },
         ]);
       }
+    } else if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
+        // Handle errors from the action
+        const lastTurn = conversation[conversation.length - 1];
+        if (lastTurn && lastTurn.actor === 'ai') {
+            lastTurn.text = state.message;
+            setConversation([...conversation]);
+        }
     }
-  }, [data, state]);
+  }, [state]);
 
   const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
 
+    // Add user message, and a placeholder for the AI response
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
+      { actor: 'ai', text: '' }, // Placeholder for loading state
     ]);
     
     formAction(formData);
 
+    // Reset the input fields in both forms
     if (formRef.current) formRef.current.reset();
     if (followUpFormRef.current) followUpFormRef.current.reset();
   };
 
   useEffect(() => {
+    // Scroll to the bottom of the conversation
     if (conversationContainerRef.current) {
         const element = conversationContainerRef.current;
-        const lastMessage = element.lastElementChild;
-        if (lastMessage) {
-            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        element.scrollTop = element.scrollHeight;
     }
-  }, [conversation.length, data]);
+  }, [conversation]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
@@ -125,8 +131,8 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
         : followUpFormRef.current;
       
       if (activeForm) {
+        // We use requestSubmit() to trigger the form's action
         activeForm.requestSubmit();
-        activeForm.reset();
       }
     }
   };
@@ -150,16 +156,6 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
                       </div>
                   </div>
               ))}
-              {isPending && conversation[conversation.length - 1]?.actor === 'user' && (
-                <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-full bg-muted border">
-                        <span className="text-xl" role="img" aria-label="Brain">🧠</span>
-                    </div>
-                    <div className="pt-1.5">
-                        <Loader2 className="animate-spin" />
-                    </div>
-                </div>
-              )}
             </div>
             
             <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">

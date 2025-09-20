@@ -4,6 +4,7 @@
 import {
   contextualAssistant,
   ContextualAssistantInput,
+  ContextualAssistantOutput,
 } from '@/ai/flows/contextual-assistant';
 import { 
   suggestService,
@@ -12,7 +13,6 @@ import {
 import { z } from 'zod';
 import db from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
-import { createStreamableValue } from 'ai/rsc';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -33,7 +33,7 @@ const suggestionSchema = z.object({
 });
 
 export type SuggestionState = {
-  data?: any;
+  data?: ContextualAssistantOutput | null;
   errors?: {
     query?: string[];
   };
@@ -43,7 +43,7 @@ export type SuggestionState = {
 export async function getContextualSuggestion(
   prevState: SuggestionState | null,
   formData: FormData
-) {
+): Promise<SuggestionState> {
   const validatedFields = suggestionSchema.safeParse({
     query: formData.get('query'),
     pageTitle: formData.get('pageTitle'),
@@ -57,26 +57,21 @@ export async function getContextualSuggestion(
     };
   }
 
-  const stream = createStreamableValue();
-
-  (async () => {
-    try {
-      const input: ContextualAssistantInput = {
-        query: validatedFields.data.query,
-        pageTitle: validatedFields.data.pageTitle,
-        pageContent: validatedFields.data.pageContent,
-      };
-      const result = await contextualAssistant(input);
-      stream.done(result);
-    } catch (error) {
-      console.error('AI Suggestion Error:', error);
-      stream.done({
-        response: 'An error occurred on our end. Please try again later.',
-      });
-    }
-  })();
-  
-  return { data: stream.value };
+  try {
+    const input: ContextualAssistantInput = {
+      query: validatedFields.data.query,
+      pageTitle: validatedFields.data.pageTitle,
+      pageContent: validatedFields.data.pageContent,
+    };
+    const result = await contextualAssistant(input);
+    return { data: result, message: 'Success' };
+  } catch (error) {
+    console.error('AI Suggestion Error:', error);
+    return {
+        data: null,
+        message: 'An error occurred on our end. Please try again later.',
+    };
+  }
 }
 
 
