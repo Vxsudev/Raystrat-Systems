@@ -6,10 +6,11 @@ import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
+import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useStreamableValue, createStreamableValue } from 'ai/rsc';
+import { createStreamableValue, useStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -36,6 +37,25 @@ function SubmitButton() {
   );
 }
 
+function FollowUpSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button
+      type="submit"
+      disabled={pending}
+      size="icon"
+      className="shrink-0"
+    >
+      {pending ? (
+        <Loader2 className="animate-spin" />
+      ) : (
+        <Send />
+      )}
+      <span className="sr-only">Send message</span>
+    </Button>
+  );
+}
+
 interface AiSuggestorProps {
   pageTitle: string;
   pageContent: string;
@@ -50,11 +70,13 @@ type ConversationTurn = {
 export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
+  const followUpFormRef = useRef<HTMLFormElement>(null);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const [data] = useStreamableValue(state?.data);
+  const initialStream = createStreamableValue();
+  const [data] = useStreamableValue(state?.data || initialStream.value);
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
 
   useEffect(() => {
@@ -85,68 +107,97 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   
   useEffect(() => {
     if (conversationContainerRef.current) {
-      conversationContainerRef.current.scrollTop = conversationContainerRef.current.scrollHeight;
+        const element = conversationContainerRef.current;
+        // Scroll to the bottom to show the latest message.
+        element.scrollTop = element.scrollHeight;
     }
   }, [conversation]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
       event.preventDefault();
-      formRef.current?.requestSubmit();
+      // To get the correct form, we check which one contains the active element.
+      if (formRef.current?.contains(document.activeElement)) {
+        formRef.current?.requestSubmit();
+      } else if (followUpFormRef.current?.contains(document.activeElement)) {
+        followUpFormRef.current?.requestSubmit();
+      }
     }
   };
-
+  
   const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
+    if (!query) return;
     setSubmittedQuery(query);
     formAction(formData);
-    formRef.current?.reset();
+    // Reset the correct form
+    if (formRef.current?.contains(document.activeElement)) {
+        formRef.current?.reset();
+    } else if (followUpFormRef.current?.contains(document.activeElement)) {
+        followUpFormRef.current?.reset();
+    }
   }
   
   return (
     <div className="w-full h-full flex flex-col">
-      {conversation.length > 0 && (
-          <div ref={conversationContainerRef} className="flex-1 overflow-y-auto mb-6 pr-4 -mr-4">
-            <Card className="bg-transparent border-border/50">
-                <CardContent className="p-4 space-y-4">
-                    {conversation.map((turn, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                            <div className="p-2 rounded-full bg-muted border">
-                              {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
-                            </div>
-                            <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                               {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
-                                ? <Loader2 className="animate-spin" />
-                                : <ReactMarkdown>{turn.text}</ReactMarkdown>
-                               }
-                            </div>
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
+      {conversation.length > 0 ? (
+          <>
+            <div ref={conversationContainerRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4">
+              <Card className="bg-transparent border-border/50">
+                  <CardContent className="p-4 space-y-4">
+                      {conversation.map((turn, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                              <div className="p-2 rounded-full bg-muted border">
+                                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
+                              </div>
+                              <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                                 {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
+                                  ? <Loader2 className="animate-spin" />
+                                  : <ReactMarkdown>{turn.text}</ReactMarkdown>
+                                 }
+                              </div>
+                          </div>
+                      ))}
+                  </CardContent>
+              </Card>
+            </div>
+            
+            <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">
+              <input type="hidden" name="pageTitle" value={pageTitle} />
+              <input type="hidden" name="pageContent" value={pageContent} />
+               <Input
+                  name="query"
+                  placeholder="Ask a follow-up..."
+                  className="flex-1"
+                  required
+                  disabled={isPending}
+                  onKeyDown={handleKeyDown}
+                />
+              <FollowUpSubmitButton />
+            </form>
+          </>
+      ) : (
+        <form ref={formRef} action={handleFormSubmit} className="space-y-4 mt-auto">
+          <input type="hidden" name="pageTitle" value={pageTitle} />
+          <input type="hidden" name="pageContent" value={pageContent} />
+          <Textarea
+            name="query"
+            placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
+            className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
+            required
+            disabled={isPending}
+            onKeyDown={handleKeyDown}
+          />
+          {state?.errors?.query && (
+            <p className="text-sm text-destructive">
+              {state.errors.query[0]}
+            </p>
+          )}
+          <div className="flex justify-center pt-2">
+            <SubmitButton />
           </div>
+        </form>
       )}
-
-      <form ref={formRef} action={handleFormSubmit} className="space-y-4 mt-auto">
-        <input type="hidden" name="pageTitle" value={pageTitle} />
-        <input type="hidden" name="pageContent" value={pageContent} />
-        <Textarea
-          name="query"
-          placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
-          className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
-          required
-          disabled={isPending}
-          onKeyDown={handleKeyDown}
-        />
-        {state?.errors?.query && (
-          <p className="text-sm text-destructive">
-            {state.errors.query[0]}
-          </p>
-        )}
-        <div className="flex justify-center pt-2">
-          <SubmitButton />
-        </div>
-      </form>
     </div>
   );
 }
