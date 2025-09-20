@@ -16,13 +16,27 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
+async function setSessionCookie(user: User | null) {
+  if (user) {
+    const idToken = await user.getIdToken();
+    await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    });
+  } else {
+    await fetch('/api/auth/session', { method: 'DELETE' });
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      await setSessionCookie(user);
       setLoading(false);
     });
 

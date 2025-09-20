@@ -14,6 +14,11 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { updateUserProfile, changePassword } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 // Mock data for billing history
 const billingHistory = [
@@ -22,16 +27,60 @@ const billingHistory = [
   { invoiceId: 'INV-2024-003', date: 'September 1, 2024', amount: '₹49,099', status: 'Due' },
 ];
 
+function ProfileSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button disabled={pending}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      Save Changes
+    </Button>
+  );
+}
+
+function PasswordSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button disabled={pending}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      Change Password
+    </Button>
+  );
+}
 
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+
+  const [profileState, profileFormAction] = useActionState(updateUserProfile, { message: null, errors: {} });
+  const [passwordState, passwordFormAction] = useActionState(changePassword, { message: null, errors: {} });
+
+  const profileFormRef = React.useRef<HTMLFormElement>(null);
+  const passwordFormRef = React.useRef<HTMLFormElement>(null);
 
   React.useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
     }
   }, [user, authLoading, router]);
+  
+  React.useEffect(() => {
+    if (profileState?.message === 'Success') {
+      toast({ title: 'Success', description: 'Your profile has been updated.' });
+    } else if (profileState?.message === 'Error') {
+      toast({ title: 'Error', description: 'Could not update your profile.', variant: 'destructive' });
+    }
+  }, [profileState, toast]);
+
+  React.useEffect(() => {
+    if (passwordState?.message === 'Success') {
+      toast({ title: 'Success', description: 'Your password has been changed.' });
+      passwordFormRef.current?.reset();
+    } else if (passwordState?.message === 'Error' && passwordState.errors?.general) {
+       toast({ title: 'Error', description: passwordState.errors.general[0], variant: 'destructive' });
+    }
+  }, [passwordState, toast]);
+
 
   if (authLoading || !user) {
     return (
@@ -68,27 +117,30 @@ export default function SettingsPage() {
             </TabsList>
             
             <TabsContent value="account">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Account Information</CardTitle>
-                  <CardDescription>
-                    Update your personal details. This information is private and not displayed publicly.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" defaultValue={user.displayName || ''} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" value={user.email || ''} disabled />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Save Changes</Button>
-                </CardFooter>
-              </Card>
+               <form ref={profileFormRef} action={profileFormAction}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Account Information</CardTitle>
+                      <CardDescription>
+                        Update your personal details. This information is private and not displayed publicly.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Full Name</Label>
+                        <Input id="name" name="name" defaultValue={user.displayName || ''} />
+                         {profileState?.errors?.name && <p className="text-sm text-destructive">{profileState.errors.name[0]}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input id="email" type="email" value={user.email || ''} disabled />
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                        <ProfileSubmitButton />
+                    </CardFooter>
+                  </Card>
+               </form>
             </TabsContent>
 
             <TabsContent value="billing">
@@ -139,31 +191,36 @@ export default function SettingsPage() {
             </TabsContent>
 
             <TabsContent value="security">
-               <Card>
-                <CardHeader>
-                  <CardTitle>Security</CardTitle>
-                  <CardDescription>
-                    Change your password to keep your account secure.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
-                    <Input id="current-password" type="password" />
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input id="new-password" type="password" />
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm New Password</Label>
-                    <Input id="confirm-password" type="password" />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Change Password</Button>
-                </CardFooter>
-              </Card>
+               <form ref={passwordFormRef} action={passwordFormAction}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Security</CardTitle>
+                      <CardDescription>
+                        Change your password to keep your account secure.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="currentPassword">Current Password</Label>
+                        <Input id="currentPassword" name="currentPassword" type="password" required />
+                        {passwordState?.errors?.currentPassword && <p className="text-sm text-destructive">{passwordState.errors.currentPassword[0]}</p>}
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <Input id="newPassword" name="newPassword" type="password" required />
+                        {passwordState?.errors?.newPassword && <p className="text-sm text-destructive">{passwordState.errors.newPassword[0]}</p>}
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                        <Input id="confirmPassword" name="confirmPassword" type="password" required />
+                        {passwordState?.errors?.confirmPassword && <p className="text-sm text-destructive">{passwordState.errors.confirmPassword[0]}</p>}
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                        <PasswordSubmitButton />
+                    </CardFooter>
+                  </Card>
+               </form>
             </TabsContent>
           </Tabs>
         </div>

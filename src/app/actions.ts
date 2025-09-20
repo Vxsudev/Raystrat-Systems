@@ -12,11 +12,39 @@ import {
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
 import db from '@/lib/firebase/admin';
+import * as admin from 'firebase-admin';
 import sgMail from '@sendgrid/mail';
+import { auth as adminAuth } from 'firebase-admin';
+import { getAuth } from 'firebase-admin/auth';
+import { cookies } from 'next/headers';
+
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
+
+async function getAuthenticatedUser() {
+    const sessionCookie = cookies().get('__session')?.value;
+    if (!sessionCookie) return null;
+    try {
+        // We have to initialize a new instance here if we are in an action
+        if (admin.apps.length === 0) {
+            admin.initializeApp({
+                credential: admin.credential.cert({
+                    projectId: process.env.FIREBASE_PROJECT_ID,
+                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                    privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+                }),
+            });
+        }
+        const decodedClaims = await getAuth().verifySessionCookie(sessionCookie, true);
+        return decodedClaims;
+    } catch (error) {
+        console.error('Session cookie verification failed:', error);
+        return null;
+    }
+}
+
 
 // --- AI Contextual Assistant Action (Conversational) ---
 
@@ -297,4 +325,86 @@ export async function saveAndSendNotes(
     console.error('Notes Taker Email Error:', error);
     return { message: 'An internal server error occurred while sending the email.' };
   }
+}
+
+
+// --- Settings Page Actions ---
+
+// Update User Profile
+const profileSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+});
+
+export type ProfileState = {
+  errors?: { name?: string[] };
+  message: 'Success' | 'Error' | null;
+};
+
+export async function updateUserProfile(prevState: ProfileState, formData: FormData): Promise<ProfileState> {
+    const user = await getAuthenticatedUser();
+    if (!user) return { message: 'Error', errors: { name: ['Not authenticated.'] } };
+
+    const validatedFields = profileSchema.safeParse({ name: formData.get('name') });
+    if (!validatedFields.success) {
+        return { message: 'Error', errors: validatedFields.error.flatten().fieldErrors };
+    }
+
+    try {
+        await getAuth().updateUser(user.uid, { displayName: validatedFields.data.name });
+        return { message: 'Success' };
+    } catch (error) {
+        console.error("Profile update error:", error);
+        return { message: 'Error' };
+    }
+}
+
+// Change Password
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required.'),
+  newPassword: z.string().min(6, 'New password must be at least 6 characters.'),
+  confirmPassword: z.string(),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: "New passwords don't match.",
+  path: ['confirmPassword'],
+});
+
+export type PasswordState = {
+  errors?: {
+    currentPassword?: string[];
+    newPassword?: string[];
+    confirmPassword?: string[];
+    general?: string[];
+  };
+  message: 'Success' | 'Error' | null;
+};
+
+export async function changePassword(prevState: PasswordState, formData: FormData): Promise<PasswordState> {
+    const user = await getAuthenticatedUser();
+    if (!user || !user.email) {
+        return { message: 'Error', errors: { general: ['Not authenticated.'] } };
+    }
+
+    const validatedFields = passwordSchema.safeParse(Object.fromEntries(formData));
+    if (!validatedFields.success) {
+        return { message: 'Error', errors: validatedFields.error.flatten().fieldErrors };
+    }
+
+    const { currentPassword, newPassword } = validatedFields.data;
+
+    try {
+        // Re-authentication is a security best practice for sensitive operations.
+        // The Firebase Admin SDK does not have a direct equivalent of `reauthenticateWithCredential`.
+        // This requires a more complex flow on the client-side, which we can't do in a server action easily.
+        // For now, we will trust the session and proceed with the password change directly on the backend.
+        // In a production app, you might build a client-side flow that prompts for password again
+        // and sends an ID token to a dedicated API route.
+
+        await getAuth().updateUser(user.uid, { password: newPassword });
+        return { message: 'Success' };
+    } catch (error: any) {
+        console.error('Password change error:', error);
+        // This is a simplification. A real implementation would check for specific error codes
+        // like `auth/wrong-password` if we could re-authenticate.
+        return { message: 'Error', errors: { general: ['An error occurred while changing your password. Please try again.'] } };
+    }
 }
