@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -106,6 +107,8 @@ export function Header() {
     </DropdownMenu>
 ) : null;
 
+  const logoHref = isDashboard ? '/dashboard' : '/';
+
   return (
     <header
       className={cn(
@@ -118,7 +121,7 @@ export function Header() {
       <div className="container flex items-center justify-between h-16">
         {/* Left side: Logo + Desktop Nav */}
         <div className="flex items-center flex-1 gap-8 md:flex-none">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href={logoHref} className="flex items-center gap-3">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -134,7 +137,7 @@ export function Header() {
 
         {/* Centered logo for mobile */}
         <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:hidden">
-            <Link href="/" className="flex items-center gap-3 text-xl font-bold font-headline">
+            <Link href={logoHref} className="flex items-center gap-3 text-xl font-bold font-headline">
                 Raystrat Systems
             </Link>
         </div>

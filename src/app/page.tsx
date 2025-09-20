@@ -8,14 +8,23 @@ import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
+import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 
-export default function Home() {
+
+export default async function Home() {
   const headersList = headers();
   const host = headersList.get('host');
 
-  // If the user is on the app subdomain, redirect to the login page.
+  // Logic for the 'app' subdomain
   if (host === 'app.raystratsystems.com') {
-    redirect('/login');
+    const user = await getAuthenticatedUser().catch(() => null);
+    if (user) {
+      // If user is logged in on the app subdomain, go to their dashboard
+      redirect('/dashboard');
+    } else {
+      // If user is not logged in on the app subdomain, go to login
+      redirect('/login');
+    }
   }
 
   // Otherwise, render the main marketing homepage.
