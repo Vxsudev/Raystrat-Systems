@@ -145,3 +145,97 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
         return { message: 'An internal server error occurred.' };
     }
 }
+
+
+// --- Notes Taker Action ---
+
+const notesSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  businessName: z.string().optional(),
+  notes: z.string().min(10, { message: 'Notes must be at least 10 characters.' }),
+  serviceName: z.string(),
+});
+
+export type NotesState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    businessName?: string[];
+    notes?: string[];
+  };
+  message: string | null;
+};
+
+export async function saveAndSendNotes(
+  prevState: NotesState | null,
+  formData: FormData
+): Promise<NotesState> {
+  const validatedFields = notesSchema.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    businessName: formData.get('businessName'),
+    notes: formData.get('notes'),
+    serviceName: formData.get('serviceName'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid input.',
+    };
+  }
+
+  const { name, email, businessName, notes, serviceName } = validatedFields.data;
+
+  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+    console.error('SendGrid API Key or From Email is not configured.');
+    return { message: 'Server configuration error: Email service is not set up.' };
+  }
+
+  // Define the two emails to send
+  const emailToOwner = {
+    to: process.env.SENDGRID_FROM_EMAIL,
+    from: process.env.SENDGRID_FROM_EMAIL,
+    subject: `New Notes Lead from ${name} (${serviceName})`,
+    html: `
+        <h2>New Lead via Notes Taker</h2>
+        <p>You've received a new lead from the notes section on the <strong>${serviceName}</strong> page.</p>
+        <ul>
+            <li><strong>Name:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${email}</li>
+            <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
+        </ul>
+        <h3>Notes:</h3>
+        <pre>${notes}</pre>
+    `,
+  };
+
+  const emailToUser = {
+    to: email,
+    from: process.env.SENDGRID_FROM_EMAIL,
+    subject: `Your Notes on ${serviceName} from Raystrat Systems`,
+    html: `
+        <h2>Your Notes from Raystrat Systems</h2>
+        <p>Hi ${name},</p>
+        <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of the notes you took for your records:</p>
+        <hr>
+        <pre>${notes}</pre>
+        <hr>
+        <p>If you'd like to discuss how this agent can solve your specific bottlenecks, you can book a free 15-minute audit with our team.</p>
+        <p><a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
+        <p>Best,<br>The Raystrat Systems Team</p>
+    `,
+  };
+
+  try {
+    // Send both emails in parallel
+    await Promise.all([sgMail.send(emailToOwner), sgMail.send(emailToUser)]);
+
+    return { message: 'Success! Your notes have been sent to your email.' };
+
+  } catch (error) {
+    console.error('Notes Taker Email Error:', error);
+    return { message: 'An internal server error occurred while sending the email.' };
+  }
+}

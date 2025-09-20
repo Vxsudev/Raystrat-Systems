@@ -10,6 +10,9 @@ import { CalendlyButton } from '@/components/ui/calendly-button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { FavoriteAgentButton } from '@/components/ui/favorite-agent-button';
+import { NotesTaker } from '@/components/ui/notes-taker';
+import { Separator } from '@/components/ui/separator';
+
 
 interface ServicePageProps {
   params: {
@@ -83,6 +86,8 @@ export default function ServicePage({ params }: ServicePageProps) {
                         </CalendlyButton>
                         <FavoriteAgentButton agentName={service.title} agentSlug={service.slug} />
                       </div>
+                      <Separator className="my-8" />
+                      <NotesTaker serviceName={service.title} />
                 </div>
               </aside>
             </div>
