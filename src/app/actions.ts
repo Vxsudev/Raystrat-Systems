@@ -11,25 +11,11 @@ import {
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
-import { db, adminAuth } from '@/lib/firebase/admin';
-import { cookies } from 'next/headers';
+import { db, adminAuth, getAuthenticatedUser } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
-
-async function getAuthenticatedUser() {
-    const sessionCookie = cookies().get('__session')?.value;
-    if (!sessionCookie) return null;
-
-    try {
-        const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
-        return decodedClaims;
-    } catch (error) {
-        console.error('Session cookie verification failed:', error);
-        return null;
-    }
 }
 
 

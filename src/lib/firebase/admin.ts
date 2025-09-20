@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import dotenv from 'dotenv';
+import { cookies } from 'next/headers';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,7 +20,7 @@ if (!admin.apps.length) {
     });
   } catch (error: any) {
     // In a serverless environment, sometimes the check fails but the app is already initialized.
-    if (error.code !== 'auth/invalid-credential') {
+    if (error.code !== 'auth/invalid-credential' && error.code !== 'app/duplicate-app') {
         console.error('Firebase admin initialization error', error);
     }
   }
@@ -28,4 +29,18 @@ if (!admin.apps.length) {
 const adminAuth = getAuth();
 const db = getFirestore();
 
-export { adminAuth, db };
+async function getAuthenticatedUser() {
+    const sessionCookie = cookies().get('__session')?.value;
+    if (!sessionCookie) return null;
+
+    try {
+        const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
+        return decodedClaims;
+    } catch (error) {
+        console.error('Session cookie verification failed:', error);
+        return null;
+    }
+}
+
+
+export { adminAuth, db, getAuthenticatedUser };
