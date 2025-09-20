@@ -124,7 +124,7 @@ export function Header() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </span>
-            <span className="text-xl font-bold font-headline">Raystrat Systems</span>
+            <span className="hidden text-xl font-bold md:inline font-headline">Raystrat Systems</span>
           </Link>
           {!isDashboard && (
             <nav className="items-center hidden gap-6 md:flex">
@@ -132,6 +132,14 @@ export function Header() {
             </nav>
           )}
         </div>
+
+        {/* Centered logo for mobile */}
+        <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:hidden">
+            <Link href="/" className="flex items-center gap-3 text-xl font-bold font-headline">
+                Raystrat Systems
+            </Link>
+        </div>
+
 
         {/* Right side: Actions + Mobile Menu */}
         <div className="flex items-center justify-end gap-2">
