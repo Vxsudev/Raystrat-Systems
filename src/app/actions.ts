@@ -14,7 +14,6 @@ import { z } from 'zod';
 import db from '@/lib/firebase/admin';
 import * as admin from 'firebase-admin';
 import sgMail from '@sendgrid/mail';
-import { auth as adminAuth } from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import { cookies } from 'next/headers';
 
@@ -23,20 +22,27 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
+// This function needs to handle initialization because server actions
+// can run in a separate, cold-start environment.
+function ensureFirebaseAdmin() {
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+      }),
+    });
+  }
+}
+
 async function getAuthenticatedUser() {
     const sessionCookie = cookies().get('__session')?.value;
     if (!sessionCookie) return null;
+
+    ensureFirebaseAdmin();
+
     try {
-        // We have to initialize a new instance here if we are in an action
-        if (admin.apps.length === 0) {
-            admin.initializeApp({
-                credential: admin.credential.cert({
-                    projectId: process.env.FIREBASE_PROJECT_ID,
-                    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-                    privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-                }),
-            });
-        }
         const decodedClaims = await getAuth().verifySessionCookie(sessionCookie, true);
         return decodedClaims;
     } catch (error) {
@@ -196,6 +202,7 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
     try {
         // 1. Write lead to Firestore & Enroll in Sequence
         const now = new Date();
+        ensureFirebaseAdmin();
         await db.collection('favorite_agent_leads').add({
             name,
             email,
@@ -350,6 +357,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
+        ensureFirebaseAdmin();
         await getAuth().updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
@@ -398,7 +406,8 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // For now, we will trust the session and proceed with the password change directly on the backend.
         // In a production app, you might build a client-side flow that prompts for password again
         // and sends an ID token to a dedicated API route.
-
+        
+        ensureFirebaseAdmin();
         await getAuth().updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
@@ -408,3 +417,5 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         return { message: 'Error', errors: { general: ['An error occurred while changing your password. Please try again.'] } };
     }
 }
+
+    
