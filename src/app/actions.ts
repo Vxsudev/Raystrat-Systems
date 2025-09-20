@@ -11,7 +11,7 @@ import {
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
-import { getDb, getAdminAuth } from '@/lib/firebase/admin';
+import { db, adminAuth } from '@/lib/firebase/admin';
 import { cookies } from 'next/headers';
 import sgMail from '@sendgrid/mail';
 
@@ -24,8 +24,7 @@ async function getAuthenticatedUser() {
     if (!sessionCookie) return null;
 
     try {
-        const auth = getAdminAuth(); // Use the robust initializer
-        const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+        const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true);
         return decodedClaims;
     } catch (error) {
         console.error('Session cookie verification failed:', error);
@@ -184,7 +183,6 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
     try {
         // 1. Write lead to Firestore & Enroll in Sequence
         const now = new Date();
-        const db = getDb();
         await db.collection('favorite_agent_leads').add({
             name,
             email,
@@ -339,8 +337,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
-        const auth = getAdminAuth(); // Use the robust initializer
-        await auth.updateUser(user.uid, { displayName: validatedFields.data.name });
+        await adminAuth.updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
         console.error("Profile update error:", error);
@@ -389,8 +386,7 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // In a production app, you might build a client-side flow that prompts for password again
         // and sends an ID token to a dedicated API route.
         
-        const auth = getAdminAuth(); // Use the robust initializer
-        await auth.updateUser(user.uid, { password: newPassword });
+        await adminAuth.updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
         console.error('Password change error:', error);
