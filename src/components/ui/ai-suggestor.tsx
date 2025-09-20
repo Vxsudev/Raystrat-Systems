@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { createStreamableValue, useStreamableValue } from 'ai/rsc';
+import { useStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -57,8 +57,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
 
-  const initialStream = createStreamableValue();
-  const [data] = useStreamableValue(state?.data || initialStream.value);
+  const [data] = useStreamableValue(state?.data);
 
   useEffect(() => {
     if (submittedQuery) {
@@ -85,7 +84,8 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
         variant: 'destructive',
       });
     }
-  }, [data, state?.message, toast, submittedQuery, conversation]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, state?.message, toast, submittedQuery]);
   
   useEffect(() => {
       if (conversationContainerRef.current) {
