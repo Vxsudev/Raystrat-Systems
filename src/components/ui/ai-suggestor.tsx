@@ -104,22 +104,23 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   useEffect(() => {
     if (conversationContainerRef.current) {
         const element = conversationContainerRef.current;
-        // Scroll to the top of the last message (the new one)
         const lastMessage = element.lastElementChild;
         if (lastMessage) {
             lastMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
-  }, [conversation.length, data]); // Rerun on new message or new data chunk
+  }, [conversation.length, data]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
       event.preventDefault();
-      // To get the correct form, we check which one contains the active element.
-      if (formRef.current?.contains(document.activeElement)) {
-        formRef.current?.requestSubmit();
-      } else if (followUpFormRef.current?.contains(document.activeElement)) {
-        followUpFormRef.current?.requestSubmit();
+      const activeForm = formRef.current?.contains(document.activeElement) 
+        ? formRef.current 
+        : followUpFormRef.current;
+      
+      if (activeForm) {
+        activeForm.requestSubmit();
+        activeForm.reset();
       }
     }
   };
@@ -129,36 +130,26 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
     if (!query) return;
     setSubmittedQuery(query);
     formAction(formData);
-    // Reset the correct form
-    if (formRef.current && formRef.current.contains(document.activeElement)) {
-        formRef.current?.reset();
-    } else if (followUpFormRef.current && followUpFormRef.current.contains(document.activeElement)) {
-        followUpFormRef.current?.reset();
-    }
   }
   
   return (
     <div className="w-full h-full flex flex-col">
       {conversation.length > 0 ? (
           <>
-            <div ref={conversationContainerRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4">
-              <Card className="bg-transparent border-border/50">
-                  <CardContent className="p-4 space-y-6">
-                      {conversation.map((turn, index) => (
-                          <div key={index} className="flex items-start gap-3">
-                              <div className="p-2 rounded-full bg-muted border">
-                                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
-                              </div>
-                              <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                                 {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
-                                  ? <Loader2 className="animate-spin" />
-                                  : <ReactMarkdown>{turn.text}</ReactMarkdown>
-                                 }
-                              </div>
-                          </div>
-                      ))}
-                  </CardContent>
-              </Card>
+            <div ref={conversationContainerRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
+              {conversation.map((turn, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                      <div className="p-2 rounded-full bg-muted border">
+                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
+                      </div>
+                      <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                         {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
+                          ? <Loader2 className="animate-spin" />
+                          : <ReactMarkdown>{turn.text}</ReactMarkdown>
+                         }
+                      </div>
+                  </div>
+              ))}
             </div>
             
             <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">
