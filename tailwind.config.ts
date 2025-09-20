@@ -14,6 +14,9 @@ export default {
         body: ['var(--font-body)', 'sans-serif'],
         headline: ['var(--font-headline)', 'sans-serif'],
       },
+      textShadow: {
+        halo: '0 0 15px hsl(var(--background))',
+      },
       typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
           css: {
@@ -136,5 +139,15 @@ export default {
   plugins: [
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
+    function ({ matchUtilities, theme }: { matchUtilities: any, theme: any }) {
+      matchUtilities(
+        {
+          'text-shadow': (value: any) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    },
 ],
 } satisfies Config;
