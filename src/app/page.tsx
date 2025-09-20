@@ -14,9 +14,9 @@ export default function Home() {
   const headersList = headers();
   const host = headersList.get('host');
 
-  // If the user is on the app subdomain, redirect to the signup page.
+  // If the user is on the app subdomain, redirect to the login page.
   if (host === 'app.raystratsystems.com') {
-    redirect('/signup');
+    redirect('/login');
   }
 
   // Otherwise, render the main marketing homepage.

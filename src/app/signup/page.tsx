@@ -1,3 +1,4 @@
+
 // src/app/signup/page.tsx
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ export default function SignupPage() {
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
          <Link
-          href="/"
+          href="https://raystratsystems.com"
           className={cn(
             buttonVariants({ variant: "ghost" }),
             "absolute left-4 top-4 md:left-8 md:top-8"
