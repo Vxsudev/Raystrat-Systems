@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 
 // This function ensures the Firebase Admin SDK is initialized,
 // and it's safe to call multiple times.
-export async function initializeAdminApp() {
+export function initializeAdminApp() {
   if (admin.apps.length > 0) {
     return admin.app();
   }
@@ -15,7 +15,7 @@ export async function initializeAdminApp() {
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+          privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
         }),
       });
       return app;
@@ -30,8 +30,8 @@ export async function initializeAdminApp() {
 }
 
 // Export a function that initializes the app and returns the firestore instance.
-export async function getDb() {
-    await initializeAdminApp();
+export function getDb() {
+    initializeAdminApp();
     return admin.firestore();
 }
 

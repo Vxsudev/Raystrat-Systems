@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
     }
 
-    const db = await getDb();
+    const db = getDb();
     // 1. Write lead to Firestore
     await db.collection('playbook_leads').add({
       name,

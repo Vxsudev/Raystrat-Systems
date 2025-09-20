@@ -24,7 +24,7 @@ export async function GET(
   }
 
   try {
-    const db = await getDb();
+    const db = getDb();
     // 2. Query Firestore for the customer document
     const customerRef = db.collection('customers').doc(userId);
     const customerDoc = await customerRef.get();

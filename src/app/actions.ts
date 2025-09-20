@@ -21,8 +21,8 @@ if (process.env.SENDGRID_API_KEY) {
 }
 
 // This function now ensures the admin app is initialized before returning the auth service.
-async function getAdminAuth() {
-    await initializeAdminApp();
+function getAdminAuth() {
+    initializeAdminApp();
     return getAuth();
 }
 
@@ -31,7 +31,7 @@ async function getAuthenticatedUser() {
     if (!sessionCookie) return null;
 
     try {
-        const auth = await getAdminAuth();
+        const auth = getAdminAuth();
         const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
         return decodedClaims;
     } catch (error) {
@@ -191,7 +191,7 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
     try {
         // 1. Write lead to Firestore & Enroll in Sequence
         const now = new Date();
-        const db = await getDb();
+        const db = getDb();
         await db.collection('favorite_agent_leads').add({
             name,
             email,
@@ -346,7 +346,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
-        const auth = await getAdminAuth();
+        const auth = getAdminAuth();
         await auth.updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
@@ -396,7 +396,7 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // In a production app, you might build a client-side flow that prompts for password again
         // and sends an ID token to a dedicated API route.
         
-        const auth = await getAdminAuth();
+        const auth = getAdminAuth();
         await auth.updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
