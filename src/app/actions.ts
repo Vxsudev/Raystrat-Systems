@@ -11,8 +11,9 @@ import {
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
-// Import the hardened authentication functions and the admin SDK instances
-import { db, adminAuth, getAuthenticatedUser } from '@/lib/firebase/admin';
+// Import the new centralized authentication helper and the admin SDK instances
+import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
+import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 
 if (process.env.SENDGRID_API_KEY) {
@@ -326,7 +327,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
-        await adminAuth.updateUser(user.uid, { displayName: validatedFields.data.name });
+        await adminAuth().updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
         console.error("Profile update error:", error);
@@ -374,7 +375,7 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // Since that's a more complex client-side build, we are proceeding with a
         // direct admin SDK update for now, which is secure but relies on the existing session.
         
-        await adminAuth.updateUser(user.uid, { password: newPassword });
+        await adminAuth().updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
         console.error('Password change error:', error);
