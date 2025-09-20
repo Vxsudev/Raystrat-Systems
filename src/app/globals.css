@@ -64,7 +64,7 @@
 
 @layer utilities {
     .bg-dotted-pattern {
-      background-image: radial-gradient(hsl(var(--foreground) / 0.1) 1px, transparent 1px);
+      background-image: radial-gradient(hsl(var(--foreground) / 0.2) 1px, transparent 1px);
       background-size: 1rem 1rem;
     }
 }
