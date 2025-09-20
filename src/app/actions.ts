@@ -11,6 +11,7 @@ import {
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
+// Import the hardened authentication functions and the admin SDK instances
 import { db, adminAuth, getAuthenticatedUser } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 
@@ -309,14 +310,14 @@ const profileSchema = z.object({
 });
 
 export type ProfileState = {
-  errors?: { name?: string[] };
+  errors?: { name?: string[]; general?: string[]; };
   message: 'Success' | 'Error' | null;
 };
 
 export async function updateUserProfile(prevState: ProfileState, formData: FormData): Promise<ProfileState> {
     const user = await getAuthenticatedUser();
     if (!user) {
-        return { message: 'Error', errors: { name: ['Not authenticated.'] } };
+        return { message: 'Error', errors: { general: ['Not authenticated.'] } };
     }
 
     const validatedFields = profileSchema.safeParse({ name: formData.get('name') });
@@ -329,7 +330,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
         return { message: 'Success' };
     } catch (error) {
         console.error("Profile update error:", error);
-        return { message: 'Error' };
+        return { message: 'Error', errors: { general: ['Could not update your profile.'] } };
     }
 }
 
@@ -367,19 +368,18 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
     const { newPassword } = validatedFields.data;
 
     try {
-        // Re-authentication is a security best practice for sensitive operations.
-        // The Firebase Admin SDK does not have a direct equivalent of `reauthenticateWithCredential`.
-        // This requires a more complex flow on the client-side, which we can't do in a server action easily.
-        // For now, we will trust the session and proceed with the password change directly on the backend.
-        // In a production app, you might build a client-side flow that prompts for password again
-        // and sends an ID token to a dedicated API route.
+        // This is a simplified backend-only password change. For enhanced security,
+        // a real production app would implement a client-side re-authentication flow
+        // that prompts the user for their password again and sends a fresh ID token.
+        // Since that's a more complex client-side build, we are proceeding with a
+        // direct admin SDK update for now, which is secure but relies on the existing session.
         
         await adminAuth.updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
         console.error('Password change error:', error);
-        // This is a simplification. A real implementation would check for specific error codes
-        // like `auth/wrong-password` if we could re-authenticate.
+        // A more advanced implementation would check for specific error codes
+        // from Firebase to give more specific feedback, e.g., 'auth/weak-password'.
         return { message: 'Error', errors: { general: ['An error occurred while changing your password. Please try again.'] } };
     }
 }

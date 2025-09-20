@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateUserProfile, changePassword } from '@/app/actions';
+import { updateUserProfile, ProfileState, changePassword, PasswordState } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -52,8 +52,8 @@ export default function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [profileState, profileFormAction] = useActionState(updateUserProfile, { message: null, errors: {} });
-  const [passwordState, passwordFormAction] = useActionState(changePassword, { message: null, errors: {} });
+  const [profileState, profileFormAction] = useActionState<ProfileState, FormData>(updateUserProfile, { message: null, errors: {} });
+  const [passwordState, passwordFormAction] = useActionState<PasswordState, FormData>(changePassword, { message: null, errors: {} });
 
   const profileFormRef = React.useRef<HTMLFormElement>(null);
   const passwordFormRef = React.useRef<HTMLFormElement>(null);
@@ -68,7 +68,8 @@ export default function SettingsPage() {
     if (profileState?.message === 'Success') {
       toast({ title: 'Success', description: 'Your profile has been updated.' });
     } else if (profileState?.message === 'Error') {
-      toast({ title: 'Error', description: 'Could not update your profile.', variant: 'destructive' });
+      const errorMessage = profileState.errors?.general?.[0] || 'Could not update your profile.';
+      toast({ title: 'Error', description: errorMessage, variant: 'destructive' });
     }
   }, [profileState, toast]);
 
@@ -130,6 +131,7 @@ export default function SettingsPage() {
                         <Label htmlFor="name">Full Name</Label>
                         <Input id="name" name="name" defaultValue={user.displayName || ''} />
                          {profileState?.errors?.name && <p className="text-sm text-destructive">{profileState.errors.name[0]}</p>}
+                         {profileState?.errors?.general && <p className="text-sm text-destructive">{profileState.errors.general[0]}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email Address</Label>
@@ -215,6 +217,7 @@ export default function SettingsPage() {
                         <Input id="confirmPassword" name="confirmPassword" type="password" required />
                         {passwordState?.errors?.confirmPassword && <p className="text-sm text-destructive">{passwordState.errors.confirmPassword[0]}</p>}
                       </div>
+                      {passwordState?.errors?.general && <p className="text-sm text-destructive">{passwordState.errors.general[0]}</p>}
                     </CardContent>
                     <CardFooter>
                         <PasswordSubmitButton />
