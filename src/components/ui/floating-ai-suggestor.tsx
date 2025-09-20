@@ -55,7 +55,7 @@ function ServiceSuggesterSubmitButton() {
 
 function AiServiceSuggester() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(getServiceSuggestion, null);
+  const [state, formAction, isPending] = useActionState(getServiceSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
@@ -68,6 +68,7 @@ function AiServiceSuggester() {
       });
       router.push(`/services/${state.data.serviceSlug}`);
       setIsOpen(false);
+      formRef.current?.reset();
     } else if (state?.message && state.message !== 'Invalid input.') {
       toast({
         title: 'Error',
@@ -76,6 +77,13 @@ function AiServiceSuggester() {
       });
     }
   }, [state, router, toast]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey && !isPending) {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -96,6 +104,8 @@ function AiServiceSuggester() {
             placeholder="e.g., 'We waste too much time chasing unpaid invoices,' or 'Our leads are cold and unresponsive.'"
             className="min-h-[120px] text-base"
             required
+            onKeyDown={handleKeyDown}
+            disabled={isPending}
           />
           {state?.errors?.bottleneck && (
             <p className="text-sm text-destructive">
@@ -199,7 +209,7 @@ function FloatingAiButton() {
             'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
           )}
         >
-          <p className="font-semibold">Ask our AI for help. It's context-aware.</p>
+          <p className="font-semibold">Need help? Our AI can guide you.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
