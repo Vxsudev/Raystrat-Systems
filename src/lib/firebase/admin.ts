@@ -35,6 +35,12 @@ export function getDb() {
     return admin.firestore();
 }
 
+// Export a function that initializes the app and returns the auth instance.
+export function getAdminAuth() {
+    initializeAdminApp();
+    return admin.auth();
+}
+
 // The default export is now a promise-based function.
 // Note: You might want to update existing usages of `db` from a direct import
 // to awaiting `getDb()`. For now, we will provide a default export for legacy compatibility,

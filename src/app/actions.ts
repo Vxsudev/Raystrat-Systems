@@ -11,8 +11,7 @@ import {
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
 import { z } from 'zod';
-import { initializeAdminApp, getDb } from '@/lib/firebase/admin';
-import { getAuth } from 'firebase-admin/auth';
+import { getDb, getAdminAuth } from '@/lib/firebase/admin';
 import { cookies } from 'next/headers';
 import sgMail from '@sendgrid/mail';
 
@@ -20,18 +19,12 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// This function now ensures the admin app is initialized before returning the auth service.
-function getAdminAuth() {
-    initializeAdminApp();
-    return getAuth();
-}
-
 async function getAuthenticatedUser() {
     const sessionCookie = cookies().get('__session')?.value;
     if (!sessionCookie) return null;
 
     try {
-        const auth = getAdminAuth();
+        const auth = getAdminAuth(); // Use the robust initializer
         const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
         return decodedClaims;
     } catch (error) {
@@ -346,7 +339,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
-        const auth = getAdminAuth();
+        const auth = getAdminAuth(); // Use the robust initializer
         await auth.updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
@@ -396,7 +389,7 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // In a production app, you might build a client-side flow that prompts for password again
         // and sends an ID token to a dedicated API route.
         
-        const auth = getAdminAuth();
+        const auth = getAdminAuth(); // Use the robust initializer
         await auth.updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
