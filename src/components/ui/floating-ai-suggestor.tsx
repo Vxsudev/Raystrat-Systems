@@ -28,7 +28,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Bot, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Lightbulb, Bot, ArrowRight, Loader2, Sparkles, BrainCircuit } from 'lucide-react';
 import { AiSuggestor } from '@/components/ui/ai-suggestor';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -188,7 +188,7 @@ function FloatingAiButton() {
       size="icon"
       className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
     >
-      <Bot className="h-8 w-8 text-primary-foreground" />
+      <BrainCircuit className="h-8 w-8 text-primary-foreground" />
       <span className="sr-only">Open AI Assistant</span>
     </Button>
   );
