@@ -64,10 +64,10 @@ export function Header() {
   const authActions = (
     <div className='flex items-center gap-2'>
         <Button asChild variant="ghost" size="sm">
-            <Link href="https://app.raystratsystems.com/login">Login</Link>
+            <Link href="/login">Login</Link>
         </Button>
         <Button asChild size="sm">
-            <Link href="https://app.raystratsystems.com/signup">Sign Up</Link>
+            <Link href="/signup">Sign Up</Link>
         </Button>
     </div>
   );
@@ -167,10 +167,10 @@ export function Header() {
                   ) : (
                     <>
                       <Button asChild variant="outline">
-                        <Link href="https://app.raystratsystems.com/login">Login</Link>
+                        <Link href="/login">Login</Link>
                       </Button>
                       <Button asChild>
-                        <Link href="https://app.raystratsystems.com/signup">Sign Up</Link>
+                        <Link href="/signup">Sign Up</Link>
                       </Button>
                     </>
                   )}

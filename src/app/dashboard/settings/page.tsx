@@ -67,7 +67,7 @@ export default function SettingsPage() {
                   <CardDescription>
                     View your plan details and payment history.
                   </CardDescription>
-                </CardHeader>
+                </header>
                 <CardContent className="space-y-4">
                   <p>Billing information will go here.</p>
                 </CardContent>
@@ -81,7 +81,7 @@ export default function SettingsPage() {
                   <CardDescription>
                     Change your password and manage security settings.
                   </CardDescription>
-                </CardHeader>
+                </header>
                 <CardContent className="space-y-4">
                   <p>Password change form will go here.</p>
                 </CardContent>
