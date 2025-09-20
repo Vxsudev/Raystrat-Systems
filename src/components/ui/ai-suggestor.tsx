@@ -1,14 +1,13 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
@@ -49,34 +48,15 @@ type ConversationTurn = {
 }
 
 export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSuggestorProps) {
-  const [state, dispatch, isActionPending] = useActionState(getContextualSuggestion, null);
+  const [state, dispatch] = useActionState(getContextualSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
-
   const [data] = useStreamableValue(state?.data);
 
   useEffect(() => {
-    if (submittedQuery) {
-        setConversation([
-            ...conversation,
-            { actor: 'user', text: submittedQuery },
-            { actor: 'ai', text: (data as string) || '' }
-        ]);
-        setSubmittedQuery(null);
-    } else if (data) {
-        setConversation(prev => {
-            const newConversation = [...prev];
-            if (newConversation.length > 0 && newConversation[newConversation.length - 1].actor === 'ai') {
-                newConversation[newConversation.length - 1].text = data as string;
-            }
-            return newConversation;
-        });
-    }
-
     if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
       toast({
         title: 'Error',
@@ -84,8 +64,30 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
         variant: 'destructive',
       });
     }
+    
+    if (state?.data) {
+        // We have a new response from the action
+        const newConversation: ConversationTurn[] = [
+            ...conversation, 
+            { actor: 'ai', text: data || '' }
+        ];
+
+        // Check if the last turn was also from the AI, if so, merge them
+        if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'user' && data) {
+            setConversation(prev => {
+                const updatedConversation = [...prev, { actor: 'ai', text: data as string }];
+                return updatedConversation;
+            });
+        } else if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'ai' && data) {
+             setConversation(prev => {
+                const newConversation = [...prev];
+                newConversation[newConversation.length - 1].text = data as string;
+                return newConversation;
+            });
+        }
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, state?.message, toast, submittedQuery]);
+  }, [state, data]);
   
   useEffect(() => {
       if (conversationContainerRef.current) {
@@ -102,7 +104,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
 
   const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
-    setSubmittedQuery(query);
+    setConversation(prev => [...prev, { actor: 'user', text: query }]);
     dispatch(formData);
     formRef.current?.reset();
   }
@@ -133,7 +135,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
         <input type="hidden" name="pageContent" value={pageContent} />
         <Textarea
           name="query"
-          placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?' or 'Give me three ideas for using the support agent in a SaaS business.'"
+          placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
           className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
           onKeyDown={handleKeyDown}
