@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
+import { ArrowRight, Loader2, Send, User, BrainCircuit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { createStreamableValue, useStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
@@ -140,7 +140,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
               {conversation.map((turn, index) => (
                   <div key={index} className="flex items-start gap-3">
                       <div className="p-2 rounded-full bg-muted border">
-                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
+                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <BrainCircuit className="w-5 h-5 text-primary" />}
                       </div>
                       <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
                          {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
