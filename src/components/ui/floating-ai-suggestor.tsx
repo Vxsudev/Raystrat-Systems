@@ -80,7 +80,7 @@ export function FloatingAiSuggestor() {
               'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
             )}
           >
-            <p className="font-semibold">Psst! I'm context-aware. Ask me anything.</p>
+            <p className="font-semibold">Context-Aware Assistant. Ask me anything about this page.</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -106,4 +106,3 @@ export function FloatingAiSuggestor() {
     </Sheet>
   );
 }
-
