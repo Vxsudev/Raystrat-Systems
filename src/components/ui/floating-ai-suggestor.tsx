@@ -85,7 +85,7 @@ export function FloatingAiSuggestor() {
         </Tooltip>
       </TooltipProvider>
 
-      <SheetContent className="sm:max-w-lg w-full">
+      <SheetContent className="sm:max-w-lg w-full flex flex-col">
         <SheetHeader className="text-center">
           <div className="flex justify-center">
             <Lightbulb className="w-12 h-12 mx-auto mb-4 text-primary" />
@@ -95,7 +95,7 @@ export function FloatingAiSuggestor() {
             I have context on this page. How can I help you strategize?
           </SheetDescription>
         </SheetHeader>
-        <div className="px-4 py-2 mt-4">
+        <div className="px-4 py-2 mt-4 flex-1 flex flex-col min-h-0">
           <AiSuggestor
             pageTitle={pageContext.title}
             pageContent={pageContext.content}
