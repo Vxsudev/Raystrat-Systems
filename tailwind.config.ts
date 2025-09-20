@@ -126,15 +126,26 @@ export default {
             height: '0',
           },
         },
-        marquee: {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(-50%)' },
+        spotlight: {
+            "0%": { transform: "translate(20%, 20%)" },
+            "25%": { transform: "translate(-20%, 10%)" },
+            "50%": { transform: "translate(-20%, -20%)" },
+            "75%": { transform: "translate(20%, -10%)" },
+            "100%": { transform: "translate(20%, 20%)" },
+        },
+        "pulse-slow": {
+            "50%": { opacity: "0.5" },
+        },
+        "pulse-slower": {
+            "50%": { opacity: "0.3" },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'marquee': 'marquee 60s linear infinite',
+        spotlight: "spotlight 20s linear infinite",
+        "pulse-slow": "pulse-slow 8s infinite",
+        "pulse-slower": "pulse-slower 10s infinite",
       },
     },
   },
