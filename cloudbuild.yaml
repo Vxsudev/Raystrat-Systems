@@ -7,7 +7,6 @@ steps:
   - '.'
   - '-f'
   - 'apps/agents/Dockerfile'
-  - '--scan'
 images:
 - '$_IMAGE'
 substitutions:
