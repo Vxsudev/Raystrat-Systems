@@ -1,7 +1,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useActionState, useEffect, useRef, useState, useOptimistic } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
@@ -72,24 +72,20 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const followUpFormRef = useRef<HTMLFormElement>(null);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const initialStream = createStreamableValue();
-  const [data] = useStreamableValue(state?.data || initialStream.value);
+  const [data] = useStreamableValue(state?.data);
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
 
   useEffect(() => {
     if (submittedQuery) {
-      const newConversation: ConversationTurn[] = [
-        ...conversation,
+      setConversation(prev => [
+        ...prev,
         { actor: 'user', text: submittedQuery },
         { actor: 'ai', text: '' },
-      ];
-      setConversation(newConversation);
+      ]);
       setSubmittedQuery(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submittedQuery]);
 
   useEffect(() => {
@@ -108,10 +104,13 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   useEffect(() => {
     if (conversationContainerRef.current) {
         const element = conversationContainerRef.current;
-        // Scroll to the bottom to show the latest message.
-        element.scrollTop = element.scrollHeight;
+        // Scroll to the top of the last message (the new one)
+        const lastMessage = element.lastElementChild;
+        if (lastMessage) {
+            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
-  }, [conversation]);
+  }, [conversation.length, data]); // Rerun on new message or new data chunk
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
@@ -131,9 +130,9 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
     setSubmittedQuery(query);
     formAction(formData);
     // Reset the correct form
-    if (formRef.current?.contains(document.activeElement)) {
+    if (formRef.current && formRef.current.contains(document.activeElement)) {
         formRef.current?.reset();
-    } else if (followUpFormRef.current?.contains(document.activeElement)) {
+    } else if (followUpFormRef.current && followUpFormRef.current.contains(document.activeElement)) {
         followUpFormRef.current?.reset();
     }
   }
@@ -144,7 +143,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
           <>
             <div ref={conversationContainerRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4">
               <Card className="bg-transparent border-border/50">
-                  <CardContent className="p-4 space-y-4">
+                  <CardContent className="p-4 space-y-6">
                       {conversation.map((turn, index) => (
                           <div key={index} className="flex items-start gap-3">
                               <div className="p-2 rounded-full bg-muted border">
