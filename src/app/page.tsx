@@ -9,7 +9,6 @@ import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
-import { AnimatedGridBackground } from '@/components/ui/animated-grid-background';
 
 export default function Home() {
   const headersList = headers();
@@ -23,7 +22,7 @@ export default function Home() {
   // Otherwise, render the main marketing homepage.
   return (
     <div className="flex flex-col min-h-screen">
-      <AnimatedGridBackground className="fixed top-0 left-0 w-full h-full -z-10" />
+      <div className="fixed top-0 left-0 w-full h-full bg-dotted-pattern -z-10" />
       <Header />
       <main className="flex-1">
         <Hero />
