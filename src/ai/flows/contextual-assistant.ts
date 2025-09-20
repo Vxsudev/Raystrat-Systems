@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { createStreamableValue } from 'ai/rsc';
 
 const ContextualAssistantInputSchema = z.object({
   query: z
@@ -35,7 +36,8 @@ export type ContextualAssistantOutput = z.infer<typeof ContextualAssistantOutput
 export async function contextualAssistant(
   input: ContextualAssistantInput
 ): Promise<ContextualAssistantOutput> {
-  return contextualAssistantFlow(input);
+  const llmResponse = await contextualAssistantFlow(input);
+  return llmResponse;
 }
 
 const prompt = ai.definePrompt({

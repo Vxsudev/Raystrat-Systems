@@ -1,14 +1,15 @@
-
+// src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState, useOptimistic } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getContextualSuggestion } from '@/app/actions';
+import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useStreamableValue, createStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -46,46 +47,50 @@ type ConversationTurn = {
     text: string;
 }
 
-export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSuggestorProps) {
-  const [state, dispatch] = useActionState(getContextualSuggestion, null);
+export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
+  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const { pending } = useFormStatus();
-
+  const [data] = useStreamableValue(state?.data);
+  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
 
   useEffect(() => {
-    if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
-      toast({
-        title: 'Error',
-        description: state.message,
-        variant: 'destructive',
-      });
-    }
-
-    if (state?.data?.response) {
-      // Once the action is done, update the last AI message with the final response.
-      setConversation(prev => {
-          const newConversation = [...prev];
-          if (newConversation.length > 0 && newConversation[newConversation.length - 1].actor === 'ai') {
-              newConversation[newConversation.length - 1].text = state.data.response;
-          }
-          return newConversation;
-      });
+    if (submittedQuery) {
+      const newConversation: ConversationTurn[] = [
+        ...conversation,
+        { actor: 'user', text: submittedQuery },
+        { actor: 'ai', text: '' },
+      ];
+      setConversation(newConversation);
+      setSubmittedQuery(null);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [submittedQuery]);
+
+  useEffect(() => {
+    if (data) {
+      setConversation(prev => {
+        const newConversation = [...prev];
+        const lastTurn = newConversation[newConversation.length - 1];
+        if (lastTurn && lastTurn.actor === 'ai') {
+          lastTurn.text = (data as any).response;
+        }
+        return newConversation;
+      });
+    }
+  }, [data]);
   
   useEffect(() => {
-      if (conversationContainerRef.current) {
-          conversationContainerRef.current.scrollTop = conversationContainerRef.current.scrollHeight;
-      }
+    if (conversationContainerRef.current) {
+      conversationContainerRef.current.scrollTop = conversationContainerRef.current.scrollHeight;
+    }
   }, [conversation]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !pending) {
+    if (event.key === 'Enter' && !event.shiftKey && !isPending) {
       event.preventDefault();
       formRef.current?.requestSubmit();
     }
@@ -93,9 +98,8 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
 
   const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
-    // Add user message, and a placeholder for AI response.
-    setConversation(prev => [...prev, { actor: 'user', text: query }, { actor: 'ai', text: 'Thinking...' }]);
-    dispatch(formData);
+    setSubmittedQuery(query);
+    formAction(formData);
     formRef.current?.reset();
   }
   
@@ -111,7 +115,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
                               {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
                             </div>
                             <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                               {(turn.actor === 'ai' && pending && index === conversation.length - 1) 
+                               {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
                                 ? <Loader2 className="animate-spin" />
                                 : <ReactMarkdown>{turn.text}</ReactMarkdown>
                                }
@@ -131,7 +135,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
           placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
           className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
-          disabled={pending}
+          disabled={isPending}
           onKeyDown={handleKeyDown}
         />
         {state?.errors?.query && (

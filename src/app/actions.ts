@@ -5,15 +5,20 @@ import {
   contextualAssistant,
   ContextualAssistantInput,
 } from '@/ai/flows/contextual-assistant';
+import { 
+  suggestService,
+  ServiceSuggesterInput,
+} from '@/ai/flows/service-suggester';
 import { z } from 'zod';
 import db from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
+import { createStreamableValue } from 'ai/rsc';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// --- AI Suggestion Action ---
+// --- AI Contextual Assistant Action (Conversational) ---
 
 const suggestionSchema = z.object({
   query: z
@@ -28,20 +33,17 @@ const suggestionSchema = z.object({
 });
 
 export type SuggestionState = {
+  data?: any;
   errors?: {
     query?: string[];
   };
   message?: string | null;
-  data?: {
-    query: string;
-    response: string;
-  } | null;
 };
 
 export async function getContextualSuggestion(
   prevState: SuggestionState | null,
   formData: FormData
-): Promise<SuggestionState> {
+) {
   const validatedFields = suggestionSchema.safeParse({
     query: formData.get('query'),
     pageTitle: formData.get('pageTitle'),
@@ -55,22 +57,72 @@ export async function getContextualSuggestion(
     };
   }
 
-  try {
-    const input: ContextualAssistantInput = {
-      query: validatedFields.data.query,
-      pageTitle: validatedFields.data.pageTitle,
-      pageContent: validatedFields.data.pageContent,
+  const stream = createStreamableValue();
+
+  (async () => {
+    try {
+      const input: ContextualAssistantInput = {
+        query: validatedFields.data.query,
+        pageTitle: validatedFields.data.pageTitle,
+        pageContent: validatedFields.data.pageContent,
+      };
+      const result = await contextualAssistant(input);
+      stream.done(result);
+    } catch (error) {
+      console.error('AI Suggestion Error:', error);
+      stream.done({
+        response: 'An error occurred on our end. Please try again later.',
+      });
+    }
+  })();
+  
+  return { data: stream.value };
+}
+
+
+// --- AI Service Suggester Action (Homepage) ---
+
+const serviceSuggestionSchema = z.object({
+  bottleneck: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
+});
+
+export type ServiceSuggestionState = {
+  errors?: {
+    bottleneck?: string[];
+  };
+  message?: string | null;
+  data?: {
+    serviceSlug: string;
+    suggestion: string;
+  } | null;
+}
+
+export async function getServiceSuggestion(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
+  const validatedFields = serviceSuggestionSchema.safeParse({
+    bottleneck: formData.get('bottleneck'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid input.',
     };
-    const result = await contextualAssistant(input);
+  }
+  
+  try {
+    const input: ServiceSuggesterInput = {
+      bottleneck: validatedFields.data.bottleneck,
+    };
+    const result = await suggestService(input);
     return {
       message: 'Success',
       data: {
-        query: validatedFields.data.query,
-        response: result.response,
+        serviceSlug: result.serviceSlug,
+        suggestion: result.suggestion,
       },
     };
   } catch (error) {
-    console.error('AI Suggestion Error:', error);
+     console.error('Service Suggestion Error:', error);
     return {
       message:
         'An error occurred on our end. Please try again later.',
