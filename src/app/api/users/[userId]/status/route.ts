@@ -1,6 +1,6 @@
 // src/app/api/users/[userId]/status/route.ts
 import { NextResponse } from 'next/server';
-import db from '@/lib/firebase/admin';
+import { getDb } from '@/lib/firebase/admin';
 
 export async function GET(
   request: Request,
@@ -24,6 +24,7 @@ export async function GET(
   }
 
   try {
+    const db = await getDb();
     // 2. Query Firestore for the customer document
     const customerRef = db.collection('customers').doc(userId);
     const customerDoc = await customerRef.get();
