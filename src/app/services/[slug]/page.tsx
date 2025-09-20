@@ -70,9 +70,9 @@ export default function ServicePage({ params }: ServicePageProps) {
                 />
               </div>
               <aside className="lg:col-span-2">
-                <div className="sticky p-8 rounded-lg top-24 bg-card border border-border">
+                <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
                     <h3 className="text-2xl font-bold font-headline">Core Features</h3>
-                     <ul className="mt-6 space-y-4">
+                     <ul className="mt-4 space-y-3">
                         {service.bullets.map((bullet, index) => (
                           <li key={index} className="flex items-start">
                             <Check className="w-5 h-5 mr-3 text-primary shrink-0 mt-1" />
@@ -80,13 +80,13 @@ export default function ServicePage({ params }: ServicePageProps) {
                           </li>
                         ))}
                       </ul>
-                      <div className="mt-8 space-y-3">
+                      <div className="mt-6 space-y-3">
                          <CalendlyButton size="lg" className='w-full'>
                             Book a Demo <ArrowRight className="ml-2" />
                         </CalendlyButton>
                         <FavoriteAgentButton agentName={service.title} agentSlug={service.slug} />
                       </div>
-                      <Separator className="my-8" />
+                      <Separator className="my-6" />
                       <NotesTaker serviceName={service.title} />
                 </div>
               </aside>

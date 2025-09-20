@@ -75,13 +75,13 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <div className="space-y-4">
-        <h3 className="text-2xl font-bold font-headline">Your Private Notes</h3>
+      <div className="space-y-3">
+        <h3 className="text-xl font-bold font-headline">Your Private Notes</h3>
         <Textarea
           placeholder="Jot down questions, ideas, or requirements as you read..."
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="min-h-[150px] text-base"
+          className="min-h-[120px] text-base"
         />
         <DialogTrigger asChild>
           <Button
