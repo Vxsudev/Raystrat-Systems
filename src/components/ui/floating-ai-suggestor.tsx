@@ -188,7 +188,7 @@ function FloatingAiButton() {
       size="icon"
       className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
     >
-      <Brain className="h-7 w-7 text-primary-foreground" />
+      <span className="text-4xl" role="img" aria-label="Brain">🧠</span>
       <span className="sr-only">Open AI Assistant</span>
     </Button>
   );

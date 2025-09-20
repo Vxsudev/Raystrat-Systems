@@ -74,34 +74,39 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
   const conversationContainerRef = useRef<HTMLDivElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const initialStream = createStreamableValue();
-  const [data] = useStreamableValue(state?.data || initialStream.value);
-  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [data] = useStreamableValue(state?.data);
 
   useEffect(() => {
-    if (submittedQuery) {
-      setConversation(prev => [
-        ...prev,
-        { actor: 'user', text: submittedQuery },
-        { actor: 'ai', text: '' },
-      ]);
-      setSubmittedQuery(null);
+    if (state?.message === 'Success' && data) {
+      const lastTurn = conversation[conversation.length - 1];
+       if (lastTurn && lastTurn.actor === 'ai') {
+        lastTurn.text = (data as any).response;
+        setConversation([...conversation]);
+      } else {
+         setConversation(prev => [
+          ...prev,
+          { actor: 'ai', text: (data as any).response },
+        ]);
+      }
     }
-  }, [submittedQuery]);
+  }, [data, state]);
 
-  useEffect(() => {
-    if (data) {
-      setConversation(prev => {
-        const newConversation = [...prev];
-        const lastTurn = newConversation[newConversation.length - 1];
-        if (lastTurn && lastTurn.actor === 'ai') {
-          lastTurn.text = (data as any).response;
-        }
-        return newConversation;
-      });
-    }
-  }, [data]);
-  
+  const handleFormSubmit = (formData: FormData) => {
+    const query = formData.get('query') as string;
+    if (!query) return;
+
+    setConversation(prev => [
+      ...prev,
+      { actor: 'user', text: query },
+    ]);
+    
+    formAction(formData);
+
+    if (formRef.current) formRef.current.reset();
+    if (followUpFormRef.current) followUpFormRef.current.reset();
+  };
+
   useEffect(() => {
     if (conversationContainerRef.current) {
         const element = conversationContainerRef.current;
@@ -125,13 +130,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
       }
     }
   };
-  
-  const handleFormSubmit = (formData: FormData) => {
-    const query = formData.get('query') as string;
-    if (!query) return;
-    setSubmittedQuery(query);
-    formAction(formData);
-  }
+
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -141,16 +140,26 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
               {conversation.map((turn, index) => (
                   <div key={index} className="flex items-start gap-3">
                       <div className="p-2 rounded-full bg-muted border">
-                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Brain className="w-5 h-5 text-primary" />}
+                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">🧠</span>}
                       </div>
                       <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                         {(turn.actor === 'ai' && isPending && index === conversation.length - 1 && !data) 
+                         {(turn.actor === 'ai' && !turn.text) 
                           ? <Loader2 className="animate-spin" />
                           : <ReactMarkdown>{turn.text}</ReactMarkdown>
                          }
                       </div>
                   </div>
               ))}
+              {isPending && conversation[conversation.length - 1]?.actor === 'user' && (
+                <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-full bg-muted border">
+                        <span className="text-xl" role="img" aria-label="Brain">🧠</span>
+                    </div>
+                    <div className="pt-1.5">
+                        <Loader2 className="animate-spin" />
+                    </div>
+                </div>
+              )}
             </div>
             
             <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">
