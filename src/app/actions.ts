@@ -2,9 +2,9 @@
 'use server';
 
 import {
-  suggestAutomation,
-  SuggestAutomationInput,
-} from '@/ai/flows/suggest-automation';
+  contextualAssistant,
+  ContextualAssistantInput,
+} from '@/ai/flows/contextual-assistant';
 import { z } from 'zod';
 import db from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
@@ -16,32 +16,36 @@ if (process.env.SENDGRID_API_KEY) {
 // --- AI Suggestion Action ---
 
 const suggestionSchema = z.object({
-  contentBottleneckDescription: z
+  query: z
     .string({
-      required_error: 'Please describe your content bottleneck.',
+      required_error: 'Please ask a question or describe a problem.',
     })
-    .min(20, {
-      message: 'Please describe your bottleneck in at least 20 characters.',
+    .min(10, {
+      message: 'Please enter at least 10 characters.',
     }),
+  pageTitle: z.string(),
+  pageContent: z.string(),
 });
 
 export type SuggestionState = {
   errors?: {
-    contentBottleneckDescription?: string[];
+    query?: string[];
   };
   message?: string | null;
   data?: {
-    suggestedService: string;
-    reasoning: string;
+    query: string;
+    response: string;
   } | null;
 };
 
-export async function getAutomationSuggestion(
+export async function getContextualSuggestion(
   prevState: SuggestionState | null,
   formData: FormData
 ): Promise<SuggestionState> {
   const validatedFields = suggestionSchema.safeParse({
-    contentBottleneckDescription: formData.get('contentBottleneckDescription'),
+    query: formData.get('query'),
+    pageTitle: formData.get('pageTitle'),
+    pageContent: formData.get('pageContent'),
   });
 
   if (!validatedFields.success) {
@@ -52,12 +56,19 @@ export async function getAutomationSuggestion(
   }
 
   try {
-    const input: SuggestAutomationInput = {
-      contentBottleneckDescription:
-        validatedFields.data.contentBottleneckDescription,
+    const input: ContextualAssistantInput = {
+      query: validatedFields.data.query,
+      pageTitle: validatedFields.data.pageTitle,
+      pageContent: validatedFields.data.pageContent,
     };
-    const result = await suggestAutomation(input);
-    return { message: 'Success', data: result };
+    const result = await contextualAssistant(input);
+    return {
+      message: 'Success',
+      data: {
+        query: validatedFields.data.query,
+        response: result.response,
+      },
+    };
   } catch (error) {
     console.error('AI Suggestion Error:', error);
     return {
@@ -66,6 +77,7 @@ export async function getAutomationSuggestion(
     };
   }
 }
+
 
 // --- Favorite Agent Action ---
 

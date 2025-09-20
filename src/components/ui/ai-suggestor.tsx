@@ -3,15 +3,13 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getAutomationSuggestion, SuggestionState } from '@/app/actions';
+import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Loader2, Sparkles } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
-import { services } from '@/data/content';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -25,11 +23,11 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 animate-spin" />
-          Analyzing...
+          Thinking...
         </>
       ) : (
         <>
-          Get Suggestion <ArrowRight className="ml-2" />
+          Get Answer <ArrowRight className="ml-2" />
         </>
       )}
     </Button>
@@ -37,16 +35,29 @@ function SubmitButton() {
 }
 
 interface AiSuggestorProps {
+  pageTitle: string;
+  pageContent: string;
   onSuggestionClick?: () => void;
 }
 
-export function AiSuggestor({ onSuggestionClick }: AiSuggestorProps) {
-  const [state, dispatch] = useActionState(getAutomationSuggestion, null);
+type ConversationTurn = {
+    actor: 'user' | 'ai';
+    text: string;
+}
+
+export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSuggestorProps) {
+  const [state, dispatch] = useActionState(getContextualSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
+  const [conversation, setConversation] = useState<ConversationTurn[]>([]);
 
   useEffect(() => {
-    if (state?.message === 'Success') {
+    if (state?.message === 'Success' && state.data) {
+      setConversation(prev => [
+          ...prev,
+          { actor: 'user', text: state.data!.query },
+          { actor: 'ai', text: state.data!.response }
+      ]);
       formRef.current?.reset();
     }
     if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
@@ -65,57 +76,44 @@ export function AiSuggestor({ onSuggestionClick }: AiSuggestorProps) {
     }
   };
   
-  const suggestedServiceSlug = state?.data?.suggestedService 
-    ? services.find(s => s.title === state.data!.suggestedService)?.slug 
-    : null;
-
   return (
     <div className="w-full">
+      {conversation.length > 0 && (
+          <Card className="mb-6 bg-transparent border-border/50 max-h-64 overflow-y-auto">
+              <CardContent className="p-4 space-y-4">
+                  {conversation.map((turn, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                          <div className="p-2 rounded-full bg-muted border">
+                            {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
+                          </div>
+                          <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                            {turn.text}
+                          </div>
+                      </div>
+                  ))}
+              </CardContent>
+          </Card>
+      )}
+
       <form ref={formRef} action={dispatch} className="space-y-4">
+        <input type="hidden" name="pageTitle" value={pageTitle} />
+        <input type="hidden" name="pageContent" value={pageContent} />
         <Textarea
-          name="contentBottleneckDescription"
-          placeholder="Describe your bottleneck. e.g., 'Chasing unpaid invoices takes too much time,' or 'Finding qualified leads is a constant struggle.'"
+          name="query"
+          placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?' or 'Give me three ideas for using the support agent in a SaaS business.'"
           className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
           onKeyDown={handleKeyDown}
         />
-        {state?.errors?.contentBottleneckDescription && (
+        {state?.errors?.query && (
           <p className="text-sm text-destructive">
-            {state.errors.contentBottleneckDescription[0]}
+            {state.errors.query[0]}
           </p>
         )}
         <div className="flex justify-center pt-2">
           <SubmitButton />
         </div>
       </form>
-
-      {state?.data && (
-        <Card className="mt-8 overflow-hidden border-2 border-primary bg-transparent shadow-lg shadow-primary/10">
-           <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent rounded-xl -z-10"></div>
-          <CardHeader className="flex-row items-center gap-4 p-4 border-b border-primary/20 bg-primary/10">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <div>
-              <p className="text-sm font-medium text-primary">AI Recommendation</p>
-              <CardTitle className="text-2xl font-bold font-headline">
-                {state.data.suggestedService}
-              </CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <p className="font-semibold text-foreground">Why this service?</p>
-            <p className="text-foreground/80">{state.data.reasoning}</p>
-          </CardContent>
-          {suggestedServiceSlug && (
-            <CardFooter className="p-4 bg-primary/10 border-t border-primary/20">
-              <Button asChild className='w-full' variant='outline' onClick={onSuggestionClick}>
-                <Link href={`/services/${suggestedServiceSlug}`}>
-                  Learn More <ArrowRight className="ml-2" />
-                </Link>
-              </Button>
-            </CardFooter>
-          )}
-        </Card>
-      )}
     </div>
   );
 }
