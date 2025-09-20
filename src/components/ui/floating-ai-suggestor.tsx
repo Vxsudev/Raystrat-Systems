@@ -163,7 +163,7 @@ function ContextualAssistant() {
           <div className="flex justify-center">
              <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
           </div>
-          <SheetTitle className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl">Raystrat AI Assistant</SheetTitle>
+          <SheetTitle className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl">Raystrat Support Agent</SheetTitle>
           <SheetDescription className="text-lg text-foreground/80">
             I have context on this page. How can I help you strategize?
           </SheetDescription>
