@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Loader2, Sparkles, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useStreamableValue } from 'ai/rsc';
 import ReactMarkdown from 'react-markdown';
 
 
@@ -54,7 +53,8 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
   const { toast } = useToast();
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const [data] = useStreamableValue(state?.data);
+  const { pending } = useFormStatus();
+
 
   useEffect(() => {
     if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
@@ -64,30 +64,19 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
         variant: 'destructive',
       });
     }
-    
-    if (state?.data) {
-        // We have a new response from the action
-        const newConversation: ConversationTurn[] = [
-            ...conversation, 
-            { actor: 'ai', text: data || '' }
-        ];
 
-        // Check if the last turn was also from the AI, if so, merge them
-        if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'user' && data) {
-            setConversation(prev => {
-                const updatedConversation = [...prev, { actor: 'ai', text: data as string }];
-                return updatedConversation;
-            });
-        } else if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'ai' && data) {
-             setConversation(prev => {
-                const newConversation = [...prev];
-                newConversation[newConversation.length - 1].text = data as string;
-                return newConversation;
-            });
-        }
+    if (state?.data?.response) {
+      // Once the action is done, update the last AI message with the final response.
+      setConversation(prev => {
+          const newConversation = [...prev];
+          if (newConversation.length > 0 && newConversation[newConversation.length - 1].actor === 'ai') {
+              newConversation[newConversation.length - 1].text = state.data.response;
+          }
+          return newConversation;
+      });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, data]);
+  }, [state]);
   
   useEffect(() => {
       if (conversationContainerRef.current) {
@@ -96,7 +85,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
   }, [conversation]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && !pending) {
       event.preventDefault();
       formRef.current?.requestSubmit();
     }
@@ -104,7 +93,8 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
 
   const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
-    setConversation(prev => [...prev, { actor: 'user', text: query }]);
+    // Add user message, and a placeholder for AI response.
+    setConversation(prev => [...prev, { actor: 'user', text: query }, { actor: 'ai', text: 'Thinking...' }]);
     dispatch(formData);
     formRef.current?.reset();
   }
@@ -121,7 +111,10 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
                               {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
                             </div>
                             <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                              <ReactMarkdown>{turn.text}</ReactMarkdown>
+                               {(turn.actor === 'ai' && pending && index === conversation.length - 1) 
+                                ? <Loader2 className="animate-spin" />
+                                : <ReactMarkdown>{turn.text}</ReactMarkdown>
+                               }
                             </div>
                         </div>
                     ))}
@@ -138,6 +131,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionClick }: AiSug
           placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
           className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
           required
+          disabled={pending}
           onKeyDown={handleKeyDown}
         />
         {state?.errors?.query && (
