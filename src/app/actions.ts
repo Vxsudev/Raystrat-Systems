@@ -315,7 +315,9 @@ export type ProfileState = {
 
 export async function updateUserProfile(prevState: ProfileState, formData: FormData): Promise<ProfileState> {
     const user = await getAuthenticatedUser();
-    if (!user) return { message: 'Error', errors: { name: ['Not authenticated.'] } };
+    if (!user) {
+        return { message: 'Error', errors: { name: ['Not authenticated.'] } };
+    }
 
     const validatedFields = profileSchema.safeParse({ name: formData.get('name') });
     if (!validatedFields.success) {
