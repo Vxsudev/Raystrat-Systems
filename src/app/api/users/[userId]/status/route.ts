@@ -9,7 +9,7 @@ export async function GET(
   const { userId } = params;
   const apiKey = request.headers.get('x-api-key');
 
-  // 1. Verify API Key
+  // 1. Verify API Key - This is the central security check.
   if (!process.env.N8N_MAKE_API_KEY) {
     console.error('N8N_MAKE_API_KEY is not set in environment variables.');
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
@@ -36,7 +36,7 @@ export async function GET(
     const customerData = customerDoc.data();
     const planStatus = customerData?.planStatus;
 
-    // 3. Check planStatus and return response
+    // 3. Check planStatus and return the definitive entitlement response
     if (planStatus === 'active') {
       return NextResponse.json({ status: 'active', canRun: true });
     } else {
