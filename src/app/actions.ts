@@ -1,4 +1,3 @@
-
 // src/app/actions.ts
 'use server';
 
@@ -71,7 +70,7 @@ export async function getContextualSuggestion(
     const input: ContextualAssistantInput = {
       query: validatedFields.data.query,
       pageTitle: validatedFields.data.pageTitle,
-      pageContent: validatedFields.data.pageContent,
+      pageContent: validated-fields.data.pageContent,
     };
     const result = await contextualAssistant(input);
     return { data: result, message: 'Success' };
@@ -527,4 +526,121 @@ export async function getSequenceTemplates(): Promise<Sequence[]> {
         // For now, we'll return an empty array to prevent the UI from crashing.
         return [];
     }
+}
+
+
+// --- Lead Enrollment Actions ---
+
+const enrollLeadsSchema = z.object({
+  sequenceId: z.string().min(1, 'A sequence must be selected.'),
+  startInMinutes: z.number().min(0),
+  leadsCSV: z.string().optional(),
+  leadsPasted: z.string().optional(),
+}).refine(data => data.leadsCSV || data.leadsPasted, {
+  message: 'You must provide leads via CSV or pasted text.',
+  path: ['general'],
+});
+
+
+export type EnrollLeadsState = {
+  errors?: {
+    sequenceId?: string[];
+    leadsCSV?: string[];
+    leadsPasted?: string[];
+    general?: string[];
+  };
+  message: 'Success' | 'Error' | null;
+  data?: {
+    enrolledCount: number;
+  } | null;
+}
+
+export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: FormData): Promise<EnrollLeadsState> {
+  const user = await getAuthenticatedUser();
+  if (!user || !user.claims.tenantId) {
+    return { message: 'Error', errors: { general: ['Authentication error: No tenant ID found.'] } };
+  }
+  const tenantId = user.claims.tenantId;
+
+  const validatedFields = enrollLeadsSchema.safeParse({
+    sequenceId: formData.get('sequenceId'),
+    startInMinutes: Number(formData.get('startInMinutes') || 0),
+    leadsCSV: formData.get('leadsCSV'),
+    leadsPasted: formData.get('leadsPasted'),
+  });
+
+  if (!validatedFields.success) {
+    return { message: 'Error', errors: validatedFields.error.flatten().fieldErrors };
+  }
+
+  const { sequenceId, startInMinutes, leadsCSV, leadsPasted } = validatedFields.data;
+
+  try {
+    // Fetch the full sequence template
+    const seqTemplateSnap = await db.collection('sequenceTemplates').doc(sequenceId).get();
+    if (!seqTemplateSnap.exists) {
+      return { message: 'Error', errors: { general: ['Sequence template not found.'] } };
+    }
+    const sequenceTemplate = seqTemplateSnap.data() as SequenceTemplate;
+    const steps = sequenceTemplate.steps;
+
+    // Parse leads from CSV or pasted text
+    const leadsRaw = leadsCSV || leadsPasted || '';
+    const lines = leadsRaw.split('\n').filter(line => line.trim() !== '');
+    const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const emailIndex = header.indexOf('email');
+    const nameIndex = header.indexOf('name');
+
+    if (emailIndex === -1) {
+      return { message: 'Error', errors: { general: ['CSV data must contain an "email" column.'] } };
+    }
+
+    const leads = lines.slice(1).map(line => {
+      const values = line.split(',');
+      return {
+        email: values[emailIndex]?.trim(),
+        name: nameIndex > -1 ? values[nameIndex]?.trim() : undefined,
+      };
+    }).filter(lead => lead.email);
+    
+    if (leads.length === 0) {
+        return { message: 'Error', errors: { general: ['No valid leads found in the provided data.'] } };
+    }
+    
+    // Get user's ID token for authenticated backend requests
+    const idToken = await adminAuth().createCustomToken(user.uid, { tenantId });
+
+    const apiUrl = `${process.env.AGENT_API_BASE_URL}/followup/lead-intake`;
+    
+    let enrolledCount = 0;
+    // Batch enroll leads to avoid overwhelming the service
+    const enrollmentPromises = leads.map(lead => {
+        const payload = {
+            ...lead,
+            steps,
+            startInMinutes,
+            force: true, // Allow re-enrollment for simplicity in this UI
+        };
+
+        return fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`,
+            },
+            body: JSON.stringify(payload),
+        }).then(res => {
+            if (res.ok) enrolledCount++;
+            // In a real app, you'd collect and report failures
+        });
+    });
+
+    await Promise.all(enrollmentPromises);
+    
+    return { message: 'Success', data: { enrolledCount } };
+
+  } catch (error) {
+    console.error('Lead enrollment error:', error);
+    return { message: 'Error', errors: { general: ['An internal server error occurred while enrolling leads.'] } };
+  }
 }

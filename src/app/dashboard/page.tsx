@@ -1,4 +1,3 @@
-
 // src/app/dashboard/page.tsx
 'use client';
 
@@ -10,7 +9,7 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { auth } from '@/lib/firebase/client';
-import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users, PlusCircle, Mail, Play } from 'lucide-react';
+import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users, PlusCircle, Mail, Play, Upload } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +25,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SequenceForm } from '@/components/ui/sequence-form';
-import { saveSequenceTemplate, SaveSequenceState, getSequenceTemplates } from '@/app/actions';
+import { AddLeadsForm } from '@/components/ui/add-leads-form';
+import { saveSequenceTemplate, SaveSequenceState, getSequenceTemplates, enrollLeadsFromCSV, EnrollLeadsState } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -237,31 +237,46 @@ export default function DashboardPage() {
   const [leadsData, setLeadsData] = useState<LeadsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingSequences, setIsLoadingSequences] = useState(true);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  
+  const [isSequenceFormOpen, setIsSequenceFormOpen] = useState(false);
+  const [isAddLeadsFormOpen, setIsAddLeadsFormOpen] = useState(false);
 
   const [sequences, setSequences] = useState<Sequence[]>([]);
 
-  const [state, formAction] = useActionState<SaveSequenceState, SequenceTemplate>(saveSequenceTemplate, { message: null });
+  const [sequenceFormState, sequenceFormAction] = useActionState<SaveSequenceState, SequenceTemplate>(saveSequenceTemplate, { message: null });
+  const [enrollLeadsState, enrollLeadsAction] = useActionState<EnrollLeadsState, FormData>(enrollLeadsFromCSV, { message: null });
   
   useEffect(() => {
-    if (state.message === 'Success' && state.data) {
+    if (sequenceFormState.message === 'Success' && sequenceFormState.data) {
         toast({ title: 'Success!', description: 'Your sequence template has been saved.' });
         
         const newSequence: Sequence = {
-            ...state.data,
-            id: state.data.id!,
+            ...sequenceFormState.data,
+            id: sequenceFormState.data.id!,
             leads: 0,
             sent: 0,
             replied: 0,
             booked: 0,
         };
         setSequences(prev => [newSequence, ...prev]);
-        setIsFormOpen(false);
-    } else if (state.message === 'Error') {
-        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+        setIsSequenceFormOpen(false);
+    } else if (sequenceFormState.message === 'Error') {
+        const errorMessage = sequenceFormState.errors?.general?.[0] || 'An unknown error occurred.';
         toast({ title: 'Error Saving Sequence', description: errorMessage, variant: 'destructive' });
     }
-  }, [state, toast]);
+  }, [sequenceFormState, toast]);
+
+   useEffect(() => {
+    if (enrollLeadsState.message === 'Success' && enrollLeadsState.data) {
+        toast({ title: 'Success!', description: `${enrollLeadsState.data.enrolledCount} leads have been enrolled.` });
+        setIsAddLeadsFormOpen(false);
+        // Here you might want to refresh the sequence stats in the future
+    } else if (enrollLeadsState.message === 'Error') {
+        const errorMessage = enrollLeadsState.errors?.general?.[0] || 'An unknown error occurred.';
+        toast({ title: 'Error Enrolling Leads', description: errorMessage, variant: 'destructive' });
+    }
+  }, [enrollLeadsState, toast]);
+
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -480,23 +495,42 @@ export default function DashboardPage() {
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <CardTitle>Follow-Up Sequences</CardTitle>
-                             <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-                                <DialogTrigger asChild>
-                                    <Button>
-                                        <PlusCircle className="mr-2 h-4 w-4" />
-                                        Create New Sequence
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-3xl">
-                                    <DialogHeader>
-                                        <DialogTitle>Create New Sequence</DialogTitle>
-                                        <DialogDescription>
-                                            Define the steps and content for your automated email sequence.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <SequenceForm action={formAction} />
-                                </DialogContent>
-                            </Dialog>
+                             <div className="flex items-center gap-2">
+                               <Dialog open={isAddLeadsFormOpen} onOpenChange={setIsAddLeadsFormOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" disabled={sequences.length === 0}>
+                                            <Upload className="mr-2 h-4 w-4" />
+                                            Add Leads
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-md">
+                                        <DialogHeader>
+                                            <DialogTitle>Add Leads to Sequence</DialogTitle>
+                                            <DialogDescription>
+                                                Upload a CSV or paste lead data to enroll them in a sequence.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <AddLeadsForm sequences={sequences} action={enrollLeadsAction} />
+                                    </DialogContent>
+                                </Dialog>
+                                <Dialog open={isSequenceFormOpen} onOpenChange={setIsSequenceFormOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button>
+                                            <PlusCircle className="mr-2 h-4 w-4" />
+                                            Create Sequence
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle>Create New Sequence</DialogTitle>
+                                            <DialogDescription>
+                                                Define the steps and content for your automated email sequence.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <SequenceForm action={sequenceFormAction} />
+                                    </DialogContent>
+                                </Dialog>
+                             </div>
                         </div>
                     </CardHeader>
                     <CardContent>
