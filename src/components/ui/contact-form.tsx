@@ -114,7 +114,7 @@ export function ContactForm() {
             "absolute left-4 transition-all duration-300 pointer-events-none text-muted-foreground",
             isFloating
               ? "text-xs top-1.5 text-primary"
-              : "text-base top-3.5"
+              "text-base top-3.5"
           )}
         >
           {label}
@@ -171,9 +171,9 @@ export function ContactForm() {
         </form>
       </Form>
       <div className="mt-3 text-center">
-        <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition">
-           Prefer to start with a 15-min audit? → <span className='underline'>Book here</span>
-        </Link>
+        <CalendlyButton variant="link" className="text-sm text-muted-foreground hover:text-foreground transition">
+           Prefer to start with a 15-min audit? Book here →
+        </CalendlyButton>
       </div>
       <div className="flex items-center justify-center gap-2 mt-3 text-xs text-muted-foreground/80">
         <Lock size={12} />

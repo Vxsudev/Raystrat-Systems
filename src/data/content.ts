@@ -5,7 +5,6 @@ import { BarChart, Bot, FileText, Inbox, IndianRupee, Recycle, Search, Sparkles,
 export const navigationLinks = [
   { name: 'Services', href: '/#services' },
   { name: 'Results', href: '/#results' },
-  { name: 'Pricing', href: '/#pricing' },
   { name: 'Bytes', href: '/bytes' },
   { name: 'FAQ', href: '/#faq' },
 ];

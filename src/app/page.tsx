@@ -7,7 +7,6 @@ import { Services } from '@/components/sections/services';
 import { Industries } from '@/components/sections/industries';
 import { AgentAdvantage } from '@/components/sections/agent-advantage';
 import { Results } from '@/components/sections/results';
-import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
@@ -63,7 +62,6 @@ export default async function Home() {
         <Industries />
         <AgentAdvantage />
         <Results />
-        <Pricing />
         <ByteOfTheWeek />
         <Faq />
       </main>
