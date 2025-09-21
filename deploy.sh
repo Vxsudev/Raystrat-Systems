@@ -50,16 +50,17 @@ echo ">>> Configuring Docker authentication..."
 gcloud auth configure-docker "$REGION-docker.pkg.dev" -q
 
 # 5. Build and push the image using Cloud Build
-echo ">>> Building and pushing the container image..."
-export IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE_NAME}:$(date +%Y%m%d-%H%M%S)"
-gcloud builds submit --tag "$IMAGE" --project="$PROJECT_ID" .
+echo ">>> Building and pushing the container image using cloudbuild.yaml..."
+export IMAGE_TAG=$(date +%Y%m%d-%H%M%S)
+export IMAGE_URL="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${SERVICE_NAME}:${IMAGE_TAG}"
+gcloud builds submit --config=cloudbuild.yaml --substitutions=_IMAGE="$IMAGE_URL" --project="$PROJECT_ID" .
 
 # 6. Deploy to Cloud Run
 echo ">>> Deploying to Cloud Run..."
 # Generate a secure random secret for cron jobs
 CRON_SECRET=$(openssl rand -hex 16)
 gcloud run deploy "$SERVICE_NAME" \
-  --image "$IMAGE" \
+  --image "$IMAGE_URL" \
   --region "$REGION" \
   --platform managed \
   --allow-unauthenticated \
