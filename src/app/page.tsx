@@ -15,37 +15,42 @@ import { ByteOfTheWeek } from '@/components/sections/byte-of-the-week';
 export default async function Home() {
   const headersList = headers();
   const host = headersList.get('host');
-  const pathname = headersList.get('x-next-pathname') || '/'; // Get the pathname from headers
+  const pathname = headersList.get('x-next-pathname') || '/';
 
   const appDomain = 'app.raystratsystems.com';
-  const marketingDomain = 'raystratsystems.com';
-
+  
   const user = await getAuthenticatedUser().catch(() => null);
 
-  // Logic for the 'app' subdomain
+  // --- Domain-based Routing Logic ---
+  
+  // 1. App Subdomain Logic (app.raystratsystems.com)
   if (host === appDomain) {
+    const isAppPage = pathname.startsWith('/dashboard') || pathname === '/login' || pathname === '/signup';
+
     if (user) {
-      // If user is logged in and not on dashboard, redirect to dashboard
+      // Logged-in users on the app domain should only be on the dashboard.
       if (!pathname.startsWith('/dashboard')) {
         redirect('/dashboard');
       }
     } else {
-      // If user is not logged in, they should only be on login/signup pages
+      // Not-logged-in users on the app domain are restricted to login/signup.
       if (pathname !== '/login' && pathname !== '/signup') {
         redirect('/login');
       }
     }
-  }
-
-  // Logic for the main marketing domain
-  if (host === marketingDomain) {
-    // App-specific pages should not be on the marketing site. Redirect to homepage.
-    if (pathname.startsWith('/dashboard') || pathname.startsWith('/login') || pathname.startsWith('/signup')) {
-        redirect('/');
+  } 
+  // 2. Marketing Domain Logic (raystratsystems.com)
+  else { // Assuming any other host is the marketing domain
+    const isAppPage = pathname.startsWith('/dashboard') || pathname.startsWith('/login') || pathname.startsWith('/signup');
+    // Marketing site should never show app pages.
+    if (isAppPage) {
+      redirect('/');
     }
   }
 
-  // Otherwise, render the main marketing homepage.
+  // If no redirection has occurred, render the marketing homepage.
+  // This logic now correctly assumes that if we reach this point,
+  // we are on the marketing domain and the page is not an app page.
   return (
     <div className="flex flex-col min-h-screen">
       <div className="fixed top-0 left-0 w-full h-full bg-dotted-pattern -z-10" />
