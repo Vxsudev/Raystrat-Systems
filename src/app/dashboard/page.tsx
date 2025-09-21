@@ -9,7 +9,7 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { auth } from '@/lib/firebase/client';
-import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users } from 'lucide-react';
+import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users, PlusCircle, Mail, Play } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from '@/components/ui/badge';
@@ -57,6 +57,24 @@ interface LeadTableProps {
   leads: Lead[];
   isLoading: boolean;
 }
+
+interface Sequence {
+    id: string;
+    name: string;
+    status: 'active' | 'paused' | 'done';
+    leads: number;
+    sent: number;
+    replied: number;
+    booked: number;
+}
+
+const mockSequences: Sequence[] = [
+    { id: 'seq_1', name: 'New Client Onboarding', status: 'active', leads: 150, sent: 450, replied: 30, booked: 5 },
+    { id: 'seq_2', name: 'Cold Prospecting - Q3', status: 'active', leads: 800, sent: 2400, replied: 80, booked: 12 },
+    { id: 'seq_3', name: 'Past Client Reactivation', status: 'paused', leads: 250, sent: 250, replied: 45, booked: 15 },
+    { id: 'seq_4', name: 'Webinar Follow-up', status: 'done', leads: 400, sent: 1200, replied: 150, booked: 25 },
+];
+
 
 // --- Sub-components ---
 
@@ -122,6 +140,55 @@ function LeadTable({ leads, isLoading }: LeadTableProps) {
         </Table>
     );
 }
+
+function SequenceTable({ sequences, isLoading }: { sequences: Sequence[], isLoading: boolean }) {
+    
+    if (isLoading) {
+       return (
+         <div className="space-y-4 py-4">
+           <Skeleton className="h-12 w-full" />
+           <Skeleton className="h-12 w-full" />
+         </div>
+       );
+    }
+
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Sequence</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Leads</TableHead>
+                    <TableHead>% Replied</TableHead>
+                    <TableHead>% Booked</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {sequences.map((seq) => (
+                    <TableRow key={seq.id}>
+                        <TableCell className="font-medium">{seq.name}</TableCell>
+                        <TableCell>
+                            <Badge variant={seq.status === 'active' ? 'default' : 'secondary'}>
+                                {seq.status.charAt(0).toUpperCase() + seq.status.slice(1)}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>{seq.leads}</TableCell>
+                        <TableCell>{((seq.replied / seq.sent) * 100).toFixed(1)}%</TableCell>
+                        <TableCell>{((seq.booked / seq.replied) * 100).toFixed(1)}%</TableCell>
+                        <TableCell className="text-right">
+                            <Button variant="ghost" size="sm">
+                                <Play className="h-4 w-4" />
+                                <span className="sr-only">Manage</span>
+                            </Button>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
+
 
 // --- Main Page Component ---
 
@@ -217,145 +284,170 @@ export default function DashboardPage() {
             </Button>
           </div>
           
-          {/* KPI Bar */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            {isLoading ? (
-                Array.from({ length: 4 }).map((_, index) => (
-                    <Card key={index}>
-                        <CardHeader className='pb-2'>
-                            <Skeleton className="h-4 w-3/4" />
-                        </CardHeader>
-                        <CardContent>
-                            <Skeleton className="h-8 w-1/2" />
-                        </CardContent>
-                    </Card>
-                ))
-            ) : (
-                kpiData.map((kpi) => (
-                    <Card key={kpi.title}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
-                            <kpi.icon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{kpi.value}</div>
-                        </CardContent>
-                    </Card>
-                ))
-            )}
-          </div>
-
-          <div className="grid gap-8 lg:grid-cols-5">
-
-            {/* Main Column */}
-            <div className="lg:col-span-3 space-y-8">
-              {/* Sequence Health */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sequence Health</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
+          <Tabs defaultValue="overview">
+              <TabsList className="grid w-full grid-cols-3 mb-8">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="sequences">Sequences</TabsTrigger>
+                  <TabsTrigger value="inbox">Lead Inbox</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="overview">
+                {/* KPI Bar */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
                     {isLoading ? (
-                        <Skeleton className="h-[250px] w-full" />
+                        Array.from({ length: 4 }).map((_, index) => (
+                            <Card key={index}>
+                                <CardHeader className='pb-2'>
+                                    <Skeleton className="h-4 w-3/4" />
+                                </CardHeader>
+                                <CardContent>
+                                    <Skeleton className="h-8 w-1/2" />
+                                </CardContent>
+                            </Card>
+                        ))
                     ) : (
-                       <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={sequenceHealthData}>
-                          <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                          <Bar dataKey="S0" fill="hsl(var(--primary) / 0.6)" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="S1" fill="hsl(var(--primary) / 0.4)" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="S2" fill="hsl(var(--primary) / 0.2)" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
+                        kpiData.map((kpi) => (
+                            <Card key={kpi.title}>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                                    <kpi.icon className="h-4 w-4 text-muted-foreground" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold">{kpi.value}</div>
+                                </CardContent>
+                            </Card>
+                        ))
                     )}
-                </CardContent>
-              </Card>
+                </div>
 
-              {/* Lead Inbox */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Lead Inbox</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="new-replies">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="new-replies">New Replies</TabsTrigger>
-                      <TabsTrigger value="needs-human">Needs Human</TabsTrigger>
-                      <TabsTrigger value="bounced">Bounced</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="new-replies">
-                        <LeadTable leads={leadsData?.newReplies || []} isLoading={isLoading} />
-                    </TabsContent>
-                     <TabsContent value="needs-human">
-                        <LeadTable leads={leadsData?.needsHuman || []} isLoading={isLoading} />
-                    </TabsContent>
-                    <TabsContent value="bounced">
-                        <LeadTable leads={leadsData?.bounced || []} isLoading={isLoading} />
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* Side Column */}
-            <div className="lg:col-span-2 space-y-8">
-                {/* Deliverability Watch */}
+                <div className="grid gap-8 lg:grid-cols-5">
+                    <div className="lg:col-span-3 space-y-8">
+                        {/* Sequence Health */}
+                        <Card>
+                            <CardHeader>
+                            <CardTitle>Sequence Health</CardTitle>
+                            </CardHeader>
+                            <CardContent className="pl-2">
+                                {isLoading ? (
+                                    <Skeleton className="h-[250px] w-full" />
+                                ) : (
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <BarChart data={sequenceHealthData}>
+                                    <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+                                    <Bar dataKey="S0" fill="hsl(var(--primary) / 0.6)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="S1" fill="hsl(var(--primary) / 0.4)" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="S2" fill="hsl(var(--primary) / 0.2)" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Deliverability Watch */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Deliverability Watch</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                            {isLoading ? (
+                                <>
+                                    <Skeleton className="h-20 w-full" />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <Skeleton className="h-12 w-full" />
+                                        <Skeleton className="h-12 w-full" />
+                                    </div>
+                                </>
+                            ) : deliverabilityData ? (
+                                <>
+                                    <div className="flex items-center justify-between p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+                                        <div>
+                                            <p className="text-sm text-green-400">Deliverability Score</p>
+                                            <p className="text-3xl font-bold text-green-300">{deliverabilityData.deliverabilityScore}%</p>
+                                        </div>
+                                        <ShieldCheck className="w-10 h-10 text-green-400" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 text-center">
+                                        <div>
+                                            <p className="text-xs text-muted-foreground">Bounce Rate</p>
+                                            <p className="text-lg font-semibold">{deliverabilityData.bounceRate}%</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-muted-foreground">Spam Rate</p>
+                                            <p className="text-lg font-semibold">{deliverabilityData.spamRate}%</p>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : null}
+                            </CardContent>
+                        </Card>
+                        {/* Recent Activity */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Recent Activity</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                            {isLoading ? (
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-5/6" />
+                                    <Skeleton className="h-4 w-full" />
+                                </div>
+                            ) : (
+                                <p className='text-muted-foreground'>Agent activity will appear here...</p>
+                            )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="sequences">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Deliverability Watch</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                       {isLoading ? (
-                           <>
-                             <Skeleton className="h-20 w-full" />
-                             <div className="grid grid-cols-2 gap-4">
-                                <Skeleton className="h-12 w-full" />
-                                <Skeleton className="h-12 w-full" />
-                             </div>
-                           </>
-                       ) : deliverabilityData ? (
-                        <>
-                            <div className="flex items-center justify-between p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                                <div>
-                                    <p className="text-sm text-green-400">Deliverability Score</p>
-                                    <p className="text-3xl font-bold text-green-300">{deliverabilityData.deliverabilityScore}%</p>
-                                </div>
-                                <ShieldCheck className="w-10 h-10 text-green-400" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 text-center">
-                                <div>
-                                    <p className="text-xs text-muted-foreground">Bounce Rate</p>
-                                    <p className="text-lg font-semibold">{deliverabilityData.bounceRate}%</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-muted-foreground">Spam Rate</p>
-                                    <p className="text-lg font-semibold">{deliverabilityData.spamRate}%</p>
-                                </div>
-                            </div>
-                        </>
-                       ) : null}
-                    </CardContent>
-                </Card>
-
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
+                        <div className="flex justify-between items-center">
+                            <CardTitle>Follow-Up Sequences</CardTitle>
+                            <Button>
+                                <PlusCircle className="mr-2 h-4 w-4" />
+                                Create New Sequence
+                            </Button>
+                        </div>
                     </CardHeader>
                     <CardContent>
-                       {isLoading ? (
-                           <div className="space-y-2">
-                               <Skeleton className="h-4 w-full" />
-                               <Skeleton className="h-4 w-5/6" />
-                               <Skeleton className="h-4 w-full" />
-                           </div>
-                       ) : (
-                        <p className='text-muted-foreground'>Agent activity will appear here...</p>
-                       )}
+                        <SequenceTable sequences={mockSequences} isLoading={isLoading} />
                     </CardContent>
                 </Card>
-            </div>
+              </TabsContent>
+              
+              <TabsContent value="inbox">
+                 {/* Lead Inbox */}
+                <Card>
+                    <CardHeader>
+                    <CardTitle>Lead Inbox</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <Tabs defaultValue="new-replies">
+                        <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="new-replies">New Replies</TabsTrigger>
+                        <TabsTrigger value="needs-human">Needs Human</TabsTrigger>
+                        <TabsTrigger value="bounced">Bounced</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="new-replies">
+                            <LeadTable leads={leadsData?.newReplies || []} isLoading={isLoading} />
+                        </TabsContent>
+                        <TabsContent value="needs-human">
+                            <LeadTable leads={leadsData?.needsHuman || []} isLoading={isLoading} />
+                        </TabsContent>
+                        <TabsContent value="bounced">
+                            <LeadTable leads={leadsData?.bounced || []} isLoading={isLoading} />
+                        </TabsContent>
+                    </Tabs>
+                    </CardContent>
+                </Card>
+              </TabsContent>
 
-          </div>
+          </Tabs>
 
         </div>
       </main>
