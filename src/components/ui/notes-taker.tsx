@@ -111,7 +111,7 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
             notesAreEmpty && !initialNote ? 'opacity-100' : 'opacity-0'
           )}
         >
-          Start typing to save your notes.
+          Jot down your questions, ideas and requirements as you read. Save the note to see our operations and follow-up agents in action!
         </p>
       </div>
 
