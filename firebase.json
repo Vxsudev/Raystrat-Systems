@@ -42,6 +42,10 @@
       {
         "variable": "N8N_MAKE_API_KEY",
         "secret": "N8N_MAKE_API_KEY"
+      },
+      {
+        "variable": "AGENT_API_BASE_URL",
+        "secret": "AGENT_API_BASE_URL"
       }
     ]
   },
