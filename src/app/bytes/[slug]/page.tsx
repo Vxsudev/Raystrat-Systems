@@ -1,8 +1,11 @@
+
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { NotesTaker } from '@/components/ui/notes-taker';
+import { Separator } from '@/components/ui/separator';
 
 interface BytePageProps {
   params: {
@@ -36,18 +39,27 @@ export default function BytePage({ params }: BytePageProps) {
       <main className="flex-1">
         <article className="py-16 md:py-24 lg:py-32">
           <div className="container">
-            <div className="max-w-3xl mx-auto">
-              <header className="mb-8 text-center">
-                <span className="text-sm font-semibold tracking-widest uppercase text-primary">
-                  Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
-                </span>
-                <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
-                  {byte.title}
-                </h1>
-              </header>
-              <div className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80">
-                {byte.content}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+              <div className="lg:col-span-3">
+                <header className="mb-8">
+                    <div className="text-center">
+                        <span className="text-sm font-semibold tracking-widest uppercase text-primary">
+                        Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
+                        </span>
+                        <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
+                        {byte.title}
+                        </h1>
+                    </div>
+                </header>
+                <div className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80">
+                  {byte.content}
+                </div>
               </div>
+              <aside className="lg:col-span-2">
+                <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
+                    <NotesTaker serviceName={`Byte: ${byte.title}`} />
+                </div>
+              </aside>
             </div>
           </div>
         </article>
