@@ -45,7 +45,7 @@
       },
       {
         "variable": "AGENT_API_BASE_URL",
-        "secret": "FOLLO-WUP_AGENT_SECRET_URL"
+        "secret": "FOLLOW-UP_AGENT_SECRET_URL"
       }
     ]
   },
