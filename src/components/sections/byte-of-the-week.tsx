@@ -41,7 +41,7 @@ export function ByteOfTheWeek() {
                 </Button>
             </div>
           </div>
-          <div className="p-8 bg-card rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden">
+          <div className="p-8 bg-card rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden max-w-sm mx-auto w-full">
              <AnimatedGridBackground />
              <div className="text-center relative z-10">
                  <span className="text-6xl font-bold font-headline text-primary">
