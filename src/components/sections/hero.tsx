@@ -32,12 +32,12 @@ export function Hero() {
             <div className="relative flex items-center justify-center">
                  <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse-slower"></div>
                  <Image
-                    src="https://picsum.photos/seed/hero/600/600"
+                    src="https://picsum.photos/seed/hero-rect/800/600"
                     alt="AI and Human Collaboration"
-                    width={600}
+                    width={800}
                     height={600}
-                    className="rounded-full object-cover aspect-square"
-                    data-ai-hint="AI collaboration"
+                    className="rounded-2xl object-cover"
+                    data-ai-hint="AI robotics"
                     priority
                 />
             </div>
