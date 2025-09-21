@@ -10,6 +10,10 @@ import {
   suggestService,
   ServiceSuggesterInput,
 } from '@/ai/flows/service-suggester';
+import {
+  analyzeNotes,
+  NotesAnalyzerInput,
+} from '@/ai/flows/notes-analyzer';
 import { z } from 'zod';
 // Import the new centralized authentication helper and the admin SDK instances
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
@@ -255,42 +259,58 @@ export async function saveAndSendNotes(
     return { message: 'Server configuration error: Email service is not set up.' };
   }
 
-  // Define the two emails to send
-  const emailToOwner = {
-    to: process.env.SENDGRID_FROM_EMAIL,
-    from: process.env.SENDGRID_FROM_EMAIL,
-    subject: `New Notes Lead from ${name} (${serviceName})`,
-    html: `
-        <h2>New Lead via Notes Taker</h2>
-        <p>You've received a new lead from the notes section on the <strong>${serviceName}</strong> page.</p>
-        <ul>
-            <li><strong>Name:</strong> ${name}</li>
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
-        </ul>
-        <h3>Notes:</h3>
-        <pre>${notes}</pre>
-    `,
-  };
-
-  const emailToUser = {
-    to: email,
-    from: process.env.SENDGRID_FROM_EMAIL,
-    subject: `Your Notes on ${serviceName} from Raystrat Systems`,
-    html: `
-        <h2>Your Notes from Raystrat Systems</h2>
-        <p>Hi ${name},</p>
-        <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of the notes you took for your records:</p>
-        <hr>
-        <pre>${notes}</pre>
-        <hr>
-        <p>If you'd like to discuss how this agent can solve your specific bottlenecks, you can book a free 15-minute audit with our team.</p>
-        <p><a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
-        <p>Best,<br>The Raystrat Systems Team</p>
-    `,
-  };
-
   try {
+    // Generate AI-powered suggestion
+    let aiSuggestion = '';
+    try {
+      const analysisInput: NotesAnalyzerInput = { notes };
+      const analysisResult = await analyzeNotes(analysisInput);
+      aiSuggestion = analysisResult.suggestion;
+    } catch (aiError) {
+      console.error('AI Note Analysis Error:', aiError);
+      // If AI fails, we can fall back to a default message.
+      aiSuggestion =
+        '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team.</p>';
+    }
+    
+    // Define the two emails to send
+    const emailToOwner = {
+      to: process.env.SENDGRID_FROM_EMAIL,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: `New Notes Lead from ${name} (${serviceName})`,
+      html: `
+          <h2>New Lead via Notes Taker</h2>
+          <p>You've received a new lead from the notes section on the <strong>${serviceName}</strong> page.</p>
+          <ul>
+              <li><strong>Name:</strong> ${name}</li>
+              <li><strong>Email:</strong> ${email}</li>
+              <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
+          </ul>
+          <h3>Notes:</h3>
+          <pre>${notes}</pre>
+          <h3>AI Analysis:</h3>
+          <p>${aiSuggestion}</p>
+      `,
+    };
+
+    const emailToUser = {
+      to: email,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: `Your Notes on ${serviceName} from Raystrat Systems`,
+      html: `
+          <h2>Your Notes from Raystrat Systems</h2>
+          <p>Hi ${name},</p>
+          <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of the notes you took for your records:</p>
+          <hr>
+          <pre>${notes}</pre>
+          <hr>
+          <h3>Our AI-Powered Suggestion</h3>
+          <p>${aiSuggestion}</p>
+          <p><a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a> to discuss this further.</p>
+          <p>Best,<br>The Raystrat Systems Team</p>
+      `,
+    };
+
     // Send both emails in parallel
     await Promise.all([sgMail.send(emailToOwner), sgMail.send(emailToUser)]);
 
