@@ -91,10 +91,10 @@ export function Industries() {
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <p className="text-sm font-semibold tracking-widest uppercase text-primary font-headline">
-            Get Precision Automation In
+            AGENTS FOR EVERY VERTICAL
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-            Agents for Every Vertical
+            Get Precision Automation In
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
