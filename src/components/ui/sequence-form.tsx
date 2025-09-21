@@ -1,3 +1,4 @@
+
 // src/components/ui/sequence-form.tsx
 'use client';
 
@@ -7,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Trash2, Settings2 } from 'lucide-react';
+import { PlusCircle, Trash2, Settings2, Info } from 'lucide-react';
 import type { Sequence, SequenceStep } from '@/app/dashboard/page';
 import {
   Accordion,
@@ -16,6 +17,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Switch } from './switch';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 
 interface SequenceFormProps {
@@ -33,6 +40,22 @@ const DEFAULT_STEP: SequenceStep = {
     maxRetries: 3,
     backoffSeconds: 300, // 5 minutes
 };
+
+const TooltipLabel = ({ label, tooltipText }: { label: string; tooltipText: string }) => (
+    <div className="flex items-center space-x-2">
+        <Label htmlFor={`sequence-${label.toLowerCase().replace(/ /g, '-')}`}>{label}</Label>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p className="max-w-xs">{tooltipText}</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    </div>
+);
 
 
 export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
@@ -70,7 +93,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
     return (
         <div className="space-y-6 py-4 max-h-[70vh] overflow-y-auto pr-4">
             <div className="space-y-2">
-                <Label htmlFor="sequence-name">Sequence Name</Label>
+                 <TooltipLabel label="Sequence Name" tooltipText="Give your sequence a memorable name to identify it in your dashboard." />
                 <Input
                     id="sequence-name"
                     value={name}
@@ -97,7 +120,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div className="col-span-1 space-y-2">
-                                    <Label htmlFor={`delay-${index}`}>Delay (minutes)</Label>
+                                     <TooltipLabel label="Delay (minutes)" tooltipText="The time to wait BEFORE sending this step's email, in minutes. For Step 1, a delay of 0 sends immediately." />
                                     <Input
                                         id={`delay-${index}`}
                                         type="number"
@@ -107,7 +130,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                 </div>
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor={`subject-${index}`}>Subject</Label>
+                                 <TooltipLabel label="Subject" tooltipText="The subject line for this email step. You can use {{name}} to personalize it." />
                                 <Input
                                     id={`subject-${index}`}
                                     value={step.templateSubject}
@@ -116,7 +139,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                 />
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor={`body-html-${index}`}>HTML Body</Label>
+                                 <TooltipLabel label="HTML Body" tooltipText="The main content of your email in HTML format. Use {{name}} to personalize it with the lead's first name." />
                                 <Textarea
                                     id={`body-html-${index}`}
                                     value={step.templateHtml}
@@ -126,7 +149,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor={`body-text-${index}`}>Plain Text Body (Optional)</Label>
+                                 <TooltipLabel label="Plain Text Body (Optional)" tooltipText="A plain text version of your email. This is highly recommended for better email deliverability and for clients that block HTML." />
                                 <Textarea
                                     id={`body-text-${index}`}
                                     value={step.templateText || ''}
@@ -145,7 +168,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                     <AccordionContent className="space-y-4 pt-4">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                              <div className="space-y-2">
-                                                <Label htmlFor={`suppress-${index}`}>Reply Suppression (mins)</Label>
+                                                 <TooltipLabel label="Reply Suppression (mins)" tooltipText="If a lead replies, how long should the sequence be paused for them? Default is 3 days (4320 minutes). Set to a high number to effectively stop the sequence on any reply." />
                                                 <Input
                                                     id={`suppress-${index}`}
                                                     type="number"
@@ -154,7 +177,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                                 />
                                             </div>
                                              <div className="space-y-2">
-                                                <Label htmlFor={`retries-${index}`}>Max Retries</Label>
+                                                 <TooltipLabel label="Max Retries" tooltipText="If an email fails to send due to a temporary error, how many times should the agent try again?" />
                                                 <Input
                                                     id={`retries-${index}`}
                                                     type="number"
@@ -163,7 +186,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
                                                 />
                                             </div>
                                              <div className="space-y-2">
-                                                <Label htmlFor={`backoff-${index}`}>Backoff (seconds)</Label>
+                                                 <TooltipLabel label="Backoff (seconds)" tooltipText="How long to wait between retries after a failed send. The agent uses exponential backoff." />
                                                 <Input
                                                     id={`backoff-${index}`}
                                                     type="number"
@@ -194,5 +217,3 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
         </div>
     );
 }
-
-    
