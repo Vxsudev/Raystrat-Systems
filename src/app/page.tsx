@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Hero } from '@/components/sections/hero';
 import { Services } from '@/components/sections/services';
+import { Industries } from '@/components/sections/industries';
 import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
@@ -58,6 +59,7 @@ export default async function Home() {
       <main className="flex-1">
         <Hero />
         <Services />
+        <Industries />
         <Results />
         <Pricing />
         <ByteOfTheWeek />
