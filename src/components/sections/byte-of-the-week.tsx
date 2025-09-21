@@ -3,6 +3,7 @@ import { bytes } from '@/data/content';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { AnimatedGridBackground } from '../ui/animated-grid-background';
 
 export function ByteOfTheWeek() {
   // The most recent byte is the first one in the array.
@@ -40,8 +41,9 @@ export function ByteOfTheWeek() {
                 </Button>
             </div>
           </div>
-          <div className="order-1 md:order-2 p-8 bg-background rounded-2xl border flex items-center justify-center aspect-square">
-             <div className="text-center">
+          <div className="order-1 md:order-2 p-8 bg-background rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden">
+             <AnimatedGridBackground className="absolute inset-0" />
+             <div className="text-center relative z-10">
                  <span className="text-6xl font-bold font-headline text-primary">
                     B{String(byteIndex + 1).padStart(2, '0')}
                  </span>
