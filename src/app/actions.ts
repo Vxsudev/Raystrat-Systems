@@ -70,7 +70,7 @@ export async function getContextualSuggestion(
     const input: ContextualAssistantInput = {
       query: validatedFields.data.query,
       pageTitle: validatedFields.data.pageTitle,
-      pageContent: validated-fields.data.pageContent,
+      pageContent: validatedFields.data.pageContent,
     };
     const result = await contextualAssistant(input);
     return { data: result, message: 'Success' };
@@ -557,10 +557,15 @@ export type EnrollLeadsState = {
 
 export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: FormData): Promise<EnrollLeadsState> {
   const user = await getAuthenticatedUser();
-  if (!user || !user.claims.tenantId) {
-    return { message: 'Error', errors: { general: ['Authentication error: No tenant ID found.'] } };
+  if (!user || !user.claims.tenantId || !user.token) {
+    return { message: 'Error', errors: { general: ['Authentication error: No tenant ID found or token is missing.'] } };
   }
   const tenantId = user.claims.tenantId;
+
+  if (!process.env.AGENT_API_BASE_URL) {
+    console.error("AGENT_API_BASE_URL is not set.");
+    return { message: 'Error', errors: { general: ['Server configuration error: Agent API URL is not set.'] } };
+  }
 
   const validatedFields = enrollLeadsSchema.safeParse({
     sequenceId: formData.get('sequenceId'),
@@ -587,6 +592,9 @@ export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: 
     // Parse leads from CSV or pasted text
     const leadsRaw = leadsCSV || leadsPasted || '';
     const lines = leadsRaw.split('\n').filter(line => line.trim() !== '');
+    if (lines.length <= 1) {
+        return { message: 'Error', errors: { general: ['No lead data found. Please provide a header row and at least one lead.'] } };
+    }
     const header = lines[0].split(',').map(h => h.trim().toLowerCase());
     const emailIndex = header.indexOf('email');
     const nameIndex = header.indexOf('name');
@@ -607,9 +615,6 @@ export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: 
         return { message: 'Error', errors: { general: ['No valid leads found in the provided data.'] } };
     }
     
-    // Get user's ID token for authenticated backend requests
-    const idToken = await adminAuth().createCustomToken(user.uid, { tenantId });
-
     const apiUrl = `${process.env.AGENT_API_BASE_URL}/followup/lead-intake`;
     
     let enrolledCount = 0;
@@ -626,12 +631,12 @@ export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`,
+                'Authorization': `Bearer ${user.token}`, // Use the user's ID token
             },
             body: JSON.stringify(payload),
         }).then(res => {
             if (res.ok) enrolledCount++;
-            // In a real app, you'd collect and report failures
+            // In a real app, you'd collect and report failures more granularly
         });
     });
 

@@ -16,6 +16,7 @@ export async function getAuthenticatedUser() {
       displayName: decoded.name || null,
       photoURL: decoded.picture || null,
       claims: decoded,
+      token: cookie, // Pass the original session cookie as the token
     };
   } catch (error) {
     // Session cookie is invalid or expired.

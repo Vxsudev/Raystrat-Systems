@@ -84,7 +84,7 @@ export interface SequenceStep {
 export interface SequenceTemplate {
     id?: string;
     name: string;
-    status: 'active' | 'paused' | 'done' | 'draft';
+    status: 'draft' | 'active';
     steps: SequenceStep[];
     tenantId?: string;
     createdAt?: Date;
@@ -510,7 +510,7 @@ export default function DashboardPage() {
                                                 Upload a CSV or paste lead data to enroll them in a sequence.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <AddLeadsForm sequences={sequences} action={enrollLeadsAction} />
+                                        <AddLeadsForm sequences={sequences} action={enrollLeadsAction} state={enrollLeadsState} />
                                     </DialogContent>
                                 </Dialog>
                                 <Dialog open={isSequenceFormOpen} onOpenChange={setIsSequenceFormOpen}>
