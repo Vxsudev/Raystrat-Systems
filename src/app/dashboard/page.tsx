@@ -26,7 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SequenceForm } from '@/components/ui/sequence-form';
-import { saveSequenceTemplate, SaveSequenceState } from '@/app/actions';
+import { saveSequenceTemplate, SaveSequenceState, getSequenceTemplates } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -99,12 +99,6 @@ export interface Sequence extends SequenceTemplate {
     booked: number;
 }
 
-const mockSequences: Sequence[] = [
-    { id: 'seq_1', name: 'New Client Onboarding', status: 'active', leads: 150, sent: 450, replied: 30, booked: 5, steps: [] },
-    { id: 'seq_2', name: 'Cold Prospecting - Q3', status: 'active', leads: 800, sent: 2400, replied: 80, booked: 12, steps: [] },
-    { id: 'seq_3', name: 'Past Client Reactivation', status: 'paused', leads: 250, sent: 250, replied: 45, booked: 15, steps: [] },
-    { id: 'seq_4', name: 'Webinar Follow-up', status: 'done', leads: 400, sent: 1200, replied: 150, booked: 25, steps: [] },
-];
 
 
 // --- Sub-components ---
@@ -177,10 +171,15 @@ function SequenceTable({ sequences, isLoading }: { sequences: Sequence[], isLoad
     if (isLoading) {
        return (
          <div className="space-y-4 py-4">
-           <Skeleton className="h-12 w-full" />
-           <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
          </div>
        );
+    }
+    
+    if (sequences.length === 0) {
+        return <div className="text-center text-muted-foreground py-8">No sequences found. Create your first sequence to get started.</div>;
     }
 
     return (
@@ -237,10 +236,10 @@ export default function DashboardPage() {
   const [deliverabilityData, setDeliverabilityData] = useState<DeliverabilityData | null>(null);
   const [leadsData, setLeadsData] = useState<LeadsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingSequences, setIsLoadingSequences] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // For this phase, we'll manage sequences in local state.
-  const [sequences, setSequences] = useState<Sequence[]>(mockSequences);
+  const [sequences, setSequences] = useState<Sequence[]>([]);
 
   const [state, formAction] = useActionState<SaveSequenceState, SequenceTemplate>(saveSequenceTemplate, { message: null });
   
@@ -272,7 +271,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
       if (user) {
-        const fetchData = async () => {
+        const fetchDashboardData = async () => {
             setIsLoading(true);
             
             try {
@@ -290,7 +289,6 @@ export default function DashboardPage() {
                 const sequenceHealthData = await sequenceHealthRes.json();
                 const leadsData = await leadsRes.json();
                 
-                // Map icons client-side
                 const kpiIcons: { [key: string]: LucideIcon } = {
                     "Leads Enrolled (30d)": Users,
                     "In Sequence": Inbox,
@@ -310,19 +308,31 @@ export default function DashboardPage() {
 
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
-                // Handle error state in UI, e.g., show a toast notification
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchData();
+        const fetchSequences = async () => {
+            setIsLoadingSequences(true);
+            try {
+                const fetchedSequences = await getSequenceTemplates();
+                setSequences(fetchedSequences);
+            } catch (error) {
+                 console.error("Error fetching sequences:", error);
+                 toast({ title: 'Error', description: 'Could not load your sequences.', variant: 'destructive' });
+            } finally {
+                setIsLoadingSequences(false);
+            }
+        }
+
+        fetchDashboardData();
+        fetchSequences();
       }
-  }, [user]);
+  }, [user, toast]);
 
 
   if (authLoading || !user) {
-    // AuthProvider now handles the main loading state, but this is a good fallback.
     return (
         <div className="flex items-center justify-center h-screen">
             <p>Authenticating...</p>
@@ -490,7 +500,7 @@ export default function DashboardPage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <SequenceTable sequences={sequences} isLoading={isLoading} />
+                        <SequenceTable sequences={sequences} isLoading={isLoadingSequences} />
                     </CardContent>
                 </Card>
               </TabsContent>

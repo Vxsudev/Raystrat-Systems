@@ -21,7 +21,7 @@ import { z } from 'zod';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
-import { SequenceStep, SequenceTemplate } from './dashboard/page';
+import { Sequence, SequenceStep, SequenceTemplate } from './dashboard/page';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -483,5 +483,48 @@ export async function saveSequenceTemplate(
     } catch (error) {
         console.error('Error saving sequence template:', error);
         return { message: 'Error', errors: { general: ['Could not save the sequence to the database.'] } };
+    }
+}
+
+export async function getSequenceTemplates(): Promise<Sequence[]> {
+    const user = await getAuthenticatedUser();
+    const tenantId = user?.claims.tenantId || 'tenant_a';
+
+    if (!user) {
+        // This should not happen if the page is protected, but it's a good safeguard.
+        return [];
+    }
+
+    try {
+        const snapshot = await db.collection('sequenceTemplates')
+            .where('tenantId', '==', tenantId)
+            .orderBy('createdAt', 'desc')
+            .get();
+
+        if (snapshot.empty) {
+            return [];
+        }
+
+        const templates: Sequence[] = snapshot.docs.map(doc => {
+            const data = doc.data() as Omit<SequenceTemplate, 'id'>;
+            return {
+                id: doc.id,
+                ...data,
+                status: data.status || 'draft', // Ensure status is set
+                // For now, these are placeholders. In a future step, this data would come
+                // from an analytics collection.
+                leads: 0, 
+                sent: 0,
+                replied: 0,
+                booked: 0,
+            };
+        });
+
+        return templates;
+    } catch (error) {
+        console.error("Error fetching sequence templates:", error);
+        // In a real app, you might want to throw the error to be caught by an error boundary.
+        // For now, we'll return an empty array to prevent the UI from crashing.
+        return [];
     }
 }
