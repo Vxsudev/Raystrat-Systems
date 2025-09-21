@@ -1,4 +1,3 @@
-
 // src/components/ui/sequence-form.tsx
 'use client';
 
@@ -9,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Trash2, Settings2, Info } from 'lucide-react';
-import type { Sequence, SequenceStep } from '@/app/dashboard/page';
+import type { SequenceStep, SequenceTemplate } from '@/app/dashboard/page';
 import {
   Accordion,
   AccordionContent,
@@ -26,12 +25,11 @@ import {
 
 
 interface SequenceFormProps {
-    sequence?: Sequence;
-    onSave: (data: Omit<Sequence, 'id' | 'leads' | 'sent' | 'replied' | 'booked'>) => void;
+    sequence?: SequenceTemplate;
+    onSave: (data: Omit<SequenceTemplate, 'id'>) => void;
 }
 
-const DEFAULT_STEP: SequenceStep = {
-    stepIndex: 0,
+const DEFAULT_STEP: Omit<SequenceStep, 'stepIndex'> = {
     delayMinutes: 1440, // 1 day
     templateSubject: '',
     templateHtml: '',
@@ -43,7 +41,7 @@ const DEFAULT_STEP: SequenceStep = {
 
 const TooltipLabel = ({ label, tooltipText }: { label: string; tooltipText: string }) => (
     <div className="flex items-center space-x-2">
-        <Label htmlFor={`sequence-${label.toLowerCase().replace(/ /g, '-')}`}>{label}</Label>
+        <Label>{label}</Label>
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -87,6 +85,7 @@ export function SequenceForm({ sequence, onSave }: SequenceFormProps) {
     };
 
     const handleSave = () => {
+        // Here we pass the full object, which is of type Omit<SequenceTemplate, 'id'>
         onSave({ name, steps, status });
     };
     

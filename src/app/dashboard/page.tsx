@@ -1,9 +1,10 @@
+
 // src/app/dashboard/page.tsx
 'use client';
 
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useActionState } from 'react';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +26,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SequenceForm } from '@/components/ui/sequence-form';
+import { saveSequenceTemplate, SaveSequenceState } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
 
 
 // --- Type Definitions ---
@@ -78,22 +81,29 @@ export interface SequenceStep {
   backoffSeconds?: number;
 }
 
-export interface Sequence {
-    id: string;
+export interface SequenceTemplate {
+    id?: string;
     name: string;
     status: 'active' | 'paused' | 'done' | 'draft';
+    steps: SequenceStep[];
+    tenantId?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface Sequence extends SequenceTemplate {
+    id: string;
     leads: number;
     sent: number;
     replied: number;
     booked: number;
-    steps?: SequenceStep[];
 }
 
 const mockSequences: Sequence[] = [
-    { id: 'seq_1', name: 'New Client Onboarding', status: 'active', leads: 150, sent: 450, replied: 30, booked: 5 },
-    { id: 'seq_2', name: 'Cold Prospecting - Q3', status: 'active', leads: 800, sent: 2400, replied: 80, booked: 12 },
-    { id: 'seq_3', name: 'Past Client Reactivation', status: 'paused', leads: 250, sent: 250, replied: 45, booked: 15 },
-    { id: 'seq_4', name: 'Webinar Follow-up', status: 'done', leads: 400, sent: 1200, replied: 150, booked: 25 },
+    { id: 'seq_1', name: 'New Client Onboarding', status: 'active', leads: 150, sent: 450, replied: 30, booked: 5, steps: [] },
+    { id: 'seq_2', name: 'Cold Prospecting - Q3', status: 'active', leads: 800, sent: 2400, replied: 80, booked: 12, steps: [] },
+    { id: 'seq_3', name: 'Past Client Reactivation', status: 'paused', leads: 250, sent: 250, replied: 45, booked: 15, steps: [] },
+    { id: 'seq_4', name: 'Webinar Follow-up', status: 'done', leads: 400, sent: 1200, replied: 150, booked: 25, steps: [] },
 ];
 
 
@@ -220,6 +230,7 @@ function SequenceTable({ sequences, isLoading }: { sequences: Sequence[], isLoad
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   
   const [kpiData, setKpiData] = useState<Kpi[]>([]);
   const [sequenceHealthData, setSequenceHealthData] = useState<SequenceHealthData[]>([]);
@@ -231,19 +242,30 @@ export default function DashboardPage() {
   // For this phase, we'll manage sequences in local state.
   const [sequences, setSequences] = useState<Sequence[]>(mockSequences);
 
-  const handleSaveSequence = (newSequence: Omit<Sequence, 'id' | 'leads' | 'sent' | 'replied' | 'booked'>) => {
-    // In a future phase, this will save to Firestore.
-    console.log('Saving sequence:', newSequence);
-    const sequenceToSave: Sequence = {
-        ...newSequence,
-        id: `seq_${Date.now()}`,
-        leads: 0,
-        sent: 0,
-        replied: 0,
-        booked: 0,
-    };
-    setSequences(prev => [sequenceToSave, ...prev]);
-    setIsFormOpen(false); // Close the dialog on save
+  const [state, formAction] = useActionState<SaveSequenceState, SequenceTemplate>(saveSequenceTemplate, { message: null });
+  
+  useEffect(() => {
+    if (state.message === 'Success' && state.data) {
+        toast({ title: 'Success!', description: 'Your sequence template has been saved.' });
+        
+        const newSequence: Sequence = {
+            ...state.data,
+            id: state.data.id!,
+            leads: 0,
+            sent: 0,
+            replied: 0,
+            booked: 0,
+        };
+        setSequences(prev => [newSequence, ...prev]);
+        setIsFormOpen(false);
+    } else if (state.message === 'Error') {
+        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+        toast({ title: 'Error Saving Sequence', description: errorMessage, variant: 'destructive' });
+    }
+  }, [state, toast]);
+
+  const handleSaveSequence = (data: Omit<SequenceTemplate, 'id'>) => {
+    formAction(data);
   };
 
   useEffect(() => {

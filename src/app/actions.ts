@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
+import { SequenceStep, SequenceTemplate } from './dashboard/page';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -405,4 +406,82 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
     }
 }
 
+// --- Sequence Management Actions ---
 
+const sequenceStepSchema = z.object({
+    stepIndex: z.number(),
+    delayMinutes: z.number().min(0),
+    templateSubject: z.string().min(1, 'Subject is required.'),
+    templateHtml: z.string().min(1, 'HTML body is required.'),
+    templateText: z.string().optional(),
+    suppressIfRepliedMinutes: z.number().optional(),
+    maxRetries: z.number().optional(),
+    backoffSeconds: z.number().optional(),
+});
+
+const sequenceTemplateSchema = z.object({
+    name: z.string().min(1, 'Sequence name is required.'),
+    status: z.enum(['draft', 'active']),
+    steps: z.array(sequenceStepSchema).min(1, 'Sequence must have at least one step.'),
+});
+
+
+export type SaveSequenceState = {
+  errors?: {
+    name?: string[];
+    steps?: string[];
+    general?: string[];
+  };
+  message: 'Success' | 'Error' | null;
+  data?: SequenceTemplate | null;
+};
+
+export async function saveSequenceTemplate(
+    prevState: SaveSequenceState, 
+    formData: SequenceTemplate
+): Promise<SaveSequenceState> {
+    const user = await getAuthenticatedUser();
+    // In a real multi-tenant app, you'd get the tenantId from the user's claims.
+    // For now, we'll use a hardcoded one for simplicity.
+    const tenantId = user?.claims.tenantId || 'tenant_a'; 
+
+    if (!user) {
+        return { message: 'Error', errors: { general: ['Not authenticated.'] } };
+    }
+    
+    const validatedFields = sequenceTemplateSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+        const fieldErrors = validatedFields.error.flatten().fieldErrors;
+        return {
+            message: 'Error',
+            errors: {
+                name: fieldErrors.name,
+                steps: fieldErrors.steps,
+                general: fieldErrors.steps ? ['Please check for errors in your sequence steps.'] : undefined
+            }
+        };
+    }
+
+    try {
+        const templateData = {
+            ...validatedFields.data,
+            tenantId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        const docRef = db.collection('sequenceTemplates').doc();
+        await docRef.set(templateData);
+
+        const savedData: SequenceTemplate = {
+            id: docRef.id,
+            ...templateData
+        };
+
+        return { message: 'Success', data: savedData };
+    } catch (error) {
+        console.error('Error saving sequence template:', error);
+        return { message: 'Error', errors: { general: ['Could not save the sequence to the database.'] } };
+    }
+}
