@@ -2,7 +2,6 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
   - 'build'
-  - '--scan'
   - '-t'
   - '$_IMAGE'
   - '.'
