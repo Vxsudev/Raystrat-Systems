@@ -4,7 +4,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getServiceSuggestion, getContextualSuggestion } from '@/app/actions';
+import { getServiceSuggestion, getContextualSuggestion, ServiceSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -55,10 +55,11 @@ function ServiceSuggesterSubmitButton() {
 
 function AiServiceSuggester() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction, isPending] = useActionState(getServiceSuggestion, null);
+  const [state, formAction] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
+  const [bottleneck, setBottleneck] = useState('');
 
   useEffect(() => {
     if (state?.data?.serviceSlug) {
@@ -66,7 +67,8 @@ function AiServiceSuggester() {
         title: 'Agent Found!',
         description: state.data.suggestion,
       });
-      router.push(`/services/${state.data.serviceSlug}`);
+      const noteParam = bottleneck ? `?note=${encodeURIComponent(bottleneck)}` : '';
+      router.push(`/services/${state.data.serviceSlug}${noteParam}`);
       setIsOpen(false);
       formRef.current?.reset();
     } else if (state?.message && state.message !== 'Invalid input.') {
@@ -76,13 +78,19 @@ function AiServiceSuggester() {
         variant: 'destructive',
       });
     }
-  }, [state, router, toast]);
+  }, [state, router, toast, bottleneck]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !isPending) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       formRef.current?.requestSubmit();
     }
+  };
+
+  const handleFormAction = (formData: FormData) => {
+    const bn = formData.get('bottleneck') as string;
+    setBottleneck(bn);
+    formAction(formData);
   };
 
   return (
@@ -98,14 +106,14 @@ function AiServiceSuggester() {
             Describe your single biggest business bottleneck, and we'll suggest the right agent to solve it.
           </DialogDescription>
         </DialogHeader>
-        <form ref={formRef} action={formAction} className="space-y-4 pt-4">
+        <form ref={formRef} action={handleFormAction} className="space-y-4 pt-4">
           <Textarea
             name="bottleneck"
             placeholder="e.g., 'We waste too much time chasing unpaid invoices,' or 'Our leads are cold and unresponsive.'"
             className="min-h-[120px] text-base"
             required
             onKeyDown={handleKeyDown}
-            disabled={isPending}
+            disabled={state?.message === 'pending'}
           />
           {state?.errors?.bottleneck && (
             <p className="text-sm text-destructive">

@@ -10,6 +10,7 @@ import {
 import { 
   suggestService,
   ServiceSuggesterInput,
+  ServiceSuggesterOutput,
 } from '@/ai/flows/service-suggester';
 import {
   analyzeNotes,
@@ -93,11 +94,8 @@ export type ServiceSuggestionState = {
   errors?: {
     bottleneck?: string[];
   };
-  message?: string | null;
-  data?: {
-    serviceSlug: string;
-    suggestion: string;
-  } | null;
+  message?: 'Success' | 'Error' | 'pending' | null;
+  data?: ServiceSuggesterOutput | null;
 }
 
 export async function getServiceSuggestion(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
@@ -108,7 +106,7 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Invalid input.',
+      message: 'Error',
     };
   }
   
@@ -119,16 +117,14 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
     const result = await suggestService(input);
     return {
       message: 'Success',
-      data: {
-        serviceSlug: result.serviceSlug,
-        suggestion: result.suggestion,
-      },
+      data: result,
     };
   } catch (error) {
      console.error('Service Suggestion Error:', error);
     return {
-      message:
-        'An error occurred on our end. Please try again later.',
+      message: 'Error',
+      data: null,
+      errors: { bottleneck: ['An error occurred on our end. Please try again later.'] },
     };
   }
 }
@@ -408,4 +404,5 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         return { message: 'Error', errors: { general: ['An error occurred while changing your password. Please try again.'] } };
     }
 }
+
 

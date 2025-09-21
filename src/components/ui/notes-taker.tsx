@@ -1,8 +1,8 @@
-
 // src/components/ui/notes-taker.tsx
 'use client';
 
 import { useActionState, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -55,7 +55,11 @@ interface NotesTakerProps {
 
 export function NotesTaker({ serviceName }: NotesTakerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [notes, setNotes] = useState('');
+  
+  const searchParams = useSearchParams();
+  const initialNote = searchParams.get('note') || '';
+  
+  const [notes, setNotes] = useState(initialNote);
   const [state, formAction] = useActionState(saveAndSendNotes, {
     message: null,
     errors: {},
@@ -104,7 +108,7 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
         <p
           className={cn(
             'text-xs text-center text-muted-foreground transition-opacity',
-            notesAreEmpty ? 'opacity-100' : 'opacity-0'
+            notesAreEmpty && !initialNote ? 'opacity-100' : 'opacity-0'
           )}
         >
           Start typing to save your notes.
