@@ -1,4 +1,5 @@
 // src/components/sections/results.tsx
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function Results() {
   const agents = [
@@ -38,40 +39,34 @@ export function Results() {
     <section id="results" className="py-16 md:py-24 bg-card text-card-foreground">
       <div className="container">
         {/* Headline & Subheadline */}
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center mb-12">
           <h2 className="text-4xl font-bold tracking-tighter font-headline sm:text-5xl md:text-6xl">
             Cut the Fat. Keep the Spine.
           </h2>
           <p className="mt-4 text-lg text-foreground/80 md:text-xl">
-            From bloated headcount to lean control.
-          </p>
-        </div>
-
-        {/* Narrative Intro Block */}
-        <div className="max-w-3xl mx-auto mt-8 text-center">
-          <p className="text-foreground/80">
             Each Raystrat Agent replaces functions that once required full teams. The result: fewer salaries, higher margins, and growth without drag.
           </p>
         </div>
 
-        {/* Agent Grid Presentation */}
-        <div className="max-w-5xl mx-auto mt-16 space-y-6">
+        {/* Agent Card Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {agents.map((agent) => (
-            <div
+            <Card
               key={agent.name}
-              className="relative grid grid-cols-1 p-6 border rounded-2xl md:grid-cols-3 gap-6 md:gap-8 border-border bg-background/50"
+              className="flex flex-col bg-background/50 border-border"
             >
-              <div className="flex flex-col justify-center md:col-span-1">
-                <h3 className="text-xl font-bold font-headline text-foreground">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold font-headline text-foreground">
                   {agent.name}
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">{agent.replaces}</p>
-              </div>
-              <div className="absolute top-0 bottom-0 left-1/3 -translate-x-1/2 w-px bg-border hidden md:block"></div>
-              <div className="flex items-center md:col-span-2 md:pl-8">
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground pt-1">
+                  {agent.replaces}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
                 <p className="text-lg font-medium text-primary">{agent.benefit}</p>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
