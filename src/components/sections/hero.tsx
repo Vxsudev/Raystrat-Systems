@@ -1,28 +1,46 @@
-
+// src/components/sections/hero.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { DynamicHeadline } from '@/components/ui/dynamic-headline';
 
 export function Hero() {
   return (
-    <section id="top" className="relative w-full min-h-screen flex items-center justify-center bg-transparent py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
+    <section id="top" className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-transparent py-16 md:py-24 overflow-hidden">
       <div className="w-full container relative z-10">
-        <div className="mx-auto text-center">
-          <h1 className="text-5xl font-bold font-headline sm:text-6xl md:text-8xl text-foreground text-shadow-none">
-            Agents Run Business.
-          </h1>
-          <h2 className="mt-4 font-medium text-2xl sm:text-3xl md:text-4xl font-headline text-primary">
-            AI isn’t the future anymore — it’s present. Step up.
-          </h2>
-          <p className="mx-auto mt-6 text-lg md:text-xl text-muted-foreground max-w-4xl">
-            Most losses trace back to the same five systems — 
-            leads, follow-up, support, operations, and data. 
-            Our agents run them with discipline.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto border-primary text-primary px-8 py-4 text-lg rounded-2xl hover:bg-accent transition h-auto">
-                <Link href="#services">See The Five Agents</Link>
-            </Button>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Left Column */}
+            <div className="text-center md:text-left">
+                <h1 className="text-5xl font-bold font-headline sm:text-6xl md:text-7xl text-foreground text-shadow-none">
+                    Agents Run<br/>
+                    <DynamicHeadline />
+                </h1>
+                <p className="mx-auto md:mx-0 mt-6 text-lg md:text-xl text-muted-foreground max-w-xl">
+                    Most losses trace back to the same five systems. Our agents run them with discipline so you can focus on what matters.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-8 gap-4">
+                    <Button asChild size="lg" className="w-full sm:w-auto text-lg h-auto">
+                        <Link href="#services">
+                            Explore The Agents <ArrowRight className="ml-2" />
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="relative flex items-center justify-center">
+                 <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse-slower"></div>
+                 <Image
+                    src="https://picsum.photos/seed/hero/600/600"
+                    alt="AI and Human Collaboration"
+                    width={600}
+                    height={600}
+                    className="rounded-full object-cover aspect-square"
+                    data-ai-hint="AI collaboration"
+                    priority
+                />
+            </div>
         </div>
       </div>
     </section>
