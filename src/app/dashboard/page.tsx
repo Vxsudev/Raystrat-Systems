@@ -16,6 +16,14 @@ import { Badge } from '@/components/ui/badge';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import type { LucideIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { SequenceForm } from '@/components/ui/sequence-form';
 
 
 // --- Type Definitions ---
@@ -58,14 +66,21 @@ interface LeadTableProps {
   isLoading: boolean;
 }
 
-interface Sequence {
+export interface SequenceStep {
+  delayDays: number;
+  subject: string;
+  body: string;
+}
+
+export interface Sequence {
     id: string;
     name: string;
-    status: 'active' | 'paused' | 'done';
+    status: 'active' | 'paused' | 'done' | 'draft';
     leads: number;
     sent: number;
     replied: number;
     booked: number;
+    steps?: SequenceStep[];
 }
 
 const mockSequences: Sequence[] = [
@@ -169,13 +184,17 @@ function SequenceTable({ sequences, isLoading }: { sequences: Sequence[], isLoad
                     <TableRow key={seq.id}>
                         <TableCell className="font-medium">{seq.name}</TableCell>
                         <TableCell>
-                            <Badge variant={seq.status === 'active' ? 'default' : 'secondary'}>
+                            <Badge variant={
+                                seq.status === 'active' ? 'default' : 
+                                seq.status === 'draft' ? 'outline' : 
+                                'secondary'
+                            }>
                                 {seq.status.charAt(0).toUpperCase() + seq.status.slice(1)}
                             </Badge>
                         </TableCell>
                         <TableCell>{seq.leads}</TableCell>
-                        <TableCell>{((seq.replied / seq.sent) * 100).toFixed(1)}%</TableCell>
-                        <TableCell>{((seq.booked / seq.replied) * 100).toFixed(1)}%</TableCell>
+                        <TableCell>{seq.sent > 0 ? ((seq.replied / seq.sent) * 100).toFixed(1) : '0.0'}%</TableCell>
+                        <TableCell>{seq.replied > 0 ? ((seq.booked / seq.replied) * 100).toFixed(1) : '0.0'}%</TableCell>
                         <TableCell className="text-right">
                             <Button variant="ghost" size="sm">
                                 <Play className="h-4 w-4" />
@@ -201,6 +220,25 @@ export default function DashboardPage() {
   const [deliverabilityData, setDeliverabilityData] = useState<DeliverabilityData | null>(null);
   const [leadsData, setLeadsData] = useState<LeadsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // For this phase, we'll manage sequences in local state.
+  const [sequences, setSequences] = useState<Sequence[]>(mockSequences);
+
+  const handleSaveSequence = (newSequence: Omit<Sequence, 'id' | 'leads' | 'sent' | 'replied' | 'booked'>) => {
+    // In a future phase, this will save to Firestore.
+    console.log('Saving sequence:', newSequence);
+    const sequenceToSave: Sequence = {
+        ...newSequence,
+        id: `seq_${Date.now()}`,
+        leads: 0,
+        sent: 0,
+        replied: 0,
+        booked: 0,
+    };
+    setSequences(prev => [sequenceToSave, ...prev]);
+    setIsFormOpen(false); // Close the dialog on save
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -408,14 +446,24 @@ export default function DashboardPage() {
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <CardTitle>Follow-Up Sequences</CardTitle>
-                            <Button>
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Create New Sequence
-                            </Button>
+                             <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                                <DialogTrigger asChild>
+                                    <Button>
+                                        <PlusCircle className="mr-2 h-4 w-4" />
+                                        Create New Sequence
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Create New Sequence</DialogTitle>
+                                    </DialogHeader>
+                                    <SequenceForm onSave={handleSaveSequence} />
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <SequenceTable sequences={mockSequences} isLoading={isLoading} />
+                        <SequenceTable sequences={sequences} isLoading={isLoading} />
                     </CardContent>
                 </Card>
               </TabsContent>
