@@ -1,6 +1,6 @@
 // src/app/api/playbook/route.ts
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/firebase/admin';
+import { db } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 
 if (process.env.SENDGRID_API_KEY) {
@@ -20,7 +20,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
     }
 
-    const db = getDb();
     // 1. Write lead to Firestore
     await db.collection('playbook_leads').add({
       name,
