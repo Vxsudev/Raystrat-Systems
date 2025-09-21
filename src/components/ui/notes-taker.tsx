@@ -1,3 +1,4 @@
+
 // src/components/ui/notes-taker.tsx
 'use client';
 
@@ -91,7 +92,7 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
       <div className="space-y-3">
         <h3 className="text-xl font-bold font-headline">Your Private Notes</h3>
         <Textarea
-          placeholder="Jot down questions, ideas, or requirements as you read..."
+          placeholder="Your notes should be specific to your business for maximum personalisation from our agents. Shoot!"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           className="min-h-[120px] text-base"
