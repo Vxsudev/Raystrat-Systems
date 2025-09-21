@@ -1,3 +1,4 @@
+
 // src/components/sections/results.tsx
 
 export function Results() {
