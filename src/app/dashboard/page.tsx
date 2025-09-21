@@ -264,10 +264,6 @@ export default function DashboardPage() {
     }
   }, [state, toast]);
 
-  const handleSaveSequence = (data: Omit<SequenceTemplate, 'id'>) => {
-    formAction(data);
-  };
-
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
@@ -488,7 +484,7 @@ export default function DashboardPage() {
                                             Define the steps and content for your automated email sequence.
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <SequenceForm onSave={handleSaveSequence} />
+                                    <SequenceForm action={formAction} />
                                 </DialogContent>
                             </Dialog>
                         </div>
@@ -534,5 +530,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
