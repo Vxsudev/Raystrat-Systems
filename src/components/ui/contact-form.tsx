@@ -114,7 +114,7 @@ export function ContactForm() {
             "absolute left-4 transition-all duration-300 pointer-events-none text-muted-foreground",
             isFloating
               ? "text-xs top-1.5 text-primary"
-              "text-base top-3.5"
+              : "text-base top-3.5"
           )}
         >
           {label}
