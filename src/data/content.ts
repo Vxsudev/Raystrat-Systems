@@ -275,4 +275,18 @@ export const bytes = [
   },
 ];
 
+export const industries = [
+    "Technology / SaaS",
+    "E-commerce / Retail",
+    "Healthcare",
+    "Financial Services",
+    "Real Estate",
+    "Professional Services (e.g., Agency, Consulting)",
+    "Education",
+    "Manufacturing",
+    "Media / Entertainment",
+    "Non-Profit",
+    "Other"
+];
+
     

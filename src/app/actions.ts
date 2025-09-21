@@ -1,3 +1,4 @@
+
 // src/app/actions.ts
 'use server';
 
@@ -219,6 +220,7 @@ const notesSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   businessName: z.string().optional(),
+  industry: z.string().optional(),
   notes: z.string().min(10, { message: 'Notes must be at least 10 characters.' }),
   serviceName: z.string(),
 });
@@ -241,6 +243,7 @@ export async function saveAndSendNotes(
     name: formData.get('name'),
     email: formData.get('email'),
     businessName: formData.get('businessName'),
+    industry: formData.get('industry'),
     notes: formData.get('notes'),
     serviceName: formData.get('serviceName'),
   });
@@ -252,7 +255,7 @@ export async function saveAndSendNotes(
     };
   }
 
-  const { name, email, businessName, notes, serviceName } = validatedFields.data;
+  const { name, email, businessName, industry, notes, serviceName } = validatedFields.data;
 
   if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
     console.error('SendGrid API Key or From Email is not configured.');
@@ -285,6 +288,7 @@ export async function saveAndSendNotes(
               <li><strong>Name:</strong> ${name}</li>
               <li><strong>Email:</strong> ${email}</li>
               <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
+              <li><strong>Industry:</strong> ${industry || 'Not provided'}</li>
           </ul>
           <h3>Notes:</h3>
           <pre>${notes}</pre>

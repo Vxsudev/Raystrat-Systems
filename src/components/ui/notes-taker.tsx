@@ -1,3 +1,4 @@
+
 // src/components/ui/notes-taker.tsx
 'use client';
 
@@ -21,6 +22,14 @@ import { useToast } from '@/hooks/use-toast';
 import { saveAndSendNotes, NotesState } from '@/app/actions';
 import { Loader2, Save, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { industries } from '@/data/content';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -142,6 +151,23 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
             <Label htmlFor="businessName">Business Name (Optional)</Label>
             <Input id="businessName" name="businessName" placeholder="e.g. Acme Inc." />
           </div>
+          
+          <div className="space-y-2">
+            <Label>Industry (Optional)</Label>
+            <Select name="industry">
+                <SelectTrigger>
+                    <SelectValue placeholder="Select your industry..." />
+                </SelectTrigger>
+                <SelectContent>
+                    {industries.map((industry) => (
+                        <SelectItem key={industry} value={industry}>
+                            {industry}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+          </div>
+
 
           {state?.errors?.notes && (
               <p className="text-sm text-center text-destructive">{state.errors.notes[0]}</p>
