@@ -15,7 +15,7 @@ export function ByteOfTheWeek() {
   }
 
   return (
-    <section id="byte-of-the-week" className="py-16 md:py-24">
+    <section id="byte-of-the-week" className="py-16 md:py-24 bg-card/50">
       <div className="container">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div>

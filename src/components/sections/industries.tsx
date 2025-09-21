@@ -87,7 +87,7 @@ const industryData: {
 
 export function Industries() {
   return (
-    <section id="industries">
+    <section id="industries" className="bg-card/50">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <p className="text-sm font-semibold tracking-widest uppercase text-primary font-headline">
