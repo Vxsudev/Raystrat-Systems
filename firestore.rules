@@ -1,18 +1,61 @@
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public write access to the playbook_leads collection
-    // This allows anyone to submit the form to create a new lead.
-    // Reads and updates are disallowed for security.
-    match /playbook_leads/{leadId} {
-      allow read, update, delete: if false;
-      allow create: if true;
+    
+    // Helper function to check if the user belongs to the tenant.
+    // It checks the custom `tenantId` claim on the user's auth token.
+    function isTenantMember(tenantId) {
+      return request.auth.token.tenantId == tenantId;
     }
 
-    // Deny all other access to prevent unauthorized reads/writes
-    match /{document=**} {
+    // Tenants: A user can only read their own tenant document. Creation is handled by the cloud function.
+    match /tenants/{tenantId} {
+      allow read: if isTenantMember(tenantId);
+      allow write: if false; // Disallow client-side writes
+    }
+
+    // Sequence Templates: Users can read and write templates within their own tenant.
+    match /sequenceTemplates/{templateId} {
+      allow read, write: if isTenantMember(resource.data.tenantId);
+      allow create: if isTenantMember(request.resource.data.tenantId);
+    }
+    
+    // Leads: Only allow access within the user's tenant.
+    match /leads/{leadId} {
+      allow read, write: if isTenantMember(resource.data.tenantId);
+      allow create: if isTenantMember(request.resource.data.tenantId);
+    }
+    
+    // Lead Sequences: Only allow access within the user's tenant.
+    match /leadSequences/{seqId} {
+      allow read, write: if isTenantMember(resource.data.tenantId);
+      allow create: if isTenantMember(request.resource.data.tenantId);
+    }
+
+    // Events: Events are mostly for backend logging, but we'll allow reads within a tenant.
+    match /events/{eventId} {
+        allow read: if isTenantMember(resource.data.tenantId);
+        allow write: if false; // Only backend/agent should write events
+    }
+    
+    // Idempotency collection should only be accessible by the backend agent.
+    match /idempotency/{docId} {
+        allow read, write: if false;
+    }
+
+    // Customers collection for billing status, accessible by backend agent via API key.
+    match /customers/{userId} {
       allow read, write: if false;
+    }
+    
+    // Legacy lead collections. Disallow client access for now to be safe.
+    match /playbook_leads/{leadId} {
+       allow read, write: if false;
+    }
+    match /favorite_agent_leads/{leadId} {
+       allow read, write: if false;
     }
   }
 }
