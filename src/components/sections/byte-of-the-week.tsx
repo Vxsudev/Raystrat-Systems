@@ -42,7 +42,7 @@ export function ByteOfTheWeek() {
             </div>
           </div>
           <div className="order-1 md:order-2 p-8 bg-background rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden">
-             <AnimatedGridBackground className="absolute inset-0" />
+             <AnimatedGridBackground />
              <div className="text-center relative z-10">
                  <span className="text-6xl font-bold font-headline text-primary">
                     B{String(byteIndex + 1).padStart(2, '0')}

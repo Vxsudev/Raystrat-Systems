@@ -10,32 +10,27 @@ export const AnimatedGridBackground = ({
   return (
     <div
       className={cn(
-        "animated-grid-background",
+        "pointer-events-none absolute inset-0 flex items-center justify-center bg-background [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]",
         className
       )}
       {...rest}
     >
-      <div className="relative h-full w-full">
-        <div className="absolute inset-0 bg-background">
-          <div className="absolute inset-0 [mask-image:radial-gradient(transparent,black)]"></div>
-        </div>
-        <div
-          className={cn(
-            "absolute inset-0 bg-grid-slate-900/[0.04] bg-[length:32px_32px]",
-            "[mask-image:radial-gradient(200px_circle_at_center,white,transparent)]"
-          )}
-        ></div>
-        <div
-          className={cn(
-            "spotlight-effect absolute left-1/2 top-1/2 h-full w-full overflow-hidden",
-            "bg-grid-slate-900/[0.04] bg-[length:32px_32px]",
-            "[mask-image:radial-gradient(200px_circle_at_center,white,transparent)]"
-          )}
-        >
-          <div className="animate-pulse-slower absolute -inset-60 bg-gradient-to-t from-primary/30 to-background opacity-20"></div>
-          <div className="animate-pulse-slow absolute -inset-40 bg-gradient-to-t from-primary/50 to-background opacity-20"></div>
-        </div>
-      </div>
+      <div className="absolute inset-0 h-full w-full bg-gradient-to-t from-background to-primary/30 opacity-20 animate-pulse-slower" />
+      <div
+        style={
+          {
+            "--bg-size": "32px",
+            "--bg-color": "hsl(var(--primary) / 0.15)",
+            "--bg-color-2": "hsl(var(--primary) / 0.25)",
+            animation: "move-background 150s linear infinite",
+            background:
+              "linear-gradient(to right, var(--bg-color-2) 1px, transparent 1px), linear-gradient(to bottom, var(--bg-color-2) 1px, transparent 1px), linear-gradient(to right, var(--bg-color) 1px, transparent 1px), linear-gradient(to bottom, var(--bg-color) 1px, transparent 1px)",
+            backgroundSize:
+              "calc(var(--bg-size) * 4) calc(var(--bg-size) * 4), calc(var(--bg-size) * 4) calc(var(--bg-size) * 4), var(--bg-size) var(--bg-size), var(--bg-size) var(--bg-size)",
+            backgroundPosition: "2px 2px, -2px -2px, 1px 1px, -1px -1px",
+          } as React.CSSProperties
+        }
+      ></div>
     </div>
   );
 };
