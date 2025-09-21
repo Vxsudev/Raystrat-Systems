@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SequenceForm } from '@/components/ui/sequence-form';
@@ -67,9 +68,14 @@ interface LeadTableProps {
 }
 
 export interface SequenceStep {
-  delayDays: number;
-  subject: string;
-  body: string;
+  stepIndex: number;
+  delayMinutes: number;
+  templateSubject: string;
+  templateHtml: string;
+  templateText?: string;
+  suppressIfRepliedMinutes?: number;
+  maxRetries?: number;
+  backoffSeconds?: number;
 }
 
 export interface Sequence {
@@ -453,9 +459,12 @@ export default function DashboardPage() {
                                         Create New Sequence
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-2xl">
+                                <DialogContent className="sm:max-w-3xl">
                                     <DialogHeader>
                                         <DialogTitle>Create New Sequence</DialogTitle>
+                                        <DialogDescription>
+                                            Define the steps and content for your automated email sequence.
+                                        </DialogDescription>
                                     </DialogHeader>
                                     <SequenceForm onSave={handleSaveSequence} />
                                 </DialogContent>
@@ -503,3 +512,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
