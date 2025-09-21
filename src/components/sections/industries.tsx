@@ -91,10 +91,10 @@ export function Industries() {
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <p className="text-sm font-semibold tracking-widest uppercase text-primary font-headline">
-            Get Industry-Centric Solutions With
+            Get Precision Automation In
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
-            Our AI Automation Agency
+            Agents for Every Vertical
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
