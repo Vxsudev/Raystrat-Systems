@@ -273,7 +273,7 @@ export async function saveAndSendNotes(
       console.error('AI Note Analysis Error:', aiError);
       // If AI fails, we can fall back to a default message.
       aiSuggestion =
-        '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team.</p>';
+        '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
     }
     
     // Define the two emails to send
@@ -292,7 +292,7 @@ export async function saveAndSendNotes(
           </ul>
           <h3>Notes:</h3>
           <pre>${notes}</pre>
-          <h3>AI Analysis:</h3>
+          <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
           <p>${aiSuggestion}</p>
       `,
     };
@@ -308,7 +308,7 @@ export async function saveAndSendNotes(
           <hr>
           <pre>${notes}</pre>
           <hr>
-          <h3>Our AI-Powered Suggestion</h3>
+          <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
           <p>${aiSuggestion}</p>
           <p><a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a> to discuss this further.</p>
           <p>Best,<br>The Raystrat Systems Team</p>
@@ -408,3 +408,4 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         return { message: 'Error', errors: { general: ['An error occurred while changing your password. Please try again.'] } };
     }
 }
+
