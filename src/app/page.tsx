@@ -9,6 +9,7 @@ import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
+import { ByteOfTheWeek } from '@/components/sections/byte-of-the-week';
 
 
 export default async function Home() {
@@ -54,6 +55,7 @@ export default async function Home() {
         <Services />
         <Results />
         <Pricing />
+        <ByteOfTheWeek />
         <Faq />
       </main>
       <Footer />
