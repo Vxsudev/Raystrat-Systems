@@ -5,6 +5,7 @@ import { Header } from '@/components/header';
 import { Hero } from '@/components/sections/hero';
 import { Services } from '@/components/sections/services';
 import { Industries } from '@/components/sections/industries';
+import { AgentAdvantage } from '@/components/sections/agent-advantage';
 import { Results } from '@/components/sections/results';
 import { Pricing } from '@/components/sections/pricing';
 import { Faq } from '@/components/sections/faq';
@@ -60,6 +61,7 @@ export default async function Home() {
         <Hero />
         <Services />
         <Industries />
+        <AgentAdvantage />
         <Results />
         <Pricing />
         <ByteOfTheWeek />
