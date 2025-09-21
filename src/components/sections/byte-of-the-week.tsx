@@ -15,10 +15,10 @@ export function ByteOfTheWeek() {
   }
 
   return (
-    <section id="byte-of-the-week" className="py-16 md:py-24 bg-card text-card-foreground">
+    <section id="byte-of-the-week" className="py-16 md:py-24">
       <div className="container">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div className="order-2 md:order-1">
+          <div>
             <p className="mb-2 text-sm font-semibold tracking-widest uppercase text-primary font-headline">
               Byte-{String(byteIndex + 1).padStart(2, '0')}
             </p>
@@ -41,7 +41,7 @@ export function ByteOfTheWeek() {
                 </Button>
             </div>
           </div>
-          <div className="order-1 md:order-2 p-8 bg-background rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden">
+          <div className="p-8 bg-card rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden">
              <AnimatedGridBackground />
              <div className="text-center relative z-10">
                  <span className="text-6xl font-bold font-headline text-primary">
