@@ -1,9 +1,19 @@
-// src/components/sections/hero.tsx
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Marquee } from '@/components/ui/marquee';
 import { ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import { DynamicHeadline } from '@/components/ui/dynamic-headline';
+import { PlaybookForm } from '../ui/playbook-form';
+import { DynamicHeadline } from '../ui/dynamic-headline';
 
 export function Hero() {
   return (
