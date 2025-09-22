@@ -9,21 +9,6 @@ export const navigationLinks = [
   { name: 'FAQ', href: '/#faq' },
 ];
 
-export const marqueeStats = [
-  "Systems that collect, convert, and deliver.",
-  "No missed invoices.",
-  "Inbox discipline on autopilot.",
-  "Scale without compliance fear.",
-  "Revenue reclaimed from leaks.",
-  "Search-intent leads only.",
-  "Content treadmill destroyed.",
-  "Accuracy that holds under load.",
-  "Cash flow discipline, automated.",
-  "12 hrs/week reclaimed per operator.",
-  "3.2× reply rate lift.",
-  "42% faster invoice cycles.",
-];
-
 export const services: { slug: string; title: string; subhead: string; bullets: string[]; icon: LucideIcon, pageContent: string; iconClassName?: string }[] = [
   {
     slug: 'leads-hunter-agent',
