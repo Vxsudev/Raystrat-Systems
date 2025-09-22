@@ -10,7 +10,7 @@ export function Hero() {
       <div className="w-full container relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left">
-            <h1 className="text-5xl font-bold font-headline sm:text-6xl md:text-7xl text-foreground">
+            <h1 className="text-4xl font-bold font-headline sm:text-5xl md:text-6xl text-foreground">
               Agents Run<br />
               <DynamicHeadline />
             </h1>
