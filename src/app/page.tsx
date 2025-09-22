@@ -68,3 +68,14 @@ export default async function Home() {
     </div>
   );
 }
+
+// Add this CSS to a global stylesheet, e.g., src/app/globals.css
+const DottedPattern = `
+  .bg-dotted-pattern {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 0.5px, transparent 0);
+    background-size: 20px 20px;
+  }
+`;
+
+// It's better to add the style to globals.css but for this purpose, a style tag will work.
+// You can also consider creating a component for this background pattern.
