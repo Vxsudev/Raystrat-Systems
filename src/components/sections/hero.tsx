@@ -11,7 +11,7 @@ export function Hero() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left">
             <h1 className="text-5xl font-bold font-headline sm:text-6xl md:text-7xl text-foreground">
-              Follow-Up Agents<br />
+              Agents Run<br />
               <DynamicHeadline />
             </h1>
             <p className="mx-auto md:mx-0 mt-6 text-lg md:text-xl text-muted-foreground max-w-xl">
