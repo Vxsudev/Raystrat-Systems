@@ -19,7 +19,7 @@ export function Hero() {
               Real-time performance for your automated sequences. Install once, watch replies and bookings compound.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-8 gap-4">
-              <Button asChild size="lg" className="w-full sm:w-auto text-lg h-auto">
+              <Button asChild size="lg" className="w-full sm:w-auto text-lg h-auto py-4">
                 <Link href="#services">
                   Explore The Agents <ArrowRight className="ml-2" />
                 </Link>
