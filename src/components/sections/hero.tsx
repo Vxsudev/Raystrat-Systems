@@ -33,7 +33,7 @@ export function Hero() {
               alt="Follow-Up Agent Dashboard — analytics preview"
               width={800}
               height={600}
-              className="rounded-2xl object-cover ring-1 ring-border/40 shadow-2xl"
+              className="rounded-2xl object-cover ring-1 ring-border/40 shadow-2xl transition-all duration-300 hover:scale-105"
               priority
               data-ai-hint="dashboard analytics"
             />
