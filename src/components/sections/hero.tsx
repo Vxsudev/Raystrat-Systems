@@ -6,7 +6,7 @@ import { DynamicHeadline } from '@/components/ui/dynamic-headline';
 
 export function Hero() {
   return (
-    <section id="top" className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-transparent py-16 md:py-24 overflow-hidden">
+    <section id="top" className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-transparent py-24 md:py-32 overflow-hidden">
       <div className="w-full container relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left">
