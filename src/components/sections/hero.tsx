@@ -14,6 +14,7 @@ import { Marquee } from '@/components/ui/marquee';
 import { ArrowRight } from 'lucide-react';
 import { PlaybookForm } from '../ui/playbook-form';
 import { DynamicHeadline } from '../ui/dynamic-headline';
+import DashboardHero from '@/app/dashboard-hero.png';
 
 export function Hero() {
   return (
@@ -42,7 +43,7 @@ export function Hero() {
             <div className="relative flex items-center justify-center">
                  <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse-slower"></div>
                  <Image
-                    src="/dashboard-hero.png"
+                    src={DashboardHero}
                     alt="Analytics Dashboard"
                     width={800}
                     height={600}
