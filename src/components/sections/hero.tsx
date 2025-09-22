@@ -29,7 +29,7 @@ export function Hero() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse-slower" />
             <Image
-              src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxEYXNoYm9hcmR8ZW58MHx8fHwxNzU4NTM4NTkzfDA&ixlib=rb-4.1.0&q=80&w=1080"
+              src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkYXRhfGVufDB8fHx8MTc1ODUzOTE1OHww&ixlib=rb-4.1.0&q=80&w=1080"
               alt="Follow-Up Agent Dashboard — analytics preview"
               width={800}
               height={600}
