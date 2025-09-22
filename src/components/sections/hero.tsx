@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,6 @@ import { Marquee } from '@/components/ui/marquee';
 import { ArrowRight } from 'lucide-react';
 import { PlaybookForm } from '../ui/playbook-form';
 import { DynamicHeadline } from '../ui/dynamic-headline';
-import DashboardHero from '@/app/dashboard-hero.png';
 
 export function Hero() {
   return (
@@ -43,12 +43,13 @@ export function Hero() {
             <div className="relative flex items-center justify-center">
                  <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl -z-10 animate-pulse-slower"></div>
                  <Image
-                    src={DashboardHero}
+                    src="https://picsum.photos/seed/dashboard/800/600"
                     alt="Analytics Dashboard"
                     width={800}
                     height={600}
                     className="rounded-2xl object-cover"
                     priority
+                    data-ai-hint="dashboard analytics"
                 />
             </div>
         </div>
