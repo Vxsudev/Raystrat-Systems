@@ -10,11 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['var(--font-body)', 'sans-serif'],
-        headline: ['var(--font-headline)', 'sans-serif'],
-      },
-      textShadow: {
-        halo: '0 0 15px hsl(var(--background))',
+        body: ['Inter', 'sans-serif'],
+        headline: ['"Space Grotesk"', 'sans-serif'],
+        code: ['monospace'],
       },
       typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
@@ -128,41 +126,20 @@ export default {
             height: '0',
           },
         },
-        'pulse-slow': {
-          '50%': {
-            opacity: '0.5',
-          },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
         },
-        'pulse-slower': {
-          '50%': {
-            opacity: '0.3',
-          },
-        },
-        'move-background': {
-          '0%': { backgroundPosition: '0 0, 0 0, 0 0, 0 0' },
-          '100%': { backgroundPosition: '-256px 0, 256px 0, -128px 0, 128px 0' },
-        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'pulse-slow': 'pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-slower': 'pulse-slower 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'marquee': 'marquee 60s linear infinite',
       },
     },
   },
   plugins: [
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
-    function ({ matchUtilities, theme }: { matchUtilities: any, theme: any }) {
-      matchUtilities(
-        {
-          'text-shadow': (value: any) => ({
-            textShadow: value,
-          }),
-        },
-        { values: theme('textShadow') }
-      )
-    },
 ],
 } satisfies Config;

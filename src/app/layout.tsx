@@ -1,22 +1,21 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Space_Grotesk, Inter } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/contexts/auth-context';
 import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
+import { ThemeProvider } from '@/components/theme-provider';
 
-
-const fontSpaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-headline',
-});
-
-const fontInter = Inter({
+const fontBody = Inter({
   subsets: ['latin'],
   variable: '--font-body',
+});
+
+const fontHeadline = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-headline',
 });
 
 export const metadata: Metadata = {
@@ -67,8 +66,8 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-background font-body antialiased',
-          fontSpaceGrotesk.variable,
-          fontInter.variable
+          fontBody.variable,
+          fontHeadline.variable
         )}
       >
         <ThemeProvider
