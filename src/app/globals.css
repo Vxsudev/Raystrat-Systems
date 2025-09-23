@@ -66,14 +66,3 @@
     @apply mx-auto w-full max-w-screen-xl px-4 md:px-6;
   }
 }
-
-body {
-  --dot-bg: hsl(var(--background));
-  --dot-color: hsl(var(--foreground) / 0.1);
-  --dot-size: 1px;
-  --dot-space: 22px;
-	background:
-		linear-gradient(90deg, var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
-		linear-gradient(var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
-		var(--dot-color);
-}

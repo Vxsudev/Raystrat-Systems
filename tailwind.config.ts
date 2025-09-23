@@ -9,6 +9,12 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'dotted-pattern': 'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.1) 1px, transparent 0)',
+      },
+      backgroundSize: {
+        'dotted-pattern': '22px 22px',
+      },
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['"Space Grotesk"', 'sans-serif'],

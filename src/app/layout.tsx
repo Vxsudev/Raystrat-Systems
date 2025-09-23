@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
@@ -65,7 +66,7 @@ export default function RootLayout({
     <html lang="en" className='dark' suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-body antialiased',
+          'min-h-screen bg-background font-body antialiased bg-dotted-pattern',
           fontBody.variable,
           fontHeadline.variable
         )}
