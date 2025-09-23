@@ -53,7 +53,6 @@ export default async function Home() {
   // we are on the marketing domain and the page is not an app page.
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="fixed top-0 left-0 w-full h-full bg-dotted-pattern -z-10" />
       <Header />
       <main className="flex-1">
         <Hero />
@@ -68,14 +67,3 @@ export default async function Home() {
     </div>
   );
 }
-
-// Add this CSS to a global stylesheet, e.g., src/app/globals.css
-const DottedPattern = `
-  .bg-dotted-pattern {
-    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 0.5px, transparent 0);
-    background-size: 20px 20px;
-  }
-`;
-
-// It's better to add the style to globals.css but for this purpose, a style tag will work.
-// You can also consider creating a component for this background pattern.

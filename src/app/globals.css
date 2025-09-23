@@ -66,4 +66,8 @@
   .container {
     @apply mx-auto w-full max-w-screen-xl px-4 md:px-6;
   }
+  .bg-dotted-pattern {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 0.5px, transparent 0);
+    background-size: 20px 20px;
+  }
 }
