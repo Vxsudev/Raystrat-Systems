@@ -18,7 +18,7 @@ export function Hero() {
               Most losses trace back to the same five systems — leads, follow-up, support, operations, and data. Our agents run them with discipline.
             </p>
             <div className="flex justify-center mt-8">
-              <Button asChild size="lg" variant="outline" className="h-auto py-3 px-8 text-lg">
+              <Button asChild size="lg" variant="ghost" className="h-auto py-3 px-8 text-lg bg-background text-primary border-primary border hover:bg-primary/10">
                 <Link href="#services">
                   See The Five Agents
                 </Link>
