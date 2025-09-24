@@ -14,7 +14,7 @@ export default {
         'dotted-pattern': 'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.25) 1px, transparent 0)',
       },
       backgroundSize: {
-        'dotted-pattern': '22px 22px',
+        'dotted-pattern': '16px 16px',
       },
       fontFamily: {
         body: ['Inter', 'sans-serif'],

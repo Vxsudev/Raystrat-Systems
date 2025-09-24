@@ -66,7 +66,7 @@ export default function RootLayout({
     <html lang="en" className='dark' suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-body antialiased bg-dotted-pattern bg-fixed',
+          'min-h-screen bg-background font-body antialiased',
           fontBody.variable,
           fontHeadline.variable
         )}
