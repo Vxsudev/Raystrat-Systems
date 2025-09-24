@@ -21,6 +21,9 @@ export default {
         headline: ['"Space Grotesk"', 'sans-serif'],
         code: ['monospace'],
       },
+      maxWidth: {
+        '9xl': '96rem',
+      },
       typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
           css: {
