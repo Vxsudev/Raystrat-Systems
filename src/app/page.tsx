@@ -1,3 +1,4 @@
+
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Header } from '@/components/header';
@@ -52,18 +53,20 @@ export default async function Home() {
   // This logic now correctly assumes that if we reach this point,
   // we are on the marketing domain and the page is not an app page.
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-1">
-        <Hero />
-        <Services />
-        <Industries />
-        <AgentAdvantage />
-        <Results />
-        <ByteOfTheWeek />
-        <Faq />
-      </main>
-      <Footer />
+    <div className="bg-dotted-pattern bg-fixed">
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1">
+          <Hero />
+          <Services />
+          <Industries />
+          <AgentAdvantage />
+          <Results />
+          <ByteOfTheWeek />
+          <Faq />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }

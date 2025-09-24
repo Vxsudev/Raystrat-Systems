@@ -1,4 +1,5 @@
 
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -6,7 +7,6 @@ import { ArrowRight } from 'lucide-react';
 export function Hero() {
   return (
     <section id="top" className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-transparent py-24 md:py-32 overflow-hidden">
-      <div className="absolute inset-0 w-full h-full bg-dotted-pattern bg-fixed -z-10" />
       <div className="relative z-10 w-full">
         <div className="max-w-9xl mx-auto text-center">
             <h1 className="text-6xl font-bold font-headline sm:text-7xl md:text-8xl text-foreground">

@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        'dotted-pattern': 'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.25) 1px, transparent 0)',
+        'dotted-pattern': 'radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.4) 1px, transparent 0)',
       },
       backgroundSize: {
         'dotted-pattern': '16px 16px',
