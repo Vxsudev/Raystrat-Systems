@@ -649,3 +649,71 @@ export async function enrollLeadsFromCSV(prevState: EnrollLeadsState, formData: 
     return { message: 'Error', errors: { general: ['An internal server error occurred while enrolling leads.'] } };
   }
 }
+
+// --- Playbook Action ---
+
+const playbookSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+});
+
+export type PlaybookState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+  };
+  message: string | null;
+};
+
+
+export async function playbookAction(prevState: PlaybookState, formData: FormData): Promise<PlaybookState> {
+  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_FROM_EMAIL) {
+    console.error('SendGrid API Key or From Email is not configured.');
+    return { message: 'Server configuration error.' };
+  }
+
+  const validatedFields = playbookSchema.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid input.',
+    };
+  }
+
+  const { name, email } = validatedFields.data;
+
+  try {
+    // 1. Write lead to Firestore
+    await db.collection('playbook_leads').add({
+      name,
+      email,
+      createdAt: new Date().toISOString(),
+    });
+
+    // 2. Send email via SendGrid
+    const msg = {
+      to: email,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: 'Your Raystrat Systems Playbook',
+      html: `
+        <p>Hi ${name},</p>
+        <p>Thank you for your interest in Raystrat Systems.</p>
+        <p>You can access the playbook using the link below:</p>
+        <p><a href="/playbook.pdf">Download Your Playbook</a></p>
+        <p>Best,<br>The Raystrat Systems Team</p>
+      `,
+    };
+    
+    await sgMail.send(msg);
+
+    return { message: 'Success! Your playbook is on its way.' };
+
+  } catch (error) {
+    console.error('Playbook Action Error:', error);
+    return { message: 'An internal server error occurred.' };
+  }
+}

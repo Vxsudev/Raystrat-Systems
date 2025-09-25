@@ -4,13 +4,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  "projectId": "raystrat-systems",
-  "appId": "1:120940808370:web:95959bce4810f0e8a521ab",
-  "storageBucket": "raystrat-systems.firebasestorage.app",
-  "apiKey": "AIzaSyBwXPewYIPGS9SUEqv29EHfBUcjbu7z5xQ",
-  "authDomain": "raystrat-systems.firebaseapp.com",
-  "measurementId": "G-9W572H16P3",
-  "messagingSenderId": "120940808370"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
