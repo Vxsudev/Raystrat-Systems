@@ -69,8 +69,24 @@ export function ByteNotesTaker({ serviceName, onClose, isOpen }: DraggableNotepa
   const { toast } = useToast();
 
   const notepadRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 100, y: 150 });
-  const [size, setSize] = useState({ width: 380, height: 420 });
+  
+  // Default state calculation moved inside to access `window`
+  const getDefaultState = () => {
+    if (typeof window === 'undefined') {
+      return {
+        pos: { x: 100, y: 100 },
+        size: { width: 400, height: 500 }
+      };
+    }
+    const defaultWidth = Math.max(320, window.innerWidth * 0.25);
+    return {
+      pos: { x: window.innerWidth - defaultWidth - 20, y: 80 },
+      size: { width: defaultWidth, height: window.innerHeight - 180 }
+    }
+  };
+
+  const [position, setPosition] = useState(getDefaultState().pos);
+  const [size, setSize] = useState(getDefaultState().size);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState<string | null>(null);
   const dragStartRef = useRef({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
@@ -89,6 +105,9 @@ export function ByteNotesTaker({ serviceName, onClose, isOpen }: DraggableNotepa
         if (savedSize) setSize(savedSize);
       } else {
         setNotes(initialNote);
+        const defaults = getDefaultState();
+        setPosition(defaults.pos);
+        setSize(defaults.size);
       }
     } catch (error) {
       console.error("Failed to parse notepad state from localStorage", error);
@@ -262,7 +281,7 @@ export function ByteNotesTaker({ serviceName, onClose, isOpen }: DraggableNotepa
         >
             <div className="flex items-center gap-2">
                 <GripVertical className="h-5 w-5 text-muted-foreground" />
-                <span className="font-semibold text-sm">Private Note</span>
+                <span className="font-semibold text-sm">Notepad</span>
             </div>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
                 <X className="h-4 w-4" />
