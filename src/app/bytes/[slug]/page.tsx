@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { NotesTaker } from '@/components/ui/notes-taker';
+import { ByteNotesTaker } from '@/components/ui/byte-notes-taker';
 import { Separator } from '@/components/ui/separator';
 
 interface BytePageProps {
@@ -58,7 +58,7 @@ export default function BytePage({ params }: BytePageProps) {
               </div>
               <aside className="lg:col-span-2">
                 <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
-                    <NotesTaker serviceName={`Byte: ${byte.title}`} />
+                    <ByteNotesTaker serviceName={`Byte: ${byte.title}`} />
                 </div>
               </aside>
             </div>
