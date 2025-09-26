@@ -51,9 +51,10 @@ export default function BytePage({ params }: BytePageProps) {
                         </h1>
                     </div>
                 </header>
-                <div className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80">
-                  {byte.content}
-                </div>
+                <div
+                  className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                  dangerouslySetInnerHTML={{ __html: byte.content }}
+                />
               </div>
               <aside className="lg:col-span-2">
                 <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
