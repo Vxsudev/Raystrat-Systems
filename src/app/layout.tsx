@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/contexts/auth-context';
 import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 import { ThemeProvider } from '@/components/theme-provider';
+import { FloatingNoteTaker } from '@/components/ui/floating-note-taker';
 
 const fontBody = Inter({
   subsets: ['latin'],
@@ -81,6 +82,7 @@ export default function RootLayout({
             {children}
             <Toaster />
             <FloatingAiSuggestor />
+            <FloatingNoteTaker />
           </AuthProvider>
         </ThemeProvider>
       </body>

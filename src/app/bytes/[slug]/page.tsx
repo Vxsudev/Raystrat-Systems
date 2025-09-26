@@ -39,28 +39,19 @@ export default function BytePage({ params }: BytePageProps) {
       <main className="flex-1">
         <article className="py-16 md:py-24 lg:py-32">
           <div className="container">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-              <div className="lg:col-span-3">
-                <header className="mb-8">
-                    <div className="text-center">
-                        <span className="text-sm font-semibold tracking-widest uppercase text-primary">
-                        Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
-                        </span>
-                        <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
-                        {byte.title}
-                        </h1>
-                    </div>
-                </header>
-                <div
-                  className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
-                  dangerouslySetInnerHTML={{ __html: byte.content }}
-                />
-              </div>
-              <aside className="lg:col-span-2">
-                <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
-                    <ByteNotesTaker serviceName={`Byte: ${byte.title}`} />
-                </div>
-              </aside>
+            <div className="max-w-3xl mx-auto">
+              <header className="mb-8 text-center">
+                  <span className="text-sm font-semibold tracking-widest uppercase text-primary">
+                  Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
+                  </span>
+                  <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
+                  {byte.title}
+                  </h1>
+              </header>
+              <div
+                className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                dangerouslySetInnerHTML={{ __html: byte.content }}
+              />
             </div>
           </div>
         </article>

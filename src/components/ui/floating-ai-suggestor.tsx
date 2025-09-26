@@ -241,11 +241,13 @@ function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
 export function FloatingAiSuggestor() {
   const pathname = usePathname();
 
-  if (pathname.startsWith('/services/') || pathname.startsWith('/bytes/')) {
+  if (pathname.startsWith('/services/')) {
     return <ContextualAssistant />;
   }
   if (pathname === '/') {
     return <AiServiceSuggester />;
   }
+  // The suggestor is now removed from /bytes/ pages.
+  // A new FloatingNoteTaker component will handle that route.
   return null;
 }
