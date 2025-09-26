@@ -87,12 +87,11 @@ export function FloatingNoteTaker() {
           onClick={() => setIsOpen(true)}
         />
       )}
-      {isOpen && (
-        <ByteNotesTaker
-          serviceName={currentByteTitle}
-          onClose={() => setIsOpen(false)}
-        />
-      )}
+      <ByteNotesTaker
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        serviceName={currentByteTitle}
+      />
     </>
   );
 }
