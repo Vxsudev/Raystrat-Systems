@@ -20,14 +20,16 @@ const fontHeadline = Space_Grotesk({
   variable: '--font-headline',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystrat.com';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://raystrat.com'),
+  metadataBase: new URL(siteUrl),
   title: 'Raystrat Systems — AI Automations Wing',
   description: 'Five boring automations that print cashflow while you build.',
   openGraph: {
     title: 'Raystrat Systems — AI Automations Wing',
     description: 'We automate ROI — not noise. Five boring automations that print cashflow while you build.',
-    url: 'https://raystrat.com',
+    url: siteUrl,
     siteName: 'Raystrat Systems',
     images: [
       { url: '/og-image.png', width: 1200, height: 630 },
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Raystrat Systems — AI Automations Wing',
     description: 'We automate ROI — not noise. Five boring automations that print cashflow while you build.',
-    images: ['/og-image.png'],
+    images: [`${siteUrl}/og-image.png`],
   },
   robots: {
     index: true,
@@ -58,6 +60,19 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Raystrat Systems',
+    url: siteUrl,
+    logo: `${siteUrl}/icon.svg`,
+    sameAs: [
+        // Add social media profile URLs here when available
+        // e.g., "https://twitter.com/YourProfile"
+    ],
+};
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,6 +80,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className='dark' suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+      </head>
       <body
         className={cn(
           'min-h-screen bg-background font-body antialiased',

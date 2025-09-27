@@ -232,11 +232,12 @@ export const faq = {
   ],
 };
 
-export const bytes = [
+export const bytes: { slug: string; title: string; summary: string; content: string; publishedOn: string; }[] = [
   {
     slug: 'ai-inference-unit-economics-and-global-cost-benchmarks',
     title: 'The Inference P&L: Where Profits Go When Work Becomes Compute',
     summary: 'The rise of AI is changing cost structures fundamentally. Instead of paying salaries, companies are increasingly paying for tokens, seconds, and GPU hours. This section explores the real unit economics of AI – when shifting operating expenses from people to compute actually improves margins, and how to gauge ROI as tasks migrate from human labor to machine inference.',
+    publishedOn: '2024-07-29',
     content: `<h3>AI Inference Unit Economics and Global Cost Benchmarks</h3>
 <p>For AI-first products, compute has become the new “cost of goods” (<a href="https://medium.com" target="_blank" rel="noopener noreferrer">medium.com</a>). Many startups find that inference (running AI models) now dominates their operating costs – Andreessen Horowitz estimated that 60–80% of total OPEX at AI-centric companies comes from inference alone (<a href="https://getmonetizely.com" target="_blank" rel="noopener noreferrer">getmonetizely.com</a>). In other words, budgets once spent on headcount are shifting to cloud bills and GPU rentals.</p>
 <p>This shift has led to upside-down economics in some cases. While the cost per unit of compute has plummeted – by almost 1000× in the last two years – usage has exploded by even more (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>). As WEKA’s Chief AI Officer put it, “the price of tokens declines, but demand is spiking... the net reality is that the cost of AI is going up” (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>). In effect, we’re seeing a rerun of the “Uber phenomenon,” with investors subsidizing AI usage to gain market share (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>). Indeed, model providers often charge less for API calls than it costs to run them (to encourage adoption), meaning many AI services are running at negative unit economics (<a href="https://research.contrary.com" target="_blank" rel="noopener noreferrer">research.contrary.com</a>).</p>
@@ -315,18 +316,21 @@ export const bytes = [
     slug: 'byte-02-repurposing-content-isnt-optional',
     title: 'Repurposing Content Isn’t Optional, It’s Asymmetric ROI',
     summary: 'Content creation is expensive. Not repurposing it is leaving 90% of its value on the table. This byte breaks down the tactical model for turning a single recording into a 30-day content pipeline.',
+    publishedOn: '2024-07-22',
     content: 'The content for Byte-02 goes here.',
   },
   {
     slug: 'byte-03-inbox-zero-is-a-system-not-a-skill',
     title: 'Inbox Zero is a System, Not a Skill',
     summary: 'An overflowing inbox isn’t a personal failing, it’s a systems failure. We show how a "Smart Inbox" automation acts as a force multiplier for executive focus, filtering signal from noise.',
+    publishedOn: '2024-07-15',
     content: 'The content for Byte-03 goes here.',
   },
   {
     slug: 'byte-04-why-your-best-leads-are-boring',
     title: 'Why Your Best Leads Are “Boring”',
     summary: 'High-excitement leads often churn. The most profitable clients come from methodical, intent-driven prospecting. We’ll show you how to find them.',
+    publishedOn: '2024-07-08',
     content: 'The content for Byte-04 goes here.',
   },
 ];
