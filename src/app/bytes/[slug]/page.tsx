@@ -71,9 +71,9 @@ export default function BytePage({ params }: BytePageProps) {
               </h1>
           </div>
           
-          <div className="grid lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+          <div className="max-w-3xl mx-auto relative">
             {/* Table of Contents Sidebar */}
-            <aside className="hidden lg:block lg:col-span-3">
+            <aside className="hidden lg:block absolute top-0 right-full mr-8 w-64">
               <div className="sticky top-24">
                 <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
                 <ul className="mt-4 space-y-2 text-sm">
@@ -92,7 +92,7 @@ export default function BytePage({ params }: BytePageProps) {
             </aside>
 
             {/* Main Article Content */}
-            <article className="lg:col-span-9">
+            <article>
                 <div
                     className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
                     dangerouslySetInnerHTML={{ __html: processedContent }}
