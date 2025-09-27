@@ -113,7 +113,7 @@ export default function BytePage({ params }: BytePageProps) {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1">
-        <div className="container py-16 md:py-24 lg:py-32">
+        <div className="container py-12 md:py-16">
           <div className="max-w-3xl mx-auto text-center mb-12">
               <span className="text-sm font-semibold tracking-widest uppercase text-primary">
               Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
