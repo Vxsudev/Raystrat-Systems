@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 });
 
 // 3) CORS (strict allowlist)
-const ALLOW_ORIGINS = new Set((process.env.ALLOWED_ORIGINS || 'https://app.raystratsystems.com,https://www.raystratsystems.com').split(','));
+const ALLOW_ORIGINS = new Set((process.env.ALLOWED_ORIGINS || 'https://app.raystratsystems.com,https://raystratsystems.com').split(','));
 app.use(cors({
   origin(origin, cb) {
     if (!origin) return cb(null, false); // disallow non-browser by default

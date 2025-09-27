@@ -31,7 +31,7 @@ export async function analyzeNotes(
 }
 
 const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.raystratsystems.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystratsystems.com';
 
 const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
