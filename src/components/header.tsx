@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Menu, LogIn, UserPlus } from 'lucide-react';
+import { Menu, LogIn, UserPlus, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
@@ -63,12 +63,12 @@ export function Header() {
   );
 
   const authActions = (
-    <div className='flex items-center gap-2'>
-        <Button asChild variant="ghost" size="sm">
-            <Link href="/login">Login</Link>
-        </Button>
-        <Button asChild size="sm">
-            <Link href="/signup">Sign Up</Link>
+    <div className="flex items-center gap-2">
+        <Button asChild variant="ghost" size="icon">
+            <Link href="/login">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Login</span>
+            </Link>
         </Button>
     </div>
   );
