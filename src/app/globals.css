@@ -81,6 +81,9 @@
   section {
     @apply py-16 md:py-24 lg:py-32;
   }
+  .prose h3 {
+    @apply scroll-m-24; /* Add top margin for scrolling to anchor links */
+  }
 }
 
 @layer components {
