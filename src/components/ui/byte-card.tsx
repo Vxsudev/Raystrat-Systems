@@ -21,7 +21,7 @@ interface ByteCardProps {
 
 export function ByteCard({ byte, index }: ByteCardProps) {
   return (
-    <Link href={`/bytes/${byte.slug}`} className="block group">
+    <Link href={`/bytes/${byte.slug}`} className="block group h-full">
       <Card className="flex flex-col h-full p-6 transition-all duration-300 rounded-2xl bg-card hover:border-primary hover:shadow-2xl hover:shadow-primary/20">
         <CardHeader className="p-0">
           <p className="mb-2 text-sm font-semibold tracking-widest uppercase text-primary font-headline">

@@ -19,7 +19,7 @@ const SummarizerInputSchema = z.object({
 export type SummarizerInput = z.infer<typeof SummarizerInputSchema>;
 
 const SummarizerOutputSchema = z.object({
-  summary: z.string().describe("A bulleted list of key takeaways, with each bullet summarizing the section following an h3 tag. The format should be a markdown string."),
+  summary: z.string().describe("A markdown string containing exactly 5 bullet points summarizing the article's key takeaways. Each bullet point must be a single, concise sentence under 120 characters."),
 });
 export type SummarizerOutput = z.infer<typeof SummarizerOutputSchema>;
 
@@ -37,11 +37,11 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert SEO content strategist. Your task is to create a bulleted list of key takeaways from the following article.
 
 Instructions:
-1.  Read the entire article content.
-2.  Identify each section that begins with an '<h3>' tag.
-3.  For each section, write a single, concise sentence that summarizes its core argument or conclusion.
-4.  Format the final output as a markdown bulleted list (using '* ' for each item).
-5.  The summary should be optimized for Large Language Models (LLMs) by being clear, direct, and factual.
+1.  Read the entire article content and identify the most important concepts.
+2.  Create exactly 5 bullet points that summarize these key concepts.
+3.  Each bullet point MUST be a single, concise, and compelling sentence.
+4.  Each bullet point MUST be under 120 characters long.
+5.  Format the final output as a markdown bulleted list (using '* ' for each item).
 
 **ARTICLE CONTENT:**
 "{{{textToSummarize}}}"`,
