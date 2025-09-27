@@ -232,7 +232,7 @@ export const faq = {
   ],
 };
 
-export const bytes: { slug: string; title: string; summary: string; aiSummary: string; content: string; publishedOn: string; }[] = [
+export const bytes: { slug: string; title: string; summary: string; aiSummary: string; content: string; publishedOn: string; readTime: number; }[] = [
   {
     slug: 'integrating-ai-driven-service-lines-for-human-agent-enterprise-transformation',
     title: 'Integrating AI-Driven Service Lines for a Human+Agent Enterprise Transformation',
@@ -243,6 +243,7 @@ export const bytes: { slug: string; title: string; summary: string; aiSummary: s
 * **Establish Governance:** Implement a clear governance structure, including RACI charts and maturity targets, to oversee AI operations and ensure accountability.
 * **Formalize Board Actions:** Mandate the new org structure, approve budget shifts from capex to opex, and require dual reporting on both automation performance and human exceptions.`,
     publishedOn: '2025-09-27',
+    readTime: 12,
     content: `<h3>Introduction</h3>
 <p>Organizations are undergoing a paradigm shift as artificial intelligence (AI) agents become integral to operations.</p><p>Early adopters have shown that combining humans and AI “side by side at scale” can unlock significant value (<a href="https://mckinsey.com" target="_blank" rel="noopener noreferrer">mckinsey.com</a>).</p><p>To harness this potential, companies are expanding their organizational structure with new service lines dedicated to critical capabilities and are redefining roles, responsibilities, and incentives.</p><p>The goal is an “agentic” organization where routine work is handled by AI agents, freeing human experts to focus on strategic and creative tasks (<a href="https://pedowitzgroup.com" target="_blank" rel="noopener noreferrer">pedowitzgroup.com</a>).</p><p>This article outlines five key service lines to add, how to split work between humans and AI agents, and governance measures—including compensation and oversight—needed to ensure a successful transformation. It is a general framework for building an AI-augmented organization, not tailored to any single company.</p>
 <h3>Service Lines to Add</h3>
@@ -313,11 +314,12 @@ export const bytes: { slug: string; title: string; summary: string; aiSummary: s
 * **Regional Economics:** Factor in how regional differences in energy prices and local cloud infrastructure, particularly in places like India, can impact the cost-effectiveness of AI deployment.
 * **BPO Case Study:** See how the Business Process Outsourcing industry is leveraging AI to reduce costs and improve margins, while navigating pitfalls like over-automation and data security.`,
     publishedOn: '2025-09-20',
+    readTime: 15,
     content: `<h3>AI Inference Unit Economics and Global Cost Benchmarks</h3>
 <p>For AI-first products, compute has become the new “cost of goods” (<a href="https://medium.com" target="_blank" rel="noopener noreferrer">medium.com</a>).</p><p>Many startups find that inference (running AI models) now dominates their operating costs – Andreessen Horowitz estimated that 60–80% of total OPEX at AI-centric companies comes from inference alone (<a href="https://getmonetizely.com" target="_blank" rel="noopener noreferrer">getmonetizely.com</a>).</p><p>In other words, budgets once spent on headcount are shifting to cloud bills and GPU rentals.</p>
 <p>This shift has led to upside-down economics in some cases.</p><p>While the cost per unit of compute has plummeted – by almost 1000× in the last two years – usage has exploded by even more (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>).</p><p>As WEKA’s Chief AI Officer put it, “the price of tokens declines, but demand is spiking... the net reality is that the cost of AI is going up” (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>).</p><p>In effect, we’re seeing a rerun of the “Uber phenomenon,” with investors subsidizing AI usage to gain market share (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>).</p><p>Indeed, model providers often charge less for API calls than it costs to run them (to encourage adoption), meaning many AI services are running at negative unit economics (<a href="https://research.contrary.com" target="_blank" rel="noopener noreferrer">research.contrary.com</a>).</p>
 <p>Yet, falling inference costs are real – especially at the high end.</p><p>OpenAI noted in 2025 that “the cost of a given AI capability falls by an order of magnitude every 12 months” (<a href="https://research.contrary.com" target="_blank" rel="noopener noreferrer">research.contrary.com</a>).</p><p>For example, OpenAI’s GPT-5 launched in mid-2025 at an aggressively low price: $1.25 per million input tokens and $10 per million output tokens (<a href="https://techcrunch.com" target="_blank" rel="noopener noreferrer">techcrunch.com</a>).</p><p>This is roughly 20× cheaper on a per-token basis than the prior GPT-4 model, highlighting how rapidly compute is commoditizing.</p><p>Such declining costs per token mean the economics can improve over time – if companies can manage the volume and complexity of AI work within budget.</p>
-<p>To truly understand profitability in the age of AI, leaders must look beyond headcount and focus on unit costs per task.</p><p>Instead of cost per employee hour, think cost per thousand tokens or per query.</p><p>The goal is to identify when shifting a task from a person to an AI actually lowers the cost per result, and when it simply trades one expense for another.</p><p>The sections below answer key questions: Which tasks clear the ROI bar today (versus 12–18 months from now)? How do model choices and parameters drive cost of goods sold? What’s the breakeven point between “agent minutes” and human minutes for your use case? And how can we optimize inference spend via capacity planning and cloud contracts?</p>
+<p>To truly understand profitability in the age of AI, leaders must look beyond headcount and focus on unit costs per task.</p><p>Instead of cost per employee hour, think cost per thousand tokens or per query.</p><p>The goal is to identify when shifting a task from a person to an AI actually lowers the cost per result, and when it simply trades one expense for another.</p><p>The sections below answer key questions: Which tasks clear the ROI bar today (versus 12–18 months from now)?</p><p>How do model choices and parameters drive cost of goods sold?</p><p>What’s the breakeven point between “agent minutes” and human minutes for your use case?</p><p>And how can we optimize inference spend via capacity planning and cloud contracts?</p>
 <h3>Which Tasks Cross the ROI Threshold? (Today vs. 12–18 Months Out)</h3>
 <p>Not every task that AI can do is one that it’s profitable to automate.</p><p>A recent MIT-IBM study on computer vision found that at current costs, businesses would choose not to automate the majority of AI-exposed tasks – in fact only 23% of wages for vision tasks are cost-attractive to automate today (<a href="https://ide.mit.edu" target="_blank" rel="noopener noreferrer">ide.mit.edu</a>).</p><p>The other ~77% of tasks may be technically feasible for AI, but not yet economical once you factor in model costs, system integration, and accuracy limits.</p><p>This implies that AI job displacement, while significant, will be gradual, targeting the most cost-effective use cases first (<a href="https://ide.mit.edu" target="_blank" rel="noopener noreferrer">ide.mit.edu</a>).</p>
 <p>So, which tasks clear the ROI bar now?</p><p>Broadly, high-volume, routine, and semi-structured tasks are leading candidates.</p><p>These include things like customer support Q&A, lead outreach emails, basic research and summarization, or transaction processing – work where an AI can handle many interactions quickly and consistently.</p><p>For example, AI chatbots and virtual agents are already handling huge volumes of customer inquiries across chat, email, and voice 24/7, at a fraction of the cost of call center staff (<a href="https://goodcall.com" target="_blank" rel="noopener noreferrer">goodcall.com</a>).</p><p>It’s common to see AI-driven customer service platforms charging $0.10–$0.30 per minute of conversation, compared to human agent costs of $6–$25 per hour (plus 15–30% overhead) (<a href="https://goodcall.com" target="_blank" rel="noopener noreferrer">goodcall.com</a>).</p><p>This cost difference makes automated handling of simple requests (password resets, order status queries, appointment reminders, etc.) ROI-positive today in many cases.</p><p>In fact, AI support agents at Decagon (an AI BPO) achieved 80% resolution rates and improved CSAT scores “without spending more”, underscoring that quality service can be delivered at lower unit cost (<a href="https://goodcall.com" target="_blank" rel="noopener noreferrer">goodcall.com</a>).</p>
@@ -393,6 +395,7 @@ export const bytes: { slug: string; title: string; summary: string; aiSummary: s
     summary: 'An overflowing inbox isn’t a personal failing, it’s a systems failure. We show how a "Smart Inbox" automation acts as a force multiplier for executive focus, filtering signal from noise.',
     aiSummary: 'Achieving Inbox Zero is not about personal discipline but about implementing the right system. This piece explains how an automated "Smart Inbox" can filter signal from noise, acting as a force multiplier for executive focus and productivity.',
     publishedOn: '2025-09-13',
+    readTime: 1,
     content: 'The content for Byte-03 goes here.',
   },
   {
@@ -401,6 +404,7 @@ export const bytes: { slug: string; title: string; summary: string; aiSummary: s
     summary: 'High-excitement leads often churn. The most profitable clients come from methodical, intent-driven prospecting. We’ll show you how to find them.',
     aiSummary: 'Contrary to popular belief, the most profitable clients often come from methodical, intent-driven prospecting, not high-excitement leads that tend to churn. This article explains how to identify and find these valuable "boring" leads.',
     publishedOn: '2025-09-06',
+    readTime: 1,
     content: 'The content for Byte-04 goes here.',
   },
 ];
@@ -420,4 +424,3 @@ export const industries = [
 ];
 
     
-
