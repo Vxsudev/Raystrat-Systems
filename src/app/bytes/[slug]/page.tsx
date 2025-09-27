@@ -70,26 +70,25 @@ export default function BytePage({ params }: BytePageProps) {
               </h1>
           </div>
           
-          <div className="max-w-3xl mx-auto relative">
-            <aside className="hidden lg:block absolute top-0 w-64 mr-8" style={{right: '100%'}}>
-              <div className="sticky top-24">
-                <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                <ul className="mt-4 space-y-2 text-sm">
-                {headings.map((heading) => (
-                    <li key={heading.id}>
-                    <Link 
-                        href={`#${heading.id}`}
-                        className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
-                    >
-                        {heading.title}
-                    </Link>
-                    </li>
-                ))}
-                </ul>
-              </div>
+          <div className="max-w-5xl mx-auto lg:flex lg:justify-center lg:gap-x-12">
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+                <div className="sticky top-24">
+                    <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
+                    <ul className="mt-4 space-y-2 text-sm">
+                    {headings.map((heading) => (
+                        <li key={heading.id}>
+                        <Link 
+                            href={`#${heading.id}`}
+                            className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
+                        >
+                            {heading.title}
+                        </Link>
+                        </li>
+                    ))}
+                    </ul>
+                </div>
             </aside>
-
-            <article>
+            <article className="max-w-3xl w-full">
                 <div
                     className="prose prose-invert prose-lg max-w-none text-foreground/80"
                     dangerouslySetInnerHTML={{ __html: processedContent }}
