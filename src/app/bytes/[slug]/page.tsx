@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import Link from 'next/link';
+import { FloatingTOC } from '@/components/ui/floating-toc';
 
 interface BytePageProps {
   params: {
@@ -70,36 +70,18 @@ export default function BytePage({ params }: BytePageProps) {
               </h1>
           </div>
           
-          <div className="max-w-5xl mx-auto flex justify-center">
-            <div className="relative flex w-full">
-                <aside className="hidden lg:block w-64 flex-shrink-0 self-start sticky top-24 mr-8">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                        <ul className="space-y-2 text-sm">
-                        {headings.map((heading) => (
-                            <li key={heading.id}>
-                            <Link 
-                                href={`#${heading.id}`}
-                                className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
-                            >
-                                {heading.title}
-                            </Link>
-                            </li>
-                        ))}
-                        </ul>
-                    </div>
-                </aside>
-                <article className='w-full max-w-3xl'>
-                    <div
-                        className="prose prose-invert prose-lg max-w-none text-foreground/80"
-                        dangerouslySetInnerHTML={{ __html: processedContent }}
-                    />
-                </article>
-            </div>
+          <div className="max-w-3xl mx-auto">
+            <article>
+                <div
+                    className="prose prose-invert prose-lg max-w-none text-foreground/80"
+                    dangerouslySetInnerHTML={{ __html: processedContent }}
+                />
+            </article>
           </div>
 
         </div>
       </main>
+      <FloatingTOC headings={headings} />
       <Footer />
     </div>
   );
