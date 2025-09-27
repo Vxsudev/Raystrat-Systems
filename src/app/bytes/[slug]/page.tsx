@@ -74,22 +74,20 @@ export default function BytePage({ params }: BytePageProps) {
             </div>
             <div className="max-w-3xl mx-auto relative">
                 {/* Table of Contents Sidebar */}
-                <aside className="hidden lg:block absolute top-0 right-full w-64 mr-8">
-                    <div className="sticky top-24">
-                        <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                        <ul className="mt-4 space-y-2 text-sm">
-                        {headings.map((heading) => (
-                            <li key={heading.id}>
-                            <Link 
-                                href={`#${heading.id}`}
-                                className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
-                            >
-                                {heading.title}
-                            </Link>
-                            </li>
-                        ))}
-                        </ul>
-                    </div>
+                <aside className="hidden lg:block absolute top-0 right-full w-64 mr-8 sticky top-24">
+                    <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
+                    <ul className="mt-4 space-y-2 text-sm">
+                    {headings.map((heading) => (
+                        <li key={heading.id}>
+                        <Link 
+                            href={`#${heading.id}`}
+                            className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
+                        >
+                            {heading.title}
+                        </Link>
+                        </li>
+                    ))}
+                    </ul>
                 </aside>
 
                 {/* Main Article Content */}
