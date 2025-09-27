@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: BytePageProps): Promise<Metad
     return {};
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystrat.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.raystratsystems.com';
   const byteUrl = `${siteUrl}/bytes/${byte.slug}`;
 
   return {
@@ -71,7 +71,7 @@ export default function BytePage({ params }: BytePageProps) {
     }
   );
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystrat.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.raystratsystems.com';
 
   const jsonLd = {
     '@context': 'https://schema.org',
