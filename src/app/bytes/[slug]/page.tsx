@@ -70,8 +70,8 @@ export default function BytePage({ params }: BytePageProps) {
               </h1>
           </div>
           
-          <div className="max-w-5xl mx-auto lg:grid lg:grid-cols-12 lg:gap-8">
-            <aside className="hidden lg:block lg:col-span-3">
+          <div className="max-w-3xl mx-auto relative">
+            <aside className="hidden lg:block absolute top-0 w-64 mr-8" style={{right: '100%'}}>
               <div className="sticky top-24">
                 <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
                 <ul className="mt-4 space-y-2 text-sm">
@@ -89,9 +89,9 @@ export default function BytePage({ params }: BytePageProps) {
               </div>
             </aside>
 
-            <article className="lg:col-span-9">
+            <article>
                 <div
-                    className="prose prose-invert prose-lg max-w-3xl mx-auto text-foreground/80"
+                    className="prose prose-invert prose-lg max-w-none text-foreground/80"
                     dangerouslySetInnerHTML={{ __html: processedContent }}
                 />
             </article>
