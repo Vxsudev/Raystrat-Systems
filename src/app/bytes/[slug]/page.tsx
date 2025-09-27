@@ -71,10 +71,10 @@ export default function BytePage({ params }: BytePageProps) {
           </div>
           
           <div className="max-w-5xl mx-auto lg:flex lg:justify-center lg:gap-x-12">
-            <aside className="hidden lg:block w-64 flex-shrink-0">
-                <div className="sticky top-24">
+            <aside className="hidden lg:block w-64 flex-shrink-0 self-start lg:sticky lg:top-24">
+                <div className="space-y-4">
                     <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                    <ul className="mt-4 space-y-2 text-sm">
+                    <ul className="space-y-2 text-sm">
                     {headings.map((heading) => (
                         <li key={heading.id}>
                         <Link 
