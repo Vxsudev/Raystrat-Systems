@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 
 interface BytePageProps {
@@ -71,9 +70,8 @@ export default function BytePage({ params }: BytePageProps) {
               </h1>
           </div>
           
-          <div className="max-w-3xl mx-auto relative">
-            {/* Table of Contents Sidebar */}
-            <aside className="hidden lg:block absolute top-0 right-full mr-8 w-64">
+          <div className="max-w-5xl mx-auto lg:grid lg:grid-cols-12 lg:gap-8">
+            <aside className="hidden lg:block lg:col-span-3">
               <div className="sticky top-24">
                 <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
                 <ul className="mt-4 space-y-2 text-sm">
@@ -91,10 +89,9 @@ export default function BytePage({ params }: BytePageProps) {
               </div>
             </aside>
 
-            {/* Main Article Content */}
-            <article>
+            <article className="lg:col-span-9">
                 <div
-                    className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                    className="prose prose-invert prose-lg max-w-3xl mx-auto text-foreground/80"
                     dangerouslySetInnerHTML={{ __html: processedContent }}
                 />
             </article>
