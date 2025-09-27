@@ -237,7 +237,15 @@ export const bytes: { slug: string; title: string; summary: string; aiSummary: s
     slug: 'ai-inference-unit-economics-and-global-cost-benchmarks',
     title: 'The Inference P&L: Where Profits Go When Work Becomes Compute',
     summary: 'The rise of AI is changing cost structures fundamentally. Instead of paying salaries, companies are increasingly paying for tokens, seconds, and GPU hours. This section explores the real unit economics of AI – when shifting operating expenses from people to compute actually improves margins, and how to gauge ROI as tasks migrate from human labor to machine inference.',
-    aiSummary: 'As businesses shift from human labor to AI, operating expenses are moving from salaries to compute costs for tasks like inference. This article explores the unit economics of AI, analyzing when this shift is profitable and how to measure ROI by comparing "agent minutes" to "human minutes" for different tasks.',
+    aiSummary: `* **AI Inference Unit Economics:** Understand that AI operational costs are shifting from salaries to compute (tokens, GPU hours), with inference driving 60-80% of OpEx in AI-first companies.
+* **ROI Threshold:** Learn that only about 23% of vision-related AI tasks are currently cost-effective to automate, with high-volume, routine tasks like customer support and content drafting being the most viable today.
+* **Cost Drivers:** Recognize that model choice, context length, latency needs, and output quality are key levers that can change inference costs by an order of magnitude.
+* **Breakeven Analysis:** Compare the cost of "agent minutes" versus "human minutes" to determine the point at which AI automation becomes more profitable for a given task.
+* **Cost Curves & Sensitivity:** Analyze how task complexity, quality requirements, and volume interact to determine the cost-efficiency of an AI-powered workflow.
+* **Capacity Optimization:** Implement a capacity playbook using a mix of committed-use contracts, spot instances, and autoscaling to significantly reduce compute costs.
+* **Executive Action Items:** Establish a dedicated inference budget, conduct regular ROI reviews for automation candidates, and invest in AI Ops to manage and optimize costs proactively.
+* **Regional Economics:** Factor in how regional differences in energy prices and local cloud infrastructure, particularly in places like India, can impact the cost-effectiveness of AI deployment.
+* **BPO Case Study:** See how the Business Process Outsourcing industry is leveraging AI to reduce costs and improve margins, while navigating pitfalls like over-automation and data security.`,
     publishedOn: '2025-09-27',
     content: `<h3>AI Inference Unit Economics and Global Cost Benchmarks</h3>
 <p>For AI-first products, compute has become the new “cost of goods” (<a href="https://medium.com" target="_blank" rel="noopener noreferrer">medium.com</a>). Many startups find that inference (running AI models) now dominates their operating costs – Andreessen Horowitz estimated that 60–80% of total OPEX at AI-centric companies comes from inference alone (<a href="https://getmonetizely.com" target="_blank" rel="noopener noreferrer">getmonetizely.com</a>). In other words, budgets once spent on headcount are shifting to cloud bills and GPU rentals.</p>

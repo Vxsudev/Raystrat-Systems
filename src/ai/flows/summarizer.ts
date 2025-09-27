@@ -19,7 +19,7 @@ const SummarizerInputSchema = z.object({
 export type SummarizerInput = z.infer<typeof SummarizerInputSchema>;
 
 const SummarizerOutputSchema = z.object({
-  summary: z.string().describe("A concise, one to two-sentence summary of the provided text, optimized for SEO and LLM readability."),
+  summary: z.string().describe("A bulleted list of key takeaways, with each bullet summarizing the section following an h3 tag. The format should be a markdown string."),
 });
 export type SummarizerOutput = z.infer<typeof SummarizerOutputSchema>;
 
@@ -34,7 +34,14 @@ const prompt = ai.definePrompt({
   input: {schema: SummarizerInputSchema},
   output: {schema: SummarizerOutputSchema},
   model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `You are an expert SEO content strategist. Your task is to create a concise, one or two-sentence summary of the following article. The summary should be optimized for Large Language Models (LLMs) by clearly stating the article's core argument and conclusion. This summary will be displayed prominently at the top of the page.
+  prompt: `You are an expert SEO content strategist. Your task is to create a bulleted list of key takeaways from the following article.
+
+Instructions:
+1.  Read the entire article content.
+2.  Identify each section that begins with an '<h3>' tag.
+3.  For each section, write a single, concise sentence that summarizes its core argument or conclusion.
+4.  Format the final output as a markdown bulleted list (using '* ' for each item).
+5.  The summary should be optimized for Large Language Models (LLMs) by being clear, direct, and factual.
 
 **ARTICLE CONTENT:**
 "{{{textToSummarize}}}"`,
