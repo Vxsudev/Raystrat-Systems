@@ -6,7 +6,7 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { FloatingTOC } from '@/components/ui/floating-toc';
 import { format } from 'date-fns';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 interface BytePageProps {
@@ -127,15 +127,24 @@ export default function BytePage({ params }: BytePageProps) {
           </div>
           
           <div className="relative max-w-3xl mx-auto">
-            {byte.aiSummary && (
+            {byte.keyTakeaways && byte.keyTakeaways.length > 0 && (
                 <div className="p-6 mb-12 rounded-lg bg-card border border-primary/30">
                     <div className="flex items-start gap-4">
                         <div className="p-2 rounded-full bg-primary/10">
                             <Lightbulb className="w-6 h-6 text-primary" />
                         </div>
-                        <div className="prose prose-invert prose-base max-w-none text-foreground/80">
+                        <div className="flex-1">
                             <h2 className="text-lg font-bold font-headline !my-0">Key Takeaways</h2>
-                            <ReactMarkdown className="!mt-1">{byte.aiSummary}</ReactMarkdown>
+                             <ul className="mt-4 space-y-3">
+                                {byte.keyTakeaways.map((takeaway, index) => (
+                                <li key={index} className="flex items-start">
+                                    <Check className="w-5 h-5 mr-3 text-primary shrink-0 mt-1" />
+                                    <span className="text-foreground/80">
+                                        <strong className="text-foreground">{takeaway.title}:</strong> {takeaway.description}
+                                    </span>
+                                </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>

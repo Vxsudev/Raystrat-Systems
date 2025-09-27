@@ -15,11 +15,20 @@ const SummarizerInputSchema = z.object({
   textToSummarize: z
     .string()
     .describe("The full text content of the article to be summarized."),
+  headingCount: z
+    .number()
+    .describe("The number of H3 headings in the article."),
 });
 export type SummarizerInput = z.infer<typeof SummarizerInputSchema>;
 
+
+const TakeawaySchema = z.object({
+  title: z.string().describe("A short, punchy title for the key takeaway. Maximum 5 words."),
+  description: z.string().describe("A longer, one-sentence description of the key takeaway. Maximum 25 words."),
+});
+
 const SummarizerOutputSchema = z.object({
-  summary: z.string().describe("A markdown string containing exactly 5 bullet points summarizing the article's key takeaways. Each bullet point must be a single, concise sentence under 120 characters."),
+  takeaways: z.array(TakeawaySchema).describe("An array of key takeaways, where the length of the array is exactly equal to the provided 'headingCount'."),
 });
 export type SummarizerOutput = z.infer<typeof SummarizerOutputSchema>;
 
@@ -34,14 +43,13 @@ const prompt = ai.definePrompt({
   input: {schema: SummarizerInputSchema},
   output: {schema: SummarizerOutputSchema},
   model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `You are an expert SEO content strategist. Your task is to create a bulleted list of key takeaways from the following article.
+  prompt: `You are an expert SEO content strategist. Your task is to create a structured list of key takeaways from the following article.
 
 Instructions:
-1.  Read the entire article content and identify the most important concepts.
-2.  Create exactly 5 bullet points that summarize these key concepts.
-3.  Each bullet point MUST be a single, concise, and compelling sentence.
-4.  Each bullet point MUST be under 120 characters long.
-5.  Format the final output as a markdown bulleted list (using '* ' for each item).
+1.  Read the entire article content and identify the most important concepts, corresponding to each major section.
+2.  The article has exactly {{{headingCount}}} major sections (based on its H3 tags). You MUST generate exactly {{{headingCount}}} key takeaways.
+3.  For each takeaway, provide a short 'title' (max 5 words) and a longer 'description' (a single compelling sentence, max 25 words).
+4.  Ensure the takeaways are distinct and cover the breadth of the article.
 
 **ARTICLE CONTENT:**
 "{{{textToSummarize}}}"`,

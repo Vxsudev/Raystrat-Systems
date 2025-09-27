@@ -1,15 +1,19 @@
 // src/components/ui/byte-card.tsx
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
-import { ArrowRight, Calendar, Clock } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { ArrowRight, Calendar, Clock, Check } from 'lucide-react';
 import { format } from 'date-fns';
+
+interface Takeaway {
+  title: string;
+  description: string;
+}
 
 interface Byte {
   slug: string;
   title: string;
   summary: string;
-  aiSummary: string;
+  keyTakeaways: Takeaway[];
   publishedOn: string;
   readTime: number;
 }
@@ -33,17 +37,14 @@ export function ByteCard({ byte, index }: ByteCardProps) {
         </CardHeader>
         
         <CardContent className="flex-1 p-0">
-            <div className="prose prose-invert prose-sm max-w-none text-foreground/80 my-4">
-                <h4 className="font-bold text-foreground/90 !mb-2">Key Takeaways:</h4>
-                <ReactMarkdown 
-                  components={{
-                    ul: ({ node, ...props }) => <ul className="!my-0" {...props} />,
-                    li: ({ node, ...props }) => <li className="!my-1" {...props} />,
-                  }}
-                >
-                    {byte.aiSummary}
-                </ReactMarkdown>
-            </div>
+            <ul className="space-y-3 my-4">
+                {byte.keyTakeaways.slice(0, 5).map((takeaway, index) => (
+                    <li key={index} className="flex items-start">
+                        <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
+                        <span className="text-foreground/80 font-semibold">{takeaway.title}</span>
+                    </li>
+                ))}
+            </ul>
         </CardContent>
 
         <div className="pt-4 mt-auto">
