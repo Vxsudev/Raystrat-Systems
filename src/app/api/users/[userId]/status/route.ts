@@ -45,7 +45,7 @@ export async function GET(
     }
 
   } catch (error) {
-    console.error(`Error fetching status for user ${userId}:`, error);
+    console.error(`Error fetching status for user ${userId}:`, error instanceof Error ? error.message : JSON.stringify(error));
     return NextResponse.json({ error: 'An internal server error occurred' }, { status: 500 });
   }
 }
