@@ -83,7 +83,7 @@ export function FloatingNoteTaker() {
     <>
       {!isOpen && (
         <FloatingNotepadButton
-          tooltipText="Take a private note on this byte."
+          tooltipText="Save ideas. Click to open your private notepad."
           onClick={() => setIsOpen(true)}
         />
       )}
