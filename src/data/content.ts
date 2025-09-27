@@ -235,7 +235,7 @@ export const faq = {
 export const bytes = [
   {
     slug: 'ai-inference-unit-economics-and-global-cost-benchmarks',
-    title: 'AI Inference Unit Economics and Global Cost Benchmarks',
+    title: 'Where Profits Go When Work Becomes Compute: The Inference P&L',
     summary: 'The rise of AI is changing cost structures fundamentally. Instead of paying salaries, companies are increasingly paying for tokens, seconds, and GPU hours. This section explores the real unit economics of AI – when shifting operating expenses from people to compute actually improves margins, and how to gauge ROI as tasks migrate from human labor to machine inference.',
     content: `<h3>AI Inference Unit Economics and Global Cost Benchmarks</h3>
 <p>For AI-first products, compute has become the new “cost of goods” (<a href="https://medium.com" target="_blank" rel="noopener noreferrer">medium.com</a>). Many startups find that inference (running AI models) now dominates their operating costs – Andreessen Horowitz estimated that 60–80% of total OPEX at AI-centric companies comes from inference alone (<a href="https://getmonetizely.com" target="_blank" rel="noopener noreferrer">getmonetizely.com</a>). In other words, budgets once spent on headcount are shifting to cloud bills and GPU rentals.</p>
