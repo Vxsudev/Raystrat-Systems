@@ -234,7 +234,7 @@ export const faq = {
 
 export const bytes: { slug: string; title: string; summary: string; content: string; publishedOn: string; }[] = [
   {
-    slug: 'the-inference-p-and-l-where-profits-go-when-work-becomes-compute',
+    slug: 'ai-inference-unit-economics-and-global-cost-benchmarks',
     title: 'The Inference P&L: Where Profits Go When Work Becomes Compute',
     summary: 'The rise of AI is changing cost structures fundamentally. Instead of paying salaries, companies are increasingly paying for tokens, seconds, and GPU hours. This section explores the real unit economics of AI – when shifting operating expenses from people to compute actually improves margins, and how to gauge ROI as tasks migrate from human labor to machine inference.',
     publishedOn: '2025-09-27',
@@ -350,4 +350,3 @@ export const industries = [
 ];
 
     
-
