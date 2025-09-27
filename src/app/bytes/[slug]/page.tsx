@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { bytes } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { ByteNotesTaker } from '@/components/ui/byte-notes-taker';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 
@@ -48,13 +47,13 @@ export default function BytePage({ params }: BytePageProps) {
   // --- Logic to generate Table of Contents ---
   const headings: { id: string; title: string }[] = [];
   const processedContent = byte.content.replace(
-    /<h2(.*?)>(.*?)<\/h2>/g,
+    /<h3(.*?)>(.*?)<\/h3>/g,
     (match, attributes, innerText) => {
       const id = slugify(innerText);
       if (!headings.find(h => h.id === id)) {
         headings.push({ id, title: innerText.replace(/<[^>]+>/g, '') });
       }
-      return `<h2 id="${id}"${attributes}>${innerText}</h2>`;
+      return `<h3 id="${id}"${attributes}>${innerText}</h3>`;
     }
   );
 
@@ -64,7 +63,7 @@ export default function BytePage({ params }: BytePageProps) {
       <main className="flex-1">
         <div className="container py-16 md:py-24 lg:py-32">
             <div className="max-w-3xl mx-auto text-center">
-                 <header className="mb-8">
+                 <header className="mb-12">
                     <span className="text-sm font-semibold tracking-widest uppercase text-primary">
                     Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
                     </span>
