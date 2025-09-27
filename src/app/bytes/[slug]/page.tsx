@@ -62,42 +62,43 @@ export default function BytePage({ params }: BytePageProps) {
       <Header />
       <main className="flex-1">
         <div className="container py-16 md:py-24 lg:py-32">
-            <div className="max-w-3xl mx-auto text-center">
-                 <header className="mb-12">
-                    <span className="text-sm font-semibold tracking-widest uppercase text-primary">
-                    Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
-                    </span>
-                    <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
-                    {byte.title}
-                    </h1>
-                </header>
-            </div>
-            <div className="max-w-3xl mx-auto relative">
-                {/* Table of Contents Sidebar */}
-                <aside className="hidden lg:block absolute top-0 right-full w-64 mr-8 sticky top-24">
-                    <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                    <ul className="mt-4 space-y-2 text-sm">
-                    {headings.map((heading) => (
-                        <li key={heading.id}>
-                        <Link 
-                            href={`#${heading.id}`}
-                            className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
-                        >
-                            {heading.title}
-                        </Link>
-                        </li>
-                    ))}
-                    </ul>
-                </aside>
+          <div className="max-w-3xl mx-auto text-center mb-16">
+              <span className="text-sm font-semibold tracking-widest uppercase text-primary">
+              Byte-{String(bytes.indexOf(byte) + 1).padStart(2, '0')}
+              </span>
+              <h1 className="mt-2 text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
+              {byte.title}
+              </h1>
+          </div>
+          
+          <div className="grid lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+            {/* Table of Contents Sidebar */}
+            <aside className="hidden lg:block lg:col-span-3">
+              <div className="sticky top-24">
+                <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
+                <ul className="mt-4 space-y-2 text-sm">
+                {headings.map((heading) => (
+                    <li key={heading.id}>
+                    <Link 
+                        href={`#${heading.id}`}
+                        className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
+                    >
+                        {heading.title}
+                    </Link>
+                    </li>
+                ))}
+                </ul>
+              </div>
+            </aside>
 
-                {/* Main Article Content */}
-                <article>
-                    <div
-                        className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
-                        dangerouslySetInnerHTML={{ __html: processedContent }}
-                    />
-                </article>
-            </div>
+            {/* Main Article Content */}
+            <article className="lg:col-span-9">
+                <div
+                    className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                    dangerouslySetInnerHTML={{ __html: processedContent }}
+                />
+            </article>
+          </div>
         </div>
       </main>
       <Footer />
