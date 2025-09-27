@@ -72,35 +72,33 @@ export default function BytePage({ params }: BytePageProps) {
                     </h1>
                 </header>
             </div>
-            <div className="relative">
-                <div className="max-w-3xl mx-auto">
-                    {/* Table of Contents Sidebar */}
-                    <aside className="hidden lg:block absolute -left-72 top-0 w-64">
-                        <div className="sticky top-24">
-                            <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
-                            <ul className="mt-4 space-y-2 text-sm">
-                            {headings.map((heading) => (
-                                <li key={heading.id}>
-                                <Link 
-                                    href={`#${heading.id}`}
-                                    className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
-                                >
-                                    {heading.title}
-                                </Link>
-                                </li>
-                            ))}
-                            </ul>
-                        </div>
-                    </aside>
+            <div className="max-w-3xl mx-auto relative">
+                {/* Table of Contents Sidebar */}
+                <aside className="hidden lg:block absolute top-0 right-full w-64 mr-8">
+                    <div className="sticky top-24">
+                        <h3 className="text-lg font-semibold tracking-tight font-headline">On This Page</h3>
+                        <ul className="mt-4 space-y-2 text-sm">
+                        {headings.map((heading) => (
+                            <li key={heading.id}>
+                            <Link 
+                                href={`#${heading.id}`}
+                                className="text-muted-foreground transition-colors hover:text-foreground hover:font-medium"
+                            >
+                                {heading.title}
+                            </Link>
+                            </li>
+                        ))}
+                        </ul>
+                    </div>
+                </aside>
 
-                    {/* Main Article Content */}
-                    <article>
-                        <div
-                            className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
-                            dangerouslySetInnerHTML={{ __html: processedContent }}
-                        />
-                    </article>
-                </div>
+                {/* Main Article Content */}
+                <article>
+                    <div
+                        className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                        dangerouslySetInnerHTML={{ __html: processedContent }}
+                    />
+                </article>
             </div>
         </div>
       </main>
