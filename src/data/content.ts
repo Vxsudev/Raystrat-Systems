@@ -232,11 +232,12 @@ export const faq = {
   ],
 };
 
-export const bytes: { slug: string; title: string; summary: string; content: string; publishedOn: string; }[] = [
+export const bytes: { slug: string; title: string; summary: string; aiSummary: string; content: string; publishedOn: string; }[] = [
   {
     slug: 'ai-inference-unit-economics-and-global-cost-benchmarks',
     title: 'The Inference P&L: Where Profits Go When Work Becomes Compute',
     summary: 'The rise of AI is changing cost structures fundamentally. Instead of paying salaries, companies are increasingly paying for tokens, seconds, and GPU hours. This section explores the real unit economics of AI – when shifting operating expenses from people to compute actually improves margins, and how to gauge ROI as tasks migrate from human labor to machine inference.',
+    aiSummary: 'As businesses shift from human labor to AI, operating expenses are moving from salaries to compute costs for tasks like inference. This article explores the unit economics of AI, analyzing when this shift is profitable and how to measure ROI by comparing "agent minutes" to "human minutes" for different tasks.',
     publishedOn: '2025-09-27',
     content: `<h3>AI Inference Unit Economics and Global Cost Benchmarks</h3>
 <p>For AI-first products, compute has become the new “cost of goods” (<a href="https://medium.com" target="_blank" rel="noopener noreferrer">medium.com</a>). Many startups find that inference (running AI models) now dominates their operating costs – Andreessen Horowitz estimated that 60–80% of total OPEX at AI-centric companies comes from inference alone (<a href="https://getmonetizely.com" target="_blank" rel="noopener noreferrer">getmonetizely.com</a>). In other words, budgets once spent on headcount are shifting to cloud bills and GPU rentals.</p>
@@ -294,7 +295,7 @@ export const bytes: { slug: string; title: string; summary: string; content: str
     <li><strong>Set Target Cost per Task and Track Quality:</strong> For each AI-driven process, define what cost per outcome would make it clearly better than the human alternative. For instance, if a human loan processor costs $5 per application, you might set an AI target of $1 per application. Design your system to hit that target (through model choice, etc.) and instrument it to measure actual cost per transaction in real time. Additionally, track the quality or success rate of the AI on those tasks – e.g. “resolved without human escalation.” The product of cost * success rate is essentially your cost per successful outcome. Boards should watch this like a hawk. If an AI process isn’t yet cheaper per success than the old way, it either needs improvement or a rethink.</li>
     <li><strong>Invest in AI Ops and Cost Engineering:</strong> Just as we had DevOps to manage software deployment, AI Ops (including MLOps and now “InferOps”) is emerging to manage model deployment and costs. Encourage your technical teams to develop cost dashboards, alerts for anomalous usage (e.g. a prompt gone rogue generating 10x tokens), and processes for continuous optimization. For example, Airbnb famously saved millions by optimizing their cloud usage; AI-first firms will need similar discipline for token usage. This might include retraining models to be more efficient, pruning unnecessary model calls, or leveraging new optimizations (like using memory swap techniques to cut expensive RAM costs) (<a href="https://venturebeat.com" target="_blank" rel="noopener noreferrer">venturebeat.com</a>). Cultivate a culture where cost is a feature of the AI product – something to be improved release over release.</li>
 </ul>
-<p>In essence, manage AI costs with the same rigor as labor costs. The companies that do this will find that shifting work to machines can improve margins, not erode them. Those that don’t pay attention may end up with “runaway GPU bills” that offset the headcount savings. Profitability in the AI era demands vigilant cost management at the token level, guided by strategic thinking at the board level.</p>
+<p>In essence, manage AI costs with the same rigor as labor costs. The companies that do this will find that shifting work to machines can improve margins, not erode them. Those that don’t pay attention may end up with “runaway GPU bills” that offset the headcount savings. The winners will be those who treat inference as the new labor: measured, optimized, and directed where it adds the most value.</p>
 <h3>The Regional Angle: India, North America, Europe, Africa – Not All Compute Is Equal</h3>
 <p>It’s worth noting that the economics of inference can vary by geography, both for cost of compute and cost of labor. Two factors stand out: energy prices and local cloud infrastructure.</p>
 <p><strong>Energy Costs:</strong> Running large AI computations is power-intensive, so electricity prices matter. Data shows that in regions like India and much of Asia, data center power can cost only about $0.05–$0.10 per kWh, versus $0.10+ in the U.S. and $0.15–$0.25 in Western Europe (<a href="https://massedcompute.com" target="_blank" rel="noopener noreferrer">massedcompute.com</a>). This means hosting GPUs in a country like India or Malaysia can be inherently cheaper. Companies leveraging Indian cloud regions (or setting up on-premise there) tap into this advantage – essentially cheaper power = cheaper inference. It’s one reason some global AI firms are locating model serving in the Asia-Pacific region. Conversely, in parts of Europe facing high energy costs, running your own AI servers might be far less economical than using a U.S. or APAC cloud region and just sending the data there (though data sovereignty laws can complicate that). Nordic countries with abundant renewable energy also offer low rates and even free cooling for data centers, attracting AI workloads.</p>
@@ -316,6 +317,7 @@ export const bytes: { slug: string; title: string; summary: string; content: str
     slug: 'byte-02-repurposing-content-isnt-optional',
     title: 'Repurposing Content Isn’t Optional, It’s Asymmetric ROI',
     summary: 'Content creation is expensive. Not repurposing it is leaving 90% of its value on the table. This byte breaks down the tactical model for turning a single recording into a 30-day content pipeline.',
+    aiSummary: "Don't let expensive content die after one use. This article presents a tactical model for repurposing a single piece of content, like a video recording, into a full 30-day pipeline of assets, maximizing its value and delivering asymmetric ROI.",
     publishedOn: '2025-09-20',
     content: 'The content for Byte-02 goes here.',
   },
@@ -323,6 +325,7 @@ export const bytes: { slug: string; title: string; summary: string; content: str
     slug: 'byte-03-inbox-zero-is-a-system-not-a-skill',
     title: 'Inbox Zero is a System, Not a Skill',
     summary: 'An overflowing inbox isn’t a personal failing, it’s a systems failure. We show how a "Smart Inbox" automation acts as a force multiplier for executive focus, filtering signal from noise.',
+    aiSummary: 'Achieving Inbox Zero is not about personal discipline but about implementing the right system. This piece explains how an automated "Smart Inbox" can filter signal from noise, acting as a force multiplier for executive focus and productivity.',
     publishedOn: '2025-09-13',
     content: 'The content for Byte-03 goes here.',
   },
@@ -330,6 +333,7 @@ export const bytes: { slug: string; title: string; summary: string; content: str
     slug: 'byte-04-why-your-best-leads-are-boring',
     title: 'Why Your Best Leads Are “Boring”',
     summary: 'High-excitement leads often churn. The most profitable clients come from methodical, intent-driven prospecting. We’ll show you how to find them.',
+    aiSummary: 'Contrary to popular belief, the most profitable clients often come from methodical, intent-driven prospecting, not high-excitement leads that tend to churn. This article explains how to identify and find these valuable "boring" leads.',
     publishedOn: '2025-09-06',
     content: 'The content for Byte-04 goes here.',
   },

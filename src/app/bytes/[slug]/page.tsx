@@ -6,6 +6,7 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { FloatingTOC } from '@/components/ui/floating-toc';
 import { format } from 'date-fns';
+import { Lightbulb } from 'lucide-react';
 
 interface BytePageProps {
   params: {
@@ -125,6 +126,19 @@ export default function BytePage({ params }: BytePageProps) {
           </div>
           
           <div className="relative max-w-3xl mx-auto">
+            {byte.aiSummary && (
+                <div className="p-6 mb-12 rounded-lg bg-card border border-primary/30">
+                    <div className="flex items-start gap-4">
+                        <div className="p-2 rounded-full bg-primary/10">
+                            <Lightbulb className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold font-headline">Key Takeaways</h2>
+                            <p className="mt-1 text-base text-foreground/80">{byte.aiSummary}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             <article>
                 <div
                     className="prose prose-invert prose-lg max-w-none text-foreground/80"
