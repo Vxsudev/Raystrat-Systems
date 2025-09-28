@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { DynamicHeadline } from '../ui/dynamic-headline';
 
 export function Hero() {
   return (
@@ -10,11 +11,8 @@ export function Hero() {
       <div className="relative z-10 w-full">
         <div className="max-w-9xl mx-auto text-center">
             <h1 className="text-6xl font-bold font-headline sm:text-7xl md:text-8xl text-foreground">
-              Agents Run Business.
+              Agents Run <DynamicHeadline />
             </h1>
-            <p className="mt-8 text-3xl md:text-4xl text-primary font-medium">
-              AI isn’t the future anymore — it’s present. Step up.
-            </p>
             <p className="mx-auto mt-6 text-xl md:text-2xl text-muted-foreground max-w-4xl">
               Most losses trace back to the same five systems — leads, follow-up, support, operations, and data. Our agents run them with discipline.
             </p>
