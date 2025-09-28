@@ -14,45 +14,23 @@ const words = [
 
 export function DynamicHeadline() {
     const [index, setIndex] = useState(0);
-    const [subIndex, setSubIndex] = useState(0);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [text, setText] = useState('');
 
     useEffect(() => {
-        if (isDeleting) {
-            if (subIndex === 0) {
-                setIsDeleting(false);
-                setIndex((prev) => (prev + 1) % words.length);
-            } else {
-                const timeout = setTimeout(() => {
-                    setText((prev) => prev.slice(0, -1));
-                    setSubIndex((prev) => prev - 1);
-                }, 80); // Deleting speed
-                return () => clearTimeout(timeout);
-            }
-        } else {
-            if (subIndex === words[index].length) {
-                const waitTimeout = setTimeout(() => {
-                    setIsDeleting(true);
-                }, 2000); // Wait time at full word
-                 return () => clearTimeout(waitTimeout);
-            } else {
-                const timeout = setTimeout(() => {
-                    setText((prev) => prev + words[index][subIndex]);
-                    setSubIndex((prev) => prev + 1);
-                }, 120); // Typing speed
-                return () => clearTimeout(timeout);
-            }
-        }
-    }, [subIndex, isDeleting, index]);
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => (prevIndex + 1) % words.length);
+        }, 3000); // Change word every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
-        <span className={cn(
-                "text-primary inline-block",
-                "after:content-['|'] after:ml-1 after:animate-pulse after:font-light"
+        <span
+            key={index}
+            className={cn(
+                "text-primary inline-block animate-blur-fade-in"
             )}
         >
-            {text}
+            {words[index]}
         </span>
     );
 }
