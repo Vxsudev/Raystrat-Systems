@@ -1,9 +1,8 @@
 // src/lib/firebase/admin.ts
 import 'dotenv/config'; // no-op in prod; fixes local cold starts
 import 'server-only';
-import type {ServiceAccount} from 'firebase-admin';
-import {initializeApp, getApps, cert, App} from 'firebase-admin/app';
-import {getAuth, Auth} from 'firebase-admin/auth';
+import { initializeApp, getApps, applicationDefault, App } from 'firebase-admin/app';
+import { getAuth, Auth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
 declare global {
@@ -11,26 +10,13 @@ declare global {
   var __FIREBASE_ADMIN__: { app: App; auth: Auth } | undefined;
 }
 
-function buildServiceAccount(): ServiceAccount {
-  // Support both Secret Manager and local .env
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  // Private key may include literal \n – normalize for Node
-  const raw = process.env.FIREBASE_PRIVATE_KEY || '';
-  const privateKey = raw.includes('\\n') ? raw.replace(/\\n/g, '\n') : raw;
-
-  if (!projectId || !clientEmail || !privateKey) {
-    throw new Error('Missing Firebase Admin env vars');
-  }
-  return { projectId, clientEmail, privateKey };
-}
-
 export function getAdmin() {
   if (global.__FIREBASE_ADMIN__) return global.__FIREBASE_ADMIN__;
 
+  // Use applicationDefault() to automatically find credentials in the environment
   const app = getApps().length
     ? getApps()[0]
-    : initializeApp({ credential: cert(buildServiceAccount()) });
+    : initializeApp({ credential: applicationDefault() });
 
   const auth = getAuth(app);
   global.__FIREBASE_ADMIN__ = { app, auth };
