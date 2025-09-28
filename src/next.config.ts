@@ -26,9 +26,6 @@ const nextConfig: NextConfig = {
   },
   // This ensures that API routes are not processed at build time.
   // It prevents errors when routes require runtime environment variables.
-  experimental: {
-    instrumentationHook: true, 
-  },
   output: 'standalone',
 };
 
