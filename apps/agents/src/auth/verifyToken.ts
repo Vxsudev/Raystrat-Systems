@@ -1,3 +1,4 @@
+
 import { Request, Response, NextFunction } from "express";
 import { adminAuth } from "../firestore.js";
 
@@ -13,7 +14,7 @@ export async function verifyToken(req: AuthedRequest, res: Response, next: NextF
     const token = hdr.startsWith("Bearer ") ? hdr.slice(7) : null;
     if (!token) return res.status(401).json({ error: { code: "UNAUTHENTICATED" } });
     const decoded = await adminAuth.verifyIdToken(token);
-    const tenantId = (decoded as any).tenantId;
+    const tenantId = (decoded as any).firebase?.tenantId;
     const roles = (decoded as any).roles || [];
     if (!tenantId) return res.status(403).json({ error: { code: "FORBIDDEN", message: "No tenant" } });
     req.tenantId = tenantId;
