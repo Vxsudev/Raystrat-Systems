@@ -10,9 +10,10 @@ export function Hero() {
     <section id="top" className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-transparent py-24 md:py-32 overflow-hidden">
       <div className="relative z-10 w-full">
         <div className="max-w-9xl mx-auto text-center">
-            <h1 className="text-6xl font-bold font-headline sm:text-7xl md:text-8xl text-foreground">
-              Agents Run <DynamicHeadline />
-            </h1>
+            <div className="text-6xl font-bold font-headline sm:text-7xl md:text-8xl text-foreground">
+              <h1>Agents Run</h1>
+              <DynamicHeadline />
+            </div>
             <p className="mx-auto mt-6 text-xl md:text-2xl text-muted-foreground max-w-4xl">
               Most losses trace back to the same five systems — leads, follow-up, support, operations, and data. Our agents run them with discipline.
             </p>
