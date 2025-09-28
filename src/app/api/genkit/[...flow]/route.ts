@@ -6,6 +6,7 @@ import {appRoute} from '@genkit-ai/next';
 import '@/ai/flows/contextual-assistant';
 import '@/ai/flows/service-suggester';
 import '@/ai/flows/notes-analyzer';
+import '@/ai/flows/summarizer';
 
 
 export const {GET, POST} = appRoute({ai});
