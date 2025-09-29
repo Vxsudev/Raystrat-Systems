@@ -7,7 +7,8 @@ import 'server-only';
  * - NotesAnalyzerOutput - The return type for the analyzeNotes function.
  */
 
-import { ai, z } from '@/ai/genkit';
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
 import { services } from '@/data/content';
 
 const NotesAnalyzerInputSchema = z.object({
