@@ -4,7 +4,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getServiceSuggestion, getContextualSuggestion, ServiceSuggestionState } from '@/app/actions';
+import { getServiceSuggestion, ServiceSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -55,14 +55,14 @@ function ServiceSuggesterSubmitButton() {
 
 function AiServiceSuggester() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestion, null);
+  const [state, formAction, isPending] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestion, null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
   const [bottleneck, setBottleneck] = useState('');
 
   useEffect(() => {
-    if (state?.data?.serviceSlug) {
+    if (state?.message === 'Success' && state.data?.serviceSlug) {
       toast({
         title: 'Agent Found!',
         description: state.data.suggestion,
@@ -71,21 +71,15 @@ function AiServiceSuggester() {
       router.push(`/services/${state.data.serviceSlug}${noteParam}`);
       setIsOpen(false);
       formRef.current?.reset();
-    } else if (state?.message && state.message !== 'Invalid input.') {
+    } else if (state?.message === 'Error') {
+      const errorMessage = state.errors?.bottleneck?.[0] || 'An unknown error occurred.';
       toast({
         title: 'Error',
-        description: state.message,
+        description: errorMessage,
         variant: 'destructive',
       });
     }
   }, [state, router, toast, bottleneck]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      formRef.current?.requestSubmit();
-    }
-  };
 
   const handleFormAction = (formData: FormData) => {
     const bn = formData.get('bottleneck') as string;
@@ -112,8 +106,7 @@ function AiServiceSuggester() {
             placeholder="e.g., 'We waste too much time chasing unpaid invoices,' or 'Our leads are cold and unresponsive.'"
             className="min-h-[120px] text-base"
             required
-            onKeyDown={handleKeyDown}
-            disabled={state?.message === 'pending'}
+            disabled={isPending}
           />
           {state?.errors?.bottleneck && (
             <p className="text-sm text-destructive">
@@ -128,6 +121,7 @@ function AiServiceSuggester() {
     </Dialog>
   );
 }
+
 
 // --- Contextual AI Assistant for Content Pages ---
 
