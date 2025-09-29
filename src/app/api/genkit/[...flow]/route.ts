@@ -1,6 +1,7 @@
+
 import 'server-only';
+import { appRoute } from '@genkit-ai/next';
 import {ai} from '@/ai/genkit';
-import {appRoute} from '@genkit-ai/next';
 
 // Ensure flows are imported so Genkit can register them.
 // The try/catch is a workaround to prevent Next.js from breaking
