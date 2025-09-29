@@ -13,4 +13,4 @@ try {
   }
 }
 
-export const {GET, POST} = appRoute({ai});
+export const {GET, POST} = appRoute();
