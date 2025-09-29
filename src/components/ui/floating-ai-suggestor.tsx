@@ -4,7 +4,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getServiceSuggestion, ServiceSuggestionState } from '@/app/actions';
+import { getServiceSuggestionAction, ServiceSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -55,20 +55,20 @@ function ServiceSuggesterSubmitButton() {
 
 function AiServiceSuggester() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction, isPending] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestion, null);
+  const [state, formAction, isPending] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestionAction, null);
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
   const [bottleneck, setBottleneck] = useState('');
 
   useEffect(() => {
-    if (state?.message === 'Success' && state.data?.serviceSlug) {
+    if (state?.message === 'Success' && state.data) {
       toast({
         title: 'Agent Found!',
-        description: state.data.suggestion,
+        description: state.data.justification,
       });
       const noteParam = bottleneck ? `?note=${encodeURIComponent(bottleneck)}` : '';
-      router.push(`/services/${state.data.serviceSlug}${noteParam}`);
+      router.push(`/services/${state.data.suggestedServiceSlug}${noteParam}`);
       setIsOpen(false);
       formRef.current?.reset();
     } else if (state?.message === 'Error') {
