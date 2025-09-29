@@ -112,7 +112,7 @@ export function ServiceSuggester() {
                   Close
                 </Button>
                 <Button asChild>
-                  <Link href={`/services/${state.data.suggestedServiceSlug}`}>
+                  <Link href={`/services/${state.data.suggestedServiceSlug}?note=${encodeURIComponent((document.querySelector('textarea[name="bottleneck"]') as HTMLTextAreaElement)?.value || '')}`}>
                     Learn More <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -121,16 +121,16 @@ export function ServiceSuggester() {
           ) : (
             <form action={formAction} className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="problemDescription">What is your primary business challenge?</Label>
+                <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
                 <Textarea
-                  id="problemDescription"
-                  name="problemDescription"
+                  id="bottleneck"
+                  name="bottleneck"
                   placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
                   className="min-h-[100px]"
                   required
                 />
-                {state.errors?.problemDescription && (
-                  <p className="text-sm text-destructive">{state.errors.problemDescription[0]}</p>
+                {state.errors?.bottleneck && (
+                  <p className="text-sm text-destructive">{state.errors.bottleneck[0]}</p>
                 )}
                 {state.errors?.general && (
                     <p className="text-sm text-destructive">{state.errors.general[0]}</p>
@@ -146,3 +146,4 @@ export function ServiceSuggester() {
     </>
   );
 }
+    

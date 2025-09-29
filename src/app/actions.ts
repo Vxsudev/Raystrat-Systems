@@ -5,17 +5,17 @@
 import {
   ContextualAssistantInput,
   ContextualAssistantOutput,
-  // getContextualAssistantResponse // GENAI-REMOVED
+  getContextualAssistantResponse
 } from '@/ai/flows/contextual-assistant';
 import { 
   ServiceSuggesterInput,
   ServiceSuggesterOutput,
-  // suggestService // GENAI-REMOVED
-} from '@/ai/flows/service-suggester';
+  getServiceSuggestion
+} from '@/ai/flows/service-suggester-flow';
 import {
   NotesAnalyzerInput,
   NotesAnalyzerOutput,
-  // analyzeNotes // GENAI-REMOVED
+  analyzeNotes
 } from '@/ai/flows/notes-analyzer';
 import { z } from 'zod';
 // Import the new centralized authentication helper and the admin SDK instances
@@ -55,10 +55,6 @@ export async function getContextualSuggestion(
   prevState: SuggestionState | null,
   formData: FormData
 ): Promise<SuggestionState> {
-  // GENAI-REMOVED
-  console.log('Contextual suggestion feature has been temporarily disabled.');
-  return { message: 'Error: AI functionality is currently disabled.' };
-  /*
   const validatedFields = suggestionSchema.safeParse({
     query: formData.get('query'),
     pageTitle: formData.get('pageTitle'),
@@ -87,7 +83,6 @@ export async function getContextualSuggestion(
         message: 'An error occurred on our end. Please try again later.',
     };
   }
-  */
 }
 
 
@@ -100,16 +95,13 @@ const serviceSuggestionSchema = z.object({
 export type ServiceSuggestionState = {
   errors?: {
     bottleneck?: string[];
+    general?: string[];
   };
   message?: 'Success' | 'Error' | 'pending' | null;
   data?: ServiceSuggesterOutput | null;
 }
 
 export async function getServiceSuggestion(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
-  // GENAI-REMOVED
-  console.log('Service suggestion feature has been temporarily disabled.');
-  return { message: 'Error', errors: { bottleneck: ['AI functionality is currently disabled.'] } };
-  /*
   const validatedFields = serviceSuggestionSchema.safeParse({
     bottleneck: formData.get('bottleneck'),
   });
@@ -123,9 +115,9 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
   
   try {
     const input: ServiceSuggesterInput = {
-      bottleneck: validatedFields.data.bottleneck,
+      problemDescription: validatedFields.data.bottleneck,
     };
-    const result = await suggestService(input);
+    const result = await getServiceSuggestion(input);
     return {
       message: 'Success',
       data: result,
@@ -135,10 +127,9 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
     return {
       message: 'Error',
       data: null,
-      errors: { bottleneck: ['An error occurred on our end. Please try again later.'] },
+      errors: { general: ['An error occurred on our end. Please try again later.'] },
     };
   }
-  */
 }
 
 
@@ -271,9 +262,7 @@ export async function saveAndSendNotes(
   }
 
   try {
-    // GENAI-REMOVED: The AI analysis part is disabled.
     let aiSuggestion: NotesAnalyzerOutput | null = null;
-    /*
     try {
       const analysisInput: NotesAnalyzerInput = { notes };
       aiSuggestion = await analyzeNotes(analysisInput);
@@ -281,9 +270,10 @@ export async function saveAndSendNotes(
       console.error('AI Note Analysis Error:', aiError);
       // If AI fails, we can fall back to a default message.
     }
-    */
     
-    const suggestionText = '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
+    const suggestionText = aiSuggestion?.suggestion 
+        ? `<p>${aiSuggestion.suggestion}</p>`
+        : '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
     
     // Define the two emails to send
     const emailToOwner = {
@@ -302,7 +292,7 @@ export async function saveAndSendNotes(
           <h3>Notes:</h3>
           <pre>${notes}</pre>
           <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
-          <p>(AI Analysis Disabled)</p>
+          ${suggestionText}
       `,
     };
 
@@ -318,9 +308,7 @@ export async function saveAndSendNotes(
           <pre>${notes}</pre>
           <hr>
           <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
-          <p>${suggestionText}</p>
-          <p><a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a> to discuss this further.</p>
-          <p>Best,<br>The Raystrat Systems Team</p>
+          ${suggestionText}
       `,
     };
 
@@ -730,3 +718,5 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
+    
