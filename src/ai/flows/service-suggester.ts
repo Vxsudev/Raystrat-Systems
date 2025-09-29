@@ -1,5 +1,4 @@
-
-'use server';
+import 'server-only';
 /**
  * @fileOverview An AI flow that suggests a Raystrat Systems service based on a user's problem description.
  *

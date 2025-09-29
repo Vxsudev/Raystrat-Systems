@@ -1,5 +1,4 @@
-
-'use server';
+import 'server-only';
 /**
  * @fileOverview An AI flow that analyzes user notes and provides a tailored suggestion.
  *

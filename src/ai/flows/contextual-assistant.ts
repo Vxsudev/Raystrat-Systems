@@ -1,6 +1,4 @@
-
-'use server';
-
+import 'server-only';
 import { ai, z } from '@/ai/genkit';
 
 export const ContextualAssistantInputSchema = z.object({
