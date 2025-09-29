@@ -1,11 +1,5 @@
-// src/app/actions.ts
 'use server';
 
-import {
-  ContextualAssistantInput,
-  ContextualAssistantOutput,
-  getContextualAssistantResponse
-} from '@/ai/flows/contextual-assistant';
 import { 
   ServiceSuggesterInput,
   ServiceSuggesterOutput,
@@ -27,68 +21,12 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-
-// --- AI Contextual Assistant Action (Conversational) ---
-
-const suggestionSchema = z.object({
-  query: z
-    .string({
-      required_error: 'Please ask a question or describe a problem.',
-    })
-    .min(10, {
-      message: 'Please enter at least 10 characters.',
-    }),
-  pageTitle: z.string(),
-  pageContent: z.string(),
-});
-
-export type SuggestionState = {
-  data?: ContextualAssistantOutput | null;
-  errors?: {
-    query?: string[];
-  };
-  message?: string | null;
-};
-
-export async function getContextualSuggestion(
-  prevState: SuggestionState | null,
-  formData: FormData
-): Promise<SuggestionState> {
-  const validatedFields = suggestionSchema.safeParse({
-    query: formData.get('query'),
-    pageTitle: formData.get('pageTitle'),
-    pageContent: formData.get('pageContent'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Invalid input.',
-    };
-  }
-
-  try {
-    const input: ContextualAssistantInput = {
-      query: validatedFields.data.query,
-      pageTitle: validatedFields.data.pageTitle,
-      pageContent: validatedFields.data.pageContent,
-    };
-    const result = await getContextualAssistantResponse(input);
-    return { data: result, message: 'Success' };
-  } catch (error) {
-    console.error('AI Suggestion Error:', error);
-    return {
-        data: null,
-        message: 'An error occurred on our end. Please try again later.',
-    };
-  }
-}
-
-
-// --- AI Service Suggester Action (Homepage) ---
+// --- AI Service Suggester Action (Homepage & Contextual) ---
 
 const serviceSuggestionSchema = z.object({
   bottleneck: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
+  pageTitle: z.string().optional(),
+  pageContent: z.string().optional(),
 });
 
 export type ServiceSuggestionState = {
