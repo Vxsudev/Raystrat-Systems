@@ -73,7 +73,7 @@ export async function getContextualSuggestion(
       pageTitle: validatedFields.data.pageTitle,
       pageContent: validatedFields.data.pageContent,
     };
-    const result = await runFlow(contextualAssistant, input);
+    const result = await runFlow('contextualAssistant', input);
     return { data: result, message: 'Success' };
   } catch (error) {
     console.error('AI Suggestion Error:', error);
@@ -115,7 +115,7 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
     const input: ServiceSuggesterInput = {
       bottleneck: validatedFields.data.bottleneck,
     };
-    const result = await runFlow(serviceSuggester, input);
+    const result = await runFlow('serviceSuggester', input);
     return {
       message: 'Success',
       data: result,
@@ -264,7 +264,7 @@ export async function saveAndSendNotes(
     let aiSuggestion = '';
     try {
       const analysisInput: NotesAnalyzerInput = { notes };
-      const analysisResult = await runFlow(notesAnalyzer, analysisInput);
+      const analysisResult = await runFlow('notesAnalyzer', analysisInput);
       aiSuggestion = analysisResult.suggestion;
     } catch (aiError) {
       console.error('AI Note Analysis Error:', aiError);
@@ -348,7 +348,7 @@ export async function updateUserProfile(prevState: ProfileState, formData: FormD
     }
 
     try {
-        await adminAuth().updateUser(user.uid, { displayName: validatedFields.data.name });
+        await adminAuth.updateUser(user.uid, { displayName: validatedFields.data.name });
         return { message: 'Success' };
     } catch (error) {
         console.error("Profile update error:", error);
@@ -396,7 +396,7 @@ export async function changePassword(prevState: PasswordState, formData: FormDat
         // Since that's a more complex client-side build, we are proceeding with a
         // direct admin SDK update for now, which is secure but relies on the existing session.
         
-        await adminAuth().updateUser(user.uid, { password: newPassword });
+        await adminAuth.updateUser(user.uid, { password: newPassword });
         return { message: 'Success' };
     } catch (error: any) {
         console.error('Password change error:', error);
