@@ -32,6 +32,13 @@ const ContextualAssistantOutputSchema = z.object({
 });
 export type ContextualAssistantOutput = z.infer<typeof ContextualAssistantOutputSchema>;
 
+export async function getContextualAssistantResponse(
+  input: ContextualAssistantInput
+): Promise<ContextualAssistantOutput> {
+  return contextualAssistantFlow(input);
+}
+
+
 const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
   input: {schema: ContextualAssistantInputSchema},
@@ -60,9 +67,9 @@ Page Content Summary:
 Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.`,
 });
 
-export const contextualAssistant = ai.defineFlow(
+const contextualAssistantFlow = ai.defineFlow(
   {
-    name: 'contextualAssistant',
+    name: 'contextualAssistantFlow',
     inputSchema: ContextualAssistantInputSchema,
     outputSchema: ContextualAssistantOutputSchema,
   },

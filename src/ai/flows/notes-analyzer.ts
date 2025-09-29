@@ -24,6 +24,12 @@ const NotesAnalyzerOutputSchema = z.object({
 });
 export type NotesAnalyzerOutput = z.infer<typeof NotesAnalyzerOutputSchema>;
 
+export async function analyzeNotes(
+  input: NotesAnalyzerInput
+): Promise<NotesAnalyzerOutput> {
+  return notesAnalyzerFlow(input);
+}
+
 const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystratsystems.com';
 
@@ -51,9 +57,9 @@ Analyze the user's notes below. Adopt the NLP consultant persona and generate th
 "{{{notes}}}"`,
 });
 
-export const notesAnalyzer = ai.defineFlow(
+const notesAnalyzerFlow = ai.defineFlow(
   {
-    name: 'notesAnalyzer',
+    name: 'notesAnalyzerFlow',
     inputSchema: NotesAnalyzerInputSchema,
     outputSchema: NotesAnalyzerOutputSchema,
   },

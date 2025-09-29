@@ -27,6 +27,12 @@ const ServiceSuggesterOutputSchema = z.object({
 });
 export type ServiceSuggesterOutput = z.infer<typeof ServiceSuggesterOutputSchema>;
 
+export async function suggestService(
+  input: ServiceSuggesterInput
+): Promise<ServiceSuggesterOutput> {
+  return serviceSuggesterFlow(input);
+}
+
 const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
 
 const prompt = ai.definePrompt({
@@ -45,9 +51,9 @@ Analyze the user's bottleneck below and determine which one of these services is
 "{{{bottleneck}}}"`,
 });
 
-export const serviceSuggester = ai.defineFlow(
+const serviceSuggesterFlow = ai.defineFlow(
   {
-    name: 'serviceSuggester',
+    name: 'serviceSuggesterFlow',
     inputSchema: ServiceSuggesterInputSchema,
     outputSchema: ServiceSuggesterOutputSchema,
   },

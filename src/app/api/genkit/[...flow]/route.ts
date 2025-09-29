@@ -1,36 +1,22 @@
 // src/app/api/genkit/[...flow]/route.ts
 import 'server-only';
-import ai from '@/ai/genkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { allFlows } from '@/ai/flows';
 
-// This function will handle all incoming requests for the genkit flows.
-async function handler(req: NextRequest, { params }: { params: { flow?: string[] } }) {
-  try {
-    // Ensure all flows are loaded and registered with the ai instance.
-    // The presence of 'allFlows' from the import above handles this.
-    
-    const flowName = (params.flow ?? []).join('/');
-    if (!flowName) {
-      return NextResponse.json({ error: 'Missing flow name' }, { status: 400 });
-    }
+// This is a placeholder file. The AI features are now handled by Next.js Server Actions.
+// This route is no longer actively used but is kept to prevent 404 errors
+// if any old client-side code still points to it.
 
-    const input = await req.json().catch(() => ({}));
-
-    // The 'run' method is not a formally exposed part of the 'ai' object type,
-    // so we cast to 'any' to call it. This is a pragmatic way to dispatch
-    // to the correct flow by its string name, which Genkit registers internally.
-    const result = await (ai as any).run(flowName, input);
-
-    return NextResponse.json(result);
-  } catch (err: any) {
-    console.error('Flow execution failed:', err);
-    // Provide a structured error response for easier debugging on the client.
-    return NextResponse.json(
-      { error: 'Flow execution failed', detail: String(err?.message ?? err) },
-      { status: 500 }
-    );
-  }
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { flow?: string[] } }
+) {
+  const flowName = (params.flow ?? []).join('/');
+  console.warn(`Attempted to call deprecated Genkit API route: /api/genkit/${flowName}`);
+  return NextResponse.json(
+    { 
+      error: 'This API endpoint is deprecated.',
+      detail: 'AI functionality has been migrated to Next.js Server Actions.'
+    },
+    { status: 410 } // 410 Gone
+  );
 }
-
-export { handler as GET, handler as POST };
