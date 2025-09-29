@@ -1,4 +1,3 @@
-
 // src/app/actions.ts
 'use server';
 
@@ -11,7 +10,7 @@ import {
   ServiceSuggesterInput,
   ServiceSuggesterOutput,
   getServiceSuggestion
-} from '@/ai/flows/service-suggester-flow';
+} from '@/ai/flows/service-suggester';
 import {
   NotesAnalyzerInput,
   NotesAnalyzerOutput,
@@ -97,11 +96,11 @@ export type ServiceSuggestionState = {
     bottleneck?: string[];
     general?: string[];
   };
-  message?: 'Success' | 'Error' | 'pending' | null;
+  message: 'Success' | 'Error' | 'pending' | null;
   data?: ServiceSuggesterOutput | null;
 }
 
-export async function getServiceSuggestion(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
+export async function getServiceSuggestionAction(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
   const validatedFields = serviceSuggestionSchema.safeParse({
     bottleneck: formData.get('bottleneck'),
   });
@@ -285,7 +284,7 @@ export async function saveAndSendNotes(
           <p>You've received a new lead from the notes section on the <strong>${serviceName}</strong> page.</p>
           <ul>
               <li><strong>Name:</strong> ${name}</li>
-              <li><strong>Email:</strong> ${email}</li>
+              <li><strong><strong>Email:</strong> ${email}</li>
               <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
               <li><strong>Industry:</strong> ${industry || 'Not provided'}</li>
           </ul>
