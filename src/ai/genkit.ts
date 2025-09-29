@@ -26,3 +26,5 @@ export const ai = genkit({
     }),
   ],
 });
+
+export default ai;
