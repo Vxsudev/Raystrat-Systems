@@ -5,17 +5,17 @@
 import {
   ContextualAssistantInput,
   ContextualAssistantOutput,
-  getContextualAssistantResponse
+  // getContextualAssistantResponse // GENAI-REMOVED
 } from '@/ai/flows/contextual-assistant';
 import { 
   ServiceSuggesterInput,
   ServiceSuggesterOutput,
-  suggestService
+  // suggestService // GENAI-REMOVED
 } from '@/ai/flows/service-suggester';
 import {
   NotesAnalyzerInput,
   NotesAnalyzerOutput,
-  analyzeNotes
+  // analyzeNotes // GENAI-REMOVED
 } from '@/ai/flows/notes-analyzer';
 import { z } from 'zod';
 // Import the new centralized authentication helper and the admin SDK instances
@@ -55,6 +55,10 @@ export async function getContextualSuggestion(
   prevState: SuggestionState | null,
   formData: FormData
 ): Promise<SuggestionState> {
+  // GENAI-REMOVED
+  console.log('Contextual suggestion feature has been temporarily disabled.');
+  return { message: 'Error: AI functionality is currently disabled.' };
+  /*
   const validatedFields = suggestionSchema.safeParse({
     query: formData.get('query'),
     pageTitle: formData.get('pageTitle'),
@@ -83,6 +87,7 @@ export async function getContextualSuggestion(
         message: 'An error occurred on our end. Please try again later.',
     };
   }
+  */
 }
 
 
@@ -101,6 +106,10 @@ export type ServiceSuggestionState = {
 }
 
 export async function getServiceSuggestion(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
+  // GENAI-REMOVED
+  console.log('Service suggestion feature has been temporarily disabled.');
+  return { message: 'Error', errors: { bottleneck: ['AI functionality is currently disabled.'] } };
+  /*
   const validatedFields = serviceSuggestionSchema.safeParse({
     bottleneck: formData.get('bottleneck'),
   });
@@ -129,6 +138,7 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
       errors: { bottleneck: ['An error occurred on our end. Please try again later.'] },
     };
   }
+  */
 }
 
 
@@ -261,8 +271,9 @@ export async function saveAndSendNotes(
   }
 
   try {
-    // Generate AI-powered suggestion
+    // GENAI-REMOVED: The AI analysis part is disabled.
     let aiSuggestion: NotesAnalyzerOutput | null = null;
+    /*
     try {
       const analysisInput: NotesAnalyzerInput = { notes };
       aiSuggestion = await analyzeNotes(analysisInput);
@@ -270,8 +281,9 @@ export async function saveAndSendNotes(
       console.error('AI Note Analysis Error:', aiError);
       // If AI fails, we can fall back to a default message.
     }
+    */
     
-    const suggestionText = aiSuggestion?.suggestion ?? '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
+    const suggestionText = '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
     
     // Define the two emails to send
     const emailToOwner = {
@@ -290,7 +302,7 @@ export async function saveAndSendNotes(
           <h3>Notes:</h3>
           <pre>${notes}</pre>
           <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
-          <p>${suggestionText}</p>
+          <p>(AI Analysis Disabled)</p>
       `,
     };
 
