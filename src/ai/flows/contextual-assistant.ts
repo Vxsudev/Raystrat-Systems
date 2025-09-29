@@ -12,7 +12,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const ContextualAssistantInputSchema = z.object({
+const ContextualAssistantInputSchema = z.object({
   query: z
     .string()
     .describe("The user's question or problem description."),
@@ -25,12 +25,19 @@ export const ContextualAssistantInputSchema = z.object({
 });
 export type ContextualAssistantInput = z.infer<typeof ContextualAssistantInputSchema>;
 
-export const ContextualAssistantOutputSchema = z.object({
+const ContextualAssistantOutputSchema = z.object({
   response: z
     .string()
-    .describe('AI-generated answer or suggestion, tailored to the user\'s query and the provided page context.'),
+    .describe('The AI-generated answer or suggestion, tailored to the user\'s query and the provided page context.'),
 });
 export type ContextualAssistantOutput = z.infer<typeof ContextualAssistantOutputSchema>;
+
+export async function getContextualAssistantResponse(
+  input: ContextualAssistantInput
+): Promise<ContextualAssistantOutput> {
+  return contextualAssistantFlow(input);
+}
+
 
 const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
@@ -57,10 +64,10 @@ Page Content Summary:
 **USER'S QUERY:**
 "{{{query}}}"
 
-Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.`
+Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.`,
 });
 
-export const contextualAssistantFlow = ai.defineFlow(
+const contextualAssistantFlow = ai.defineFlow(
   {
     name: 'contextualAssistantFlow',
     inputSchema: ContextualAssistantInputSchema,
@@ -71,14 +78,3 @@ export const contextualAssistantFlow = ai.defineFlow(
     return output!;
   }
 );
-
-
-// What actions.ts is expecting:
-export async function getContextualAssistantResponse(
-  input: ContextualAssistantInput
-): Promise<ContextualAssistantOutput> {
-  const result = await contextualAssistantFlow(input);
-  // Ensure the response is always a non-null object.
-  // The schema guarantees 'response' is a string. If the flow returns null/undefined, provide a fallback.
-  return result || { response: 'Sorry, I was unable to process that request.' };
-}
