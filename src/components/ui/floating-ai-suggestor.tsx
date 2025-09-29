@@ -1,10 +1,11 @@
+
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { getServiceSuggestionAction, ServiceSuggestionState } from '@/app/actions';
+import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -12,7 +13,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Tooltip,
@@ -24,26 +24,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Brain } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
+import { AiSuggestor } from './ai-suggestor';
 
-function ServiceSuggesterSubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full sm:w-auto">
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 animate-spin" />
-          Finding Agent...
-        </>
-      ) : (
-        <>
-          Suggest an Agent <ArrowRight className="ml-2" />
-        </>
-      )}
-    </Button>
-  );
-}
-
-function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
+function FloatingTrigger({ onClick }: { onClick: () => void }) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   
   useEffect(() => {
@@ -59,16 +43,15 @@ function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
     <TooltipProvider delayDuration={200}>
       <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
         <TooltipTrigger asChild>
-           <DialogTrigger asChild>
-            <Button
+           <Button
               variant="default"
               size="icon"
               className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
+              onClick={onClick}
             >
               <span className="text-4xl" role="img" aria-label="Brain">🧠</span>
               <span className="sr-only">Open AI Assistant</span>
             </Button>
-          </DialogTrigger>
         </TooltipTrigger>
         <TooltipContent
           side="top"
@@ -78,7 +61,7 @@ function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
             'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
           )}
         >
-          <p className="font-semibold">{tooltipText}</p>
+          <p className="font-semibold">Have a bottleneck? I can help.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -89,94 +72,80 @@ function FloatingAiButton({ tooltipText }: { tooltipText: string }) {
 export function FloatingAiSuggestor() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction, isPending] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestionAction, { message: null });
-  const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
-  const [bottleneck, setBottleneck] = useState('');
+  const [pageTitle, setPageTitle] = useState('');
+  const [pageContent, setPageContent] = useState('');
   
   const isServicePage = pathname.startsWith('/services/');
+  const isBytesPage = pathname.startsWith('/bytes/');
   const isHomePage = pathname === '/';
-  
-  const [tooltipText, setTooltipText] = useState('Have a bottleneck? I can suggest an agent.');
-  
-    useEffect(() => {
-    // This effect runs on the client after mount to generate the dynamic tooltip.
-    const h1 = document.querySelector('h1');
-    if (isServicePage && h1) {
-      setTooltipText(`Ask me how the ${h1.innerText} can help you.`);
-    } else {
-       setTooltipText('Have a bottleneck? I can suggest an agent.');
-    }
-  }, [pathname, isServicePage]);
-
 
   useEffect(() => {
-    if (state?.message === 'Success' && state.data) {
-      toast({
-        title: 'Agent Found!',
-        description: state.data.justification,
-      });
-      const noteParam = bottleneck ? `?note=${encodeURIComponent(bottleneck)}` : '';
-      router.push(`/services/${state.data.suggestedServiceSlug}${noteParam}`);
-      setIsOpen(false);
-      formRef.current?.reset();
-    } else if (state?.message === 'Error') {
-      const errorMessage = state.errors?.bottleneck?.[0] || 'An unknown error occurred.';
-      toast({
-        title: 'Error',
-        description: errorMessage,
-        variant: 'destructive',
-      });
+    if (isServicePage || isBytesPage) {
+      setPageTitle(document.title);
+      // A simple way to get some text content from the page.
+      // A more robust solution might use a dedicated library or more specific selectors.
+      const contentElement = document.querySelector('article');
+      setPageContent(contentElement?.innerText.substring(0, 2000) || '');
+    } else {
+        setPageTitle('');
+        setPageContent('');
     }
-  }, [state, router, toast, bottleneck]);
+  }, [pathname, isServicePage, isBytesPage]);
 
-  const handleFormAction = (formData: FormData) => {
-    const bn = formData.get('bottleneck') as string;
-    setBottleneck(bn);
-    formAction(formData);
+  const onSuggestionSuccess = (state: SuggestionState) => {
+    if (state.message === 'Success' && state.data) {
+        // Check if the data is a service suggestion
+        if ('suggestedServiceSlug' in state.data) {
+            const suggestion = state.data as ServiceSuggesterOutput;
+            const query = (document.querySelector('textarea[name="query"]') as HTMLTextAreaElement)?.value || '';
+
+            toast({
+                title: 'Agent Found!',
+                description: suggestion.justification,
+            });
+            const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
+            router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
+            setIsOpen(false);
+        }
+    } else if (state.message === 'Error') {
+        const errorMessage = state.errors?.general || 'An unknown error occurred.';
+        toast({
+            title: 'Error',
+            description: errorMessage,
+            variant: 'destructive',
+        });
+    }
   };
   
-  if (!isHomePage && !isServicePage) {
+  if (!isHomePage && !isServicePage && !isBytesPage) {
       return null;
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <FloatingAiButton tooltipText={tooltipText} />
-      <DialogContent className="sm:max-w-lg">
+      <FloatingTrigger onClick={() => setIsOpen(true)} />
+      <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
         <DialogHeader>
            <div className="flex justify-center">
             <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
           </div>
-          <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Find Your Agent</DialogTitle>
+          <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
           <DialogDescription className="text-lg text-center text-foreground/80">
-            {isServicePage 
-                ? "Ask a question about this agent or describe your problem."
-                : "Describe your single biggest business bottleneck, and we'll suggest the right agent to solve it."
+            {isServicePage || isBytesPage
+                ? "Ask a question about this page, or describe a problem."
+                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
             }
           </DialogDescription>
         </DialogHeader>
-        <form ref={formRef} action={handleFormAction} className="space-y-4 pt-4">
-          <Textarea
-            name="bottleneck"
-            placeholder={isServicePage
-                ? "e.g., 'How does this integrate with my existing CRM?' or 'Can this handle international invoicing?'"
-                : "e.g., 'We waste too much time chasing unpaid invoices,' or 'Our leads are cold and unresponsive.'"
-            }
-            className="min-h-[120px] text-base"
-            required
-            disabled={isPending}
-          />
-          {state?.errors?.bottleneck && (
-            <p className="text-sm text-destructive">
-              {state.errors.bottleneck[0]}
-            </p>
-          )}
-          <div className="flex justify-center pt-2">
-            <ServiceSuggesterSubmitButton />
-          </div>
-        </form>
+        <div className="flex-1 overflow-y-auto">
+            <AiSuggestor 
+                pageTitle={pageTitle} 
+                pageContent={pageContent} 
+                onSuggestionSuccess={onSuggestionSuccess}
+            />
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { 
@@ -10,6 +11,11 @@ import {
   NotesAnalyzerOutput,
   analyzeNotes
 } from '@/ai/flows/notes-analyzer';
+import {
+  ContextualAssistantInput,
+  ContextualAssistantOutput,
+  getContextualAssistantResponse
+} from '@/ai/flows/contextual-assistant';
 import { z } from 'zod';
 // Import the new centralized authentication helper and the admin SDK instances
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
@@ -21,52 +27,62 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// --- AI Service Suggester Action (Homepage & Contextual) ---
+// --- AI Service Suggester & Contextual Assistant Action ---
 
-const serviceSuggestionSchema = z.object({
-  bottleneck: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
+const suggestionSchema = z.object({
+  query: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
   pageTitle: z.string().optional(),
   pageContent: z.string().optional(),
 });
 
-export type ServiceSuggestionState = {
+export type SuggestionState = {
   errors?: {
-    bottleneck?: string[];
-    general?: string[];
+    query?: string[];
+    general?: string;
   };
-  message: 'Success' | 'Error' | 'pending' | null;
-  data?: ServiceSuggesterOutput | null;
+  message: 'Success' | 'Error' | null;
+  data?: ServiceSuggesterOutput | ContextualAssistantOutput | null;
 }
 
-export async function getServiceSuggestionAction(prevState: ServiceSuggestionState, formData: FormData): Promise<ServiceSuggestionState> {
-  const validatedFields = serviceSuggestionSchema.safeParse({
-    bottleneck: formData.get('bottleneck'),
-  });
+export async function getContextualSuggestion(prevState: SuggestionState, formData: FormData): Promise<SuggestionState> {
+    const validatedFields = suggestionSchema.safeParse({
+        query: formData.get('query'),
+        pageTitle: formData.get('pageTitle'),
+        pageContent: formData.get('pageContent'),
+    });
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Error',
-    };
-  }
-  
-  try {
-    const input: ServiceSuggesterInput = {
-      problemDescription: validatedFields.data.bottleneck,
-    };
-    const result = await getServiceSuggestion(input);
-    return {
-      message: 'Success',
-      data: result,
-    };
-  } catch (error) {
-     console.error('Service Suggestion Error:', error);
-    return {
-      message: 'Error',
-      data: null,
-      errors: { general: ['An error occurred on our end. Please try again later.'] },
-    };
-  }
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Error',
+        };
+    }
+    
+    const { query, pageTitle, pageContent } = validatedFields.data;
+
+    try {
+        let result: ServiceSuggesterOutput | ContextualAssistantOutput;
+        // If we have page context, use the contextual assistant. Otherwise, use the service suggester.
+        if (pageTitle && pageContent && pageTitle.trim() !== '') {
+            const input: ContextualAssistantInput = { query, pageTitle, pageContent };
+            result = await getContextualAssistantResponse(input);
+        } else {
+            const input: ServiceSuggesterInput = { problemDescription: query };
+            result = await getServiceSuggestion(input);
+        }
+
+        return {
+            message: 'Success',
+            data: result,
+        };
+    } catch (error: any) {
+        console.error('AI Suggestion Error:', error);
+        return {
+            message: 'Error',
+            errors: { general: error.message || 'An error occurred on our end. Please try again.' },
+            data: null,
+        };
+    }
 }
 
 
