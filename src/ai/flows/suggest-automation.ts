@@ -31,12 +31,6 @@ const SuggestAutomationOutputSchema = z.object({
 });
 export type SuggestAutomationOutput = z.infer<typeof SuggestAutomationOutputSchema>;
 
-export async function suggestAutomation(
-  input: SuggestAutomationInput
-): Promise<SuggestAutomationOutput> {
-  return suggestAutomationFlow(input);
-}
-
 const prompt = ai.definePrompt({
   name: 'suggestAutomationPrompt',
   input: {schema: SuggestAutomationInputSchema},
@@ -57,9 +51,9 @@ User's description: {{{contentBottleneckDescription}}}
 Output the suggested service automation and reasoning in JSON format.`,
 });
 
-const suggestAutomationFlow = ai.defineFlow(
+export const suggestAutomation = ai.defineFlow(
   {
-    name: 'suggestAutomationFlow',
+    name: 'suggestAutomation',
     inputSchema: SuggestAutomationInputSchema,
     outputSchema: SuggestAutomationOutputSchema,
   },

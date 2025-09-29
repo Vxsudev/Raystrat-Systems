@@ -2,17 +2,14 @@
 'use server';
 
 import {
-  contextualAssistant,
   ContextualAssistantInput,
   ContextualAssistantOutput,
 } from '@/ai/flows/contextual-assistant';
 import { 
-  suggestService,
   ServiceSuggesterInput,
   ServiceSuggesterOutput,
 } from '@/ai/flows/service-suggester';
 import {
-  analyzeNotes,
   NotesAnalyzerInput,
 } from '@/ai/flows/notes-analyzer';
 import { z } from 'zod';
@@ -21,6 +18,10 @@ import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 import { Sequence, SequenceStep, SequenceTemplate } from './dashboard/page';
+import { runFlow } from 'genkit';
+import { contextualAssistant } from '@/ai/flows/contextual-assistant';
+import { serviceSuggester } from '@/ai/flows/service-suggester';
+import { notesAnalyzer } from '@/ai/flows/notes-analyzer';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -72,7 +73,7 @@ export async function getContextualSuggestion(
       pageTitle: validatedFields.data.pageTitle,
       pageContent: validatedFields.data.pageContent,
     };
-    const result = await contextualAssistant(input);
+    const result = await runFlow(contextualAssistant, input);
     return { data: result, message: 'Success' };
   } catch (error) {
     console.error('AI Suggestion Error:', error);
@@ -114,7 +115,7 @@ export async function getServiceSuggestion(prevState: ServiceSuggestionState, fo
     const input: ServiceSuggesterInput = {
       bottleneck: validatedFields.data.bottleneck,
     };
-    const result = await suggestService(input);
+    const result = await runFlow(serviceSuggester, input);
     return {
       message: 'Success',
       data: result,
@@ -263,7 +264,7 @@ export async function saveAndSendNotes(
     let aiSuggestion = '';
     try {
       const analysisInput: NotesAnalyzerInput = { notes };
-      const analysisResult = await analyzeNotes(analysisInput);
+      const analysisResult = await runFlow(notesAnalyzer, analysisInput);
       aiSuggestion = analysisResult.suggestion;
     } catch (aiError) {
       console.error('AI Note Analysis Error:', aiError);

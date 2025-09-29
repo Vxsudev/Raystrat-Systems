@@ -32,12 +32,6 @@ const SummarizerOutputSchema = z.object({
 });
 export type SummarizerOutput = z.infer<typeof SummarizerOutputSchema>;
 
-export async function summarizeText(
-  input: SummarizerInput
-): Promise<SummarizerOutput> {
-  return summarizerFlow(input);
-}
-
 const prompt = ai.definePrompt({
   name: 'summarizerPrompt',
   input: {schema: SummarizerInputSchema},
@@ -55,9 +49,9 @@ Instructions:
 "{{{textToSummarize}}}"`,
 });
 
-const summarizerFlow = ai.defineFlow(
+export const summarizer = ai.defineFlow(
   {
-    name: 'summarizerFlow',
+    name: 'summarizer',
     inputSchema: SummarizerInputSchema,
     outputSchema: SummarizerOutputSchema,
   },
