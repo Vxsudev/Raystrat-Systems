@@ -1,22 +1,20 @@
-// src/ai/genkit.ts
-import { genkit } from '@genkit-ai/core';
-import { googleAI } from '@genkit-ai/googleai';
 
-// Initialize Genkit with the Google AI plugin
+'use server';
+
+import { genkit, z } from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
+
+if (!process.env.GEMINI_API_KEY) {
+console.warn('GEMINI_API_KEY not set');
+}
+
 export const ai = genkit({
-  plugins: [
-    googleAI({
-      // Specify the API version
-      apiVersion: 'v1beta',
-    }),
-  ],
-  // Log all traces to the console
-  logLevel: 'debug',
-  // Open telemetry data to a file for local development
-  traceStore: {
-    type: 'file',
-    options: {
-      path: './genkit-traces.jsonl',
-    },
-  },
+plugins: [
+googleAI({
+apiKey: process.env.GEMINI_API_KEY,
+}),
+],
 });
+
+export { z };
+export default ai;
