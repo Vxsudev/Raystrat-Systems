@@ -1,7 +1,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useEffect, useRef, useState, createRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
@@ -64,6 +64,36 @@ type ConversationTurn = {
     text: string;
 }
 
+function ConversationHistory({ conversation, isPending }: { conversation: ConversationTurn[], isPending: boolean }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      // Scroll the last element into view, aligning it to the start (top)
+      scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [conversation.length]); // Rerun when a new message is added
+
+  return (
+    <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
+      {conversation.map((turn, index) => (
+        <div key={index} className="flex items-start gap-3">
+          <div className="p-2 rounded-full bg-muted border">
+            {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">🧠</span>}
+          </div>
+          <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+            {(turn.actor === 'ai' && !turn.text && isPending) 
+              ? <Loader2 className="animate-spin" />
+              : <ReactMarkdown>{turn.text}</ReactMarkdown>
+            }
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiSuggestorProps) {
   const [state, setState] = useState<SuggestionState | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -72,12 +102,6 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
   const followUpFormRef = useRef<HTMLFormElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const messageRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
-
-  useEffect(() => {
-    messageRefs.current = conversation.map((_, i) => messageRefs.current[i] ?? createRef());
-  }, [conversation]);
-
 
   useEffect(() => {
     if (state?.message === 'Success' && state.data) {
@@ -127,16 +151,6 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
     if (followUpFormRef.current) followUpFormRef.current.reset();
   };
 
-  useEffect(() => {
-    // Scroll to the top of the latest message
-    const lastMessageRef = messageRefs.current[messageRefs.current.length - 1];
-    if (lastMessageRef?.current) {
-        lastMessageRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-        });
-    }
-  }, [conversation.length]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
@@ -156,22 +170,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
     <div className="w-full h-full flex flex-col">
       {conversation.length > 0 ? (
           <>
-            <div className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
-              {conversation.map((turn, index) => (
-                  <div key={index} ref={messageRefs.current[index]} className="flex items-start gap-3">
-                      <div className="p-2 rounded-full bg-muted border">
-                        {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">🧠</span>}
-                      </div>
-                      <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                         {(turn.actor === 'ai' && !turn.text && isPending) 
-                          ? <Loader2 className="animate-spin" />
-                          : <ReactMarkdown>{turn.text}</ReactMarkdown>
-                         }
-                      </div>
-                  </div>
-              ))}
-            </div>
-            
+            <ConversationHistory conversation={conversation} isPending={isPending} />
             <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">
               <input type="hidden" name="pageTitle" value={pageTitle} />
               <input type="hidden" name="pageContent" value={pageContent} />
