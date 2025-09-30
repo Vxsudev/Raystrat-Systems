@@ -26,7 +26,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput, services } from '@/data/content';
 import { AiSuggestor } from './ai-suggestor';
@@ -53,7 +53,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
               className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
               onClick={onClick}
             >
-              <BrainCircuit className="h-7 w-7" />
+              <Sparkles className="h-7 w-7" />
               <span className="sr-only">Open AI Assistant</span>
             </Button>
         </TooltipTrigger>
@@ -135,7 +135,6 @@ export function FloatingAiSuggestor() {
         pageTitle={pageTitle} 
         pageContent={pageContent}
         service={currentService}
-        onSuggestionSuccess={onSuggestionSuccess}
         onNavigate={() => setIsOpen(false)}
     />
   );
@@ -149,7 +148,7 @@ export function FloatingAiSuggestor() {
                 <SheetContent className="w-full sm:max-w-xs flex flex-col p-0">
                    <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                         <SheetTitle className="text-lg font-semibold flex items-center gap-2">
-                           <BrainCircuit className="w-6 h-6 text-primary" />
+                           <Sparkles className="w-6 h-6 text-primary" />
                            Agent Assist
                         </SheetTitle>
                         <SheetClose />
@@ -169,7 +168,7 @@ export function FloatingAiSuggestor() {
       <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
         <DialogHeader>
           <div className="flex justify-center">
-              <BrainCircuit className="w-10 h-10 text-primary" />
+              <Sparkles className="w-10 h-10 text-primary" />
           </div>
           <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
           <DialogDescription className="text-lg text-center text-foreground/80">

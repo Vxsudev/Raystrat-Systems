@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Send, Sparkles, User, BrainCircuit } from 'lucide-react';
+import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ContextualAssistantOutput, services } from '@/data/content';
 import { useAuth } from '@/contexts/auth-context';
@@ -15,7 +15,6 @@ interface AiSuggestorProps {
   pageTitle: string;
   pageContent: string;
   service?: typeof services[0];
-  onSuggestionSuccess?: (state: SuggestionState) => void;
   onNavigate?: () => void;
 }
 
@@ -40,7 +39,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
         <div key={index} className="flex flex-col items-start gap-3">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-muted border">
-                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <BrainCircuit className="w-5 h-5 text-primary" />}
+                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
             </div>
             <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
                 {(turn.actor === 'ai' && !turn.text && isPending) 
@@ -66,7 +65,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess, onNavigate }: AiSuggestorProps) {
+export function AiSuggestor({ pageTitle, pageContent, service, onNavigate }: AiSuggestorProps) {
   const [isPending, setIsPending] = useState(false);
   const { user } = useAuth();
   
@@ -90,7 +89,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     const result = await getContextualSuggestion(formData);
     
     if (result?.message === 'Success' && result.data) {
-        onSuggestionSuccess?.(result);
         const aiResponseData = result.data as ContextualAssistantOutput;
         const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
         
@@ -102,7 +100,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
         });
 
     } else if (result?.message) {
-        onSuggestionSuccess?.(result);
         // Update the last AI turn with the error message
         setConversation(prev => {
             const newConversation = [...prev];
