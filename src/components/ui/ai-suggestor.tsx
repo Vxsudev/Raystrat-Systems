@@ -73,12 +73,12 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
           {turn.actor === 'ai' && turn.data && (
             <div className="ml-12 mt-2 space-y-2">
                 {turn.data.suggestedService && (
-                    <Button asChild variant="outline" size="sm">
-                        <Link href={`/services/${turn.data.suggestedService.slug}`}>
+                    <Link href={`/services/${turn.data.suggestedService.slug}`} passHref>
+                        <Button as="a" variant="outline" size="sm">
                             Learn More: {turn.data.suggestedService.title}
                             <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 )}
                 {turn.data.showBookDemo && (
                     <CalendlyButton size="sm">
