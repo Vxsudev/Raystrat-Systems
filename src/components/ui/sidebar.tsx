@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/tooltip"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
+const SIDEBAR_WIDTH_COOKIE_NAME = "sidebar_width"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
@@ -34,6 +36,8 @@ type SidebarContext = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  isResizing: boolean
+  width: number
 }
 
 const SidebarContext = React.createContext<SidebarContext | null>(null)
@@ -53,6 +57,9 @@ const SidebarProvider = React.forwardRef<
     defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (open: boolean) => void
+    defaultWidth?: number
+    minWidth?: number
+    maxWidth?: number
   }
 >(
   (
@@ -63,12 +70,16 @@ const SidebarProvider = React.forwardRef<
       className,
       style,
       children,
+      defaultWidth = Number.parseInt(SIDEBAR_WIDTH),
+      minWidth = 14,
+      maxWidth = 20,
       ...props
     },
     ref
   ) => {
     const isMobile = useIsMobile()
     const [openMobile, setOpenMobile] = React.useState(false)
+    const [isResizing, setIsResizing] = React.useState(false)
 
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
@@ -95,6 +106,43 @@ const SidebarProvider = React.forwardRef<
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open)
     }, [isMobile, setOpen, setOpenMobile])
+
+    // This is the internal state of the sidebar width.
+    const [width, setWidth] = React.useState(defaultWidth)
+    React.useEffect(() => {
+      const savedWidth = localStorage.getItem(SIDEBAR_WIDTH_COOKIE_NAME)
+      if (savedWidth) {
+        setWidth(Number.parseInt(savedWidth))
+      }
+    }, [])
+
+    const handleResize = React.useCallback(
+      (e: MouseEvent) => {
+        if (!isResizing) return
+        const newWidth = (e.clientX / 16) as number // Convert to rem
+        if (newWidth >= minWidth && newWidth <= maxWidth) {
+          setWidth(newWidth)
+        }
+      },
+      [isResizing, minWidth, maxWidth]
+    )
+
+    const handleMouseUp = React.useCallback(() => {
+      setIsResizing(false)
+      document.removeEventListener("mousemove", handleResize)
+      document.removeEventListener("mouseup", handleMouseUp)
+      document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${width}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    }, [handleResize, width])
+
+    const handleMouseDown = React.useCallback(
+      (e: React.MouseEvent) => {
+        e.preventDefault()
+        setIsResizing(true)
+        document.addEventListener("mousemove", handleResize)
+        document.addEventListener("mouseup", handleMouseUp)
+      },
+      [handleResize, handleMouseUp]
+    )
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -125,8 +173,20 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        isResizing,
+        width,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [
+        state,
+        open,
+        setOpen,
+        isMobile,
+        openMobile,
+        setOpenMobile,
+        toggleSidebar,
+        isResizing,
+        width,
+      ]
     )
 
     return (
@@ -135,16 +195,18 @@ const SidebarProvider = React.forwardRef<
           <div
             style={
               {
-                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width": `${width}rem`,
                 "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
                 ...style,
               } as React.CSSProperties
             }
             className={cn(
               "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
-              className
+              className,
+              isResizing && "cursor-col-resize select-none"
             )}
             ref={ref}
+            onMouseDown={handleMouseDown}
             {...props}
           >
             {children}
