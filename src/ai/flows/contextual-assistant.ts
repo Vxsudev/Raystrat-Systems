@@ -32,9 +32,9 @@ const ContextualAssistantOutputSchema = z.object({
     .string()
     .describe('The AI-generated answer or suggestion, tailored to the user\'s query and the provided page context.'),
   suggestedService: z.object({
-      slug: z.string().describe("The URL slug of the suggested service, if relevant."),
-      title: z.string().describe("The title of the suggested service."),
-  }).optional().describe("If the user's query is better answered by a different service, provide its details here."),
+      slug: z.string().describe("The URL slug of the suggested service. MUST NOT be an empty string."),
+      title: z.string().describe("The title of the suggested service. MUST NOT be an empty string."),
+  }).optional().describe("If and only if a different service is a better fit, provide its details here. Otherwise, this MUST be left empty."),
   showBookDemo: z.boolean().describe("Set to true if a 'Book a Demo' CTA should be shown with this response. This should happen every 3 user messages."),
 });
 export type ContextualAssistantOutput = z.infer<typeof ContextualAssistantOutputSchema>;
@@ -54,16 +54,16 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-2.0-flash',
   prompt: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering their questions and guiding them to the right solution with professional precision.
 
-**BEHAVIOR RULES:**
+**BEHAVIOR RULES (READ AND FOLLOW STRICTLY):**
 
-1.  **Primary Goal: Answer the User's Question.** Your absolute priority is to answer the user's query based on the current page context. If a user asks a question about the current service, answer it thoroughly. Do not suggest another service. For example, if the user is on the "Data Command Agent" page and asks "what kind of data is required for me", you MUST answer that question directly and you MUST NOT suggest any other agent.
+1.  **Primary Goal: Answer the User's Question Directly.** Your absolute priority is to answer the user's query based on the current page context. If a user asks a question about the current service (e.g., "what kind of data is required for me" on the "Data Command Agent" page), you MUST answer that question directly and you MUST NOT suggest another service. In this case, the 'suggestedService' object in your output MUST be empty.
 
-2.  **Strict Cross-Sell Logic (Exception-Only):**
-    *   You should only suggest another service as a rare exception. This should only happen if the user's query reveals a foundational problem that makes the current service irrelevant to them.
-    *   **The ONLY trigger for a cross-sell is a prerequisite problem.** For example: If the user is on the "Data Command Agent" page and asks, "I don't have a business yet, what data can you give me?", you MUST recognize they first need a business/leads. In this specific case, you should suggest the "Leads Hunter Agent" and explain *why* it's the logical first step before they can use the Data Agent.
-    *   If you do not detect a clear prerequisite problem, you MUST NOT suggest another service. Leave the 'suggestedService' object empty.
+2.  **Strict Cross-Sell Logic (EXCEPTION ONLY):**
+    *   You should only suggest another service as a rare exception. This MUST only happen if the user's query reveals a foundational problem that makes the current service irrelevant to them.
+    *   **EXAMPLE:** If the user is on the "Data Command Agent" page and asks, "I don't have a business yet, what data can you give me?", you MUST recognize they first need leads before they can analyze data. In this specific case, and only in cases like this, you should suggest the "Leads Hunter Agent" and explain *why* it's the logical first step.
+    *   If you do not detect a clear prerequisite problem, you MUST NOT suggest another service. The 'suggestedService' object MUST be left empty.
 
-3.  **Book a Demo CTA:** You MUST set 'showBookDemo' to true every 3 user messages. The current conversation turn count is {{{conversationCount}}}. If (conversationCount > 0 && conversationCount % 3 === 0), set 'showBookDemo' to true. Otherwise, set it to false.
+3.  **Book a Demo CTA:** You MUST set 'showBookDemo' to true if the conversation turn count is a multiple of 3 (e.g., 3, 6, 9). The current conversation turn count is {{{conversationCount}}}. If (conversationCount > 0 && conversationCount % 3 === 0), set 'showBookDemo' to true. Otherwise, set it to false.
 
 Here are the available services offered by Raystrat Systems:
 ${serviceList}
@@ -76,7 +76,7 @@ Page Content Summary:
 **USER'S QUERY:**
 "{{{query}}}"
 
-Based on all the strict rules, context, and the user's query, provide a helpful and professional response and populate the output fields correctly. Default to answering the direct question and NOT suggesting another service.`,
+Based on all the strict rules, context, and the user's query, provide a helpful and professional response and populate the output fields correctly. Your default behavior should be to answer the direct question and leave 'suggestedService' empty.`,
 });
 
 const contextualAssistantFlow = ai.defineFlow(

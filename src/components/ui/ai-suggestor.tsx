@@ -72,7 +72,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
           </div>
           {turn.actor === 'ai' && turn.data && (
             <div className="ml-12 mt-2 space-y-2">
-                {turn.data.suggestedService && (
+                {turn.data.suggestedService && turn.data.suggestedService.slug && (
                     <Link href={`/services/${turn.data.suggestedService.slug}`} passHref>
                         <Button as="a" variant="outline" size="sm">
                             Learn More: {turn.data.suggestedService.title}
@@ -134,7 +134,8 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
             });
         }
     }
-  }, [state, onSuggestionSuccess]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
