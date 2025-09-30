@@ -11,26 +11,23 @@ import Link from 'next/link';
 import { FavoriteAgentButton } from '@/components/ui/favorite-agent-button';
 import { NotesTaker } from '@/components/ui/notes-taker';
 import { Separator } from '@/components/ui/separator';
-import type { LucideIcon } from 'lucide-react';
-import { Cpu, Banknote, Workflow, Database, MessageSquareShare, ShieldQuestion, Search } from 'lucide-react';
-
-
-interface Service {
-  slug: string;
-  title: string;
-  subhead: string;
-  bullets: string[];
-  icon: LucideIcon;
-  pageContent: string;
-  iconClassName?: string;
-}
 
 interface ServicePageClientProps {
-  service: Service;
-  nextService: Service;
+  slug: string;
+  nextServiceSlug?: string;
 }
 
-export function ServicePageClient({ service, nextService }: ServicePageClientProps) {
+export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientProps) {
+  // Find the full service object on the client side using the slug prop
+  const service = services.find((s) => s.slug === slug);
+  const nextService = nextServiceSlug ? services.find((s) => s.slug === nextServiceSlug) : undefined;
+
+  if (!service) {
+    // This could be a 404 page or a loading state, but for now we'll just return null
+    // as the page logic in `page.tsx` should have already handled `notFound()`.
+    return null;
+  }
+
   const Icon = service.icon;
 
   return (

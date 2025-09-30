@@ -35,7 +35,9 @@ export default function ServicePage({ params }: ServicePageProps) {
   const nextIndex = (currentIndex + 1) % services.length;
   const nextService = services[nextIndex];
 
-  return <ServicePageClient service={service} nextService={nextService} />;
+  // We only pass serializable data to the client component.
+  // The client component will look up the full service object using the slug.
+  return <ServicePageClient slug={service.slug} nextServiceSlug={nextService?.slug} />;
 }
 
 // This function tells Next.js which slugs to pre-render at build time.
