@@ -33,23 +33,12 @@ export async function analyzeNotes(
 const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystratsystems.com';
 
-const notesAnalyzerTool = ai.defineTool(
-  {
-    name: 'notesAnalyzer',
-    description: 'Provide a concise, one-paragraph analysis of the user\'s notes.',
-    inputSchema: NotesAnalyzerOutputSchema,
-    outputSchema: z.void(),
-  },
-  async (input) => {}
-);
-
-
 const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
+  output: {schema: NotesAnalyzerOutputSchema},
   model: 'googleai/gemini-1.5-flash-latest',
-  tools: [notesAnalyzerTool],
-  system: `You are an expert AI consultant for Raystrat Systems, skilled in using Neuro-linguistic Programming (NLP) to understand and guide potential clients. Your goal is to analyze a user's notes, identify their core problems AND their underlying objections or hesitations, and then reframe them in a way that builds confidence and guides them towards a solution.
+  prompt: `You are an expert AI consultant for Raystrat Systems, skilled in using Neuro-linguistic Programming (NLP) to understand and guide potential clients. Your goal is to analyze a user's notes, identify their core problems AND their underlying objections or hesitations, and then reframe them in a way that builds confidence and guides them towards a solution.
 
 Your response should be a single, helpful, and consultative paragraph that does the following:
 1.  **Acknowledge the Concern, Not Just the Problem:** Start by acknowledging the user's situation. Do not just repeat their words. Instead, identify the deeper worry (e.g., "It sounds like you're concerned about reclaiming time without adding complexity," or "It seems the core issue is building a predictable sales pipeline, and past efforts have not provided the control you need.").
@@ -62,8 +51,8 @@ The link format for a service page is: ${siteUrl}/services/{service_slug}
 Here are the available services:
 ${serviceList}
 
-Analyze the user's notes below. Adopt the NLP consultant persona and generate the suggestion paragraph. You must provide the response by calling the notesAnalyzer tool.`,
-  prompt: `
+Analyze the user's notes below. Adopt the NLP consultant persona and generate the suggestion paragraph.
+
 **USER'S NOTES:**
 "{{{notes}}}"`,
 });
@@ -76,10 +65,6 @@ const notesAnalyzerFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    const toolRequest = output?.choices[0].message.toolRequest;
-    if (!toolRequest) {
-      throw new Error('No tool request found in the response');
-    }
-    return toolRequest.input as NotesAnalyzerOutput;
+    return output!;
   }
 );

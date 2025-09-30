@@ -34,30 +34,17 @@ export async function getServiceSuggestion(
 
 const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
 
-const serviceSuggesterTool = ai.defineTool(
-  {
-    name: 'serviceSuggester',
-    description: 'Suggest the single most impactful Raystrat Systems service to solve a user\'s problem.',
-    inputSchema: ServiceSuggesterOutputSchema,
-    outputSchema: z.void(),
-  },
-  async (input) => {}
-);
-
 const prompt = ai.definePrompt({
   name: 'serviceSuggesterPrompt',
   input: {schema: ServiceSuggesterInputSchema},
+  output: {schema: ServiceSuggesterOutputSchema},
   model: 'googleai/gemini-1.5-flash-latest',
-  tools: [serviceSuggesterTool],
-  system: `You are an expert consultant for Raystrat Systems. Your goal is to analyze a user's problem and recommend the single most impactful service to solve it.
+  prompt: `You are an expert consultant for Raystrat Systems. Your goal is to analyze a user's problem and recommend the single most impactful service to solve it.
 
 Here are the available services:
 ${serviceList}
 
-Analyze the user's problem description. Based on their problem, you must select the single best service from the list and provide a concise justification for your recommendation by calling the serviceSuggester tool.`,
-  prompt: `
-USER'S PROBLEM:
-"{{{problemDescription}}}"`,
+Analyze the user's problem description. Based on their problem, you must select the single best service from the list and provide a concise justification for your recommendation.`,
 });
 
 export const serviceSuggesterFlow = ai.defineFlow(
@@ -68,10 +55,6 @@ export const serviceSuggesterFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    const toolRequest = output?.choices[0].message.toolRequest;
-    if (!toolRequest) {
-      throw new Error('No tool request found in the response');
-    }
-    return toolRequest.input as ServiceSuggesterOutput;
+    return output!;
   }
 );

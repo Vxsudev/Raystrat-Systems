@@ -8,12 +8,7 @@ console.warn('GEMINI_API_KEY not set');
 }
 
 export const ai = genkit({
-plugins: [
-googleAI({
-apiKey: process.env.GEMINI_API_KEY,
-apiVersion: 'v1',
-}),
-],
+  plugins: [googleAI()],
 });
 
 export { z };
