@@ -71,7 +71,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
     if (scrollRef.current) {
       scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [conversation.length]);
+  }, [conversation.length, conversation[conversation.length - 1]?.text]); // Also scroll when text streams in
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
@@ -108,8 +108,12 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
        const aiResponse = 'response' in state.data && state.data.response ? state.data.response : 'Sorry, I could not generate a response.';
        const lastTurn = conversation[conversation.length - 1];
        if (lastTurn && lastTurn.actor === 'ai') {
-        lastTurn.text = aiResponse;
-        setConversation([...conversation]);
+        // Update the last AI turn's text
+        setConversation(prev => {
+          const newConversation = [...prev];
+          newConversation[newConversation.length - 1] = { ...lastTurn, text: aiResponse };
+          return newConversation;
+        });
       } else {
          setConversation(prev => [
           ...prev,
@@ -120,11 +124,14 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
         onSuggestionSuccess?.(state);
         const lastTurn = conversation[conversation.length - 1];
         if (lastTurn && lastTurn.actor === 'ai') {
-            lastTurn.text = state.message;
-            setConversation([...conversation]);
+            setConversation(prev => {
+              const newConversation = [...prev];
+              newConversation[newConversation.length - 1] = { ...lastTurn, text: state.message! };
+              return newConversation;
+            });
         }
     }
-  }, [state, onSuggestionSuccess, conversation]);
+  }, [state, onSuggestionSuccess]); // Removed 'conversation' from dependencies to prevent re-triggering
 
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
@@ -180,26 +187,24 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
             </form>
           </>
       ) : (
-        <form ref={formRef} action={handleFormSubmit} className="space-y-4 mt-auto">
+        <form ref={formRef} action={handleFormSubmit} className="flex items-center gap-2 mt-auto p-1">
           <input type="hidden" name="pageTitle" value={pageTitle} />
           <input type="hidden" name="pageContent" value={pageContent} />
-          <div className="relative rounded-full focus-within:ring-1 focus-within:ring-primary">
-             <Input
-                name="query"
-                placeholder="Ask a question or describe a problem..."
-                className="w-full rounded-full pr-12 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                required
-                disabled={isPending}
-                onKeyDown={handleKeyDown}
-              />
-              <Button type="submit" size="icon" className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-primary" disabled={isPending}>
-                 {isPending ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-              </Button>
-          </div>
+          <Input
+            name="query"
+            placeholder="Ask a question or describe a problem..."
+            className="w-full rounded-full border-border bg-transparent focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
+            required
+            disabled={isPending}
+            onKeyDown={handleKeyDown}
+          />
+          <Button type="submit" size="icon" className="h-9 w-9 rounded-full bg-primary shrink-0" disabled={isPending}>
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+          </Button>
           {state?.errors?.query && (
             <p className="text-sm text-destructive">
               {state.errors.query[0]}
