@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -26,9 +26,9 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, BrainCircuit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { ServiceSuggesterOutput, services } from '@/data/content';
+import { ServiceSuggesterOutput, services, ContextualAssistantOutput } from '@/data/content';
 import { AiSuggestor } from './ai-suggestor';
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
@@ -147,7 +147,7 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="w-full sm:max-w-xs flex flex-col p-0">
+                <SheetContent className="w-full sm:max-w-sm flex flex-col p-0">
                    <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                         <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                            <Sparkles className="w-6 h-6 text-primary" />
