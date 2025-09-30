@@ -1,3 +1,4 @@
+// src/ai/flows/contextual-assistant.ts
 import 'server-only';
 
 /**
@@ -10,6 +11,7 @@ import 'server-only';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { services } from '@/data/content';
 
 const ContextualAssistantInputSchema = z.object({
   query: z
@@ -37,6 +39,7 @@ export async function getContextualAssistantResponse(
   return contextualAssistantFlow(input);
 }
 
+const serviceList = services.map(s => `- ${s.title}: ${s.subhead}`).join('\n');
 
 const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
@@ -48,12 +51,7 @@ const prompt = ai.definePrompt({
 You MUST use the provided page context to tailor your response. The context gives you clues about what the user is interested in. Your answer should be directly related to the user's query and the page they are viewing.
 
 Here are the services offered by Raystrat Systems. Refer to them when relevant:
-- Leads Hunter Agent: Scans the web for live buying signals.
-- Follow-Up Agent: Runs multi-channel sequences across email, SMS, and WhatsApp.
-- Support Agent: Resolves FAQs and common tickets instantly.
-- Operations Agent: Automates routine workflows: invoicing, notifications, task assignments.
-- Data Command Agent: Centralizes KPIs across leads, sales, ops, and support.
-- Custom AI Agent: A bespoke solution for a unique bottleneck.
+${serviceList}
 
 **CONTEXT FROM THE USER'S CURRENT PAGE:**
 Page Title: {{{pageTitle}}}
