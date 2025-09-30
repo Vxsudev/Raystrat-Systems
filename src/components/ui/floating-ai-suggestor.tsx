@@ -142,21 +142,12 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetContent className="sm:max-w-lg w-full flex flex-col p-0 bg-transparent border-0">
-                 {/* Add a visually hidden title for accessibility */}
-                <SheetTitle className="sr-only">Agent Assist</SheetTitle>
-                <div className="absolute top-0 left-0 right-0 h-16 flex items-center justify-start pr-[calc(100vw-100%)]">
-                    <div className="absolute left-0 top-0 w-full h-full bg-background/80 backdrop-blur-sm border-b" />
-                    <div className="relative z-10 text-xl font-bold font-headline pl-4">
-                        Agent Assist
-                    </div>
-                </div>
-
-                {/* Chat content area, starting below the header */}
-                <div className="flex-1 overflow-y-auto pt-16 bg-background">
-                   <div className="p-6 h-full flex flex-col">
-                     {aiSuggestorComponent}
-                   </div>
+              <SheetContent className="sm:max-w-lg w-full flex flex-col p-6">
+                <SheetHeader>
+                    <SheetTitle>Agent Assist</SheetTitle>
+                </SheetHeader>
+                <div className="flex-1 overflow-y-auto mt-4">
+                    {aiSuggestorComponent}
                 </div>
               </SheetContent>
             </Sheet>
@@ -170,7 +161,7 @@ export function FloatingAiSuggestor() {
       <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
         <DialogHeader>
           <div className="flex justify-center">
-              <span className="text-5xl" role="img" aria-label="AI Assistant">♞</span>
+              <span className="text-4xl" role="img" aria-label="AI Assistant">♞</span>
           </div>
           <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
           <DialogDescription className="text-lg text-center text-foreground/80">
