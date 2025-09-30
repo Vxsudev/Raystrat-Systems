@@ -33,7 +33,6 @@ const suggestionSchema = z.object({
   query: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
   pageTitle: z.string().optional(),
   pageContent: z.string().optional(),
-  conversationCount: z.coerce.number().optional().default(0),
 });
 
 export type SuggestionState = {
@@ -50,7 +49,6 @@ export async function getContextualSuggestion(formData: FormData): Promise<Sugge
         query: formData.get('query'),
         pageTitle: formData.get('pageTitle'),
         pageContent: formData.get('pageContent'),
-        conversationCount: formData.get('conversationCount'),
     });
 
     if (!validatedFields.success) {
@@ -60,13 +58,13 @@ export async function getContextualSuggestion(formData: FormData): Promise<Sugge
         };
     }
     
-    const { query, pageTitle, pageContent, conversationCount } = validatedFields.data;
+    const { query, pageTitle, pageContent } = validatedFields.data;
 
     try {
         let result: ServiceSuggesterOutput | ContextualAssistantOutput;
         // If we have page context, use the contextual assistant. Otherwise, use the service suggester.
         if (pageTitle && pageContent && pageTitle.trim() !== '' && pageContent.trim() !== '') {
-            const input: ContextualAssistantInput = { query, pageTitle, pageContent, conversationCount };
+            const input: ContextualAssistantInput = { query, pageTitle, pageContent };
             result = await getContextualAssistantResponse(input);
         } else {
             const input: ServiceSuggesterInput = { problemDescription: query };

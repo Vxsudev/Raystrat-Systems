@@ -11,7 +11,6 @@ import ReactMarkdown from 'react-markdown';
 import { ContextualAssistantOutput, services } from '@/data/content';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
-import { CalendlyButton } from './calendly-button';
 import Link from 'next/link';
 
 function SubmitButton() {
@@ -70,21 +69,16 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
                 }
             </div>
           </div>
-          {turn.actor === 'ai' && turn.data && (
+          {turn.actor === 'ai' && turn.data?.suggestedService && turn.data.suggestedService.slug && (
             <div className="ml-12 mt-2 space-y-2">
-                {turn.data.suggestedService && turn.data.suggestedService.slug && (
-                    <Link href={`/services/${turn.data.suggestedService.slug}`} passHref>
-                        <Button as="a" variant="outline" size="sm">
+                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref>
+                    <Button asChild variant="outline" size="sm">
+                        <a>
                             Learn More: {turn.data.suggestedService.title}
                             <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </Link>
-                )}
-                {turn.data.showBookDemo && (
-                    <CalendlyButton size="sm">
-                        Book a Demo
-                    </CalendlyButton>
-                )}
+                        </a>
+                    </Button>
+                </Link>
             </div>
           )}
         </div>
@@ -102,7 +96,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   const formRef = useRef<HTMLFormElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const [conversationCount, setConversationCount] = useState(0);
 
   useEffect(() => {
     if (state?.message === 'Success' && state.data) {
@@ -140,9 +133,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
-
-    setConversationCount(prev => prev + 1);
-    formData.set('conversationCount', String(conversationCount + 1));
 
     setConversation(prev => [
       ...prev,

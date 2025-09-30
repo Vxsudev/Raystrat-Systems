@@ -22,8 +22,7 @@ const ContextualAssistantInputSchema = z.object({
     .describe("The title of the page the user is currently on."),
   pageContent: z
     .string()
-    .describe("A summary of the text content from the page the user is on."),
-  conversationCount: z.number().describe("The number of turns in the current conversation."),
+    .describe("A summary of the text content from the page the user is on.")
 });
 export type ContextualAssistantInput = z.infer<typeof ContextualAssistantInputSchema>;
 
@@ -35,7 +34,6 @@ const ContextualAssistantOutputSchema = z.object({
       slug: z.string().describe("The URL slug of the suggested service. MUST NOT be an empty string."),
       title: z.string().describe("The title of the suggested service. MUST NOT be an empty string."),
   }).optional().describe("If and only if a different service is a better fit, provide its details here. Otherwise, this MUST be left empty."),
-  showBookDemo: z.boolean().describe("Set to true if a 'Book a Demo' CTA should be shown with this response. This should happen every 3 user messages."),
 });
 export type ContextualAssistantOutput = z.infer<typeof ContextualAssistantOutputSchema>;
 
@@ -62,8 +60,6 @@ const prompt = ai.definePrompt({
     *   You should only suggest another service as a rare exception. This MUST only happen if the user's query reveals a foundational problem that makes the current service irrelevant to them.
     *   **EXAMPLE:** If the user is on the "Data Command Agent" page and asks, "I don't have a business yet, what data can you give me?", you MUST recognize they first need leads before they can analyze data. In this specific case, and only in cases like this, you should suggest the "Leads Hunter Agent" and explain *why* it's the logical first step.
     *   If you do not detect a clear prerequisite problem, you MUST NOT suggest another service. The 'suggestedService' object MUST be left empty.
-
-3.  **Book a Demo CTA:** You MUST set 'showBookDemo' to true if the conversation turn count is a multiple of 3 (e.g., 3, 6, 9). The current conversation turn count is {{{conversationCount}}}. If (conversationCount > 0 && conversationCount % 3 === 0), set 'showBookDemo' to true. Otherwise, set it to false.
 
 Here are the available services offered by Raystrat Systems:
 ${serviceList}
