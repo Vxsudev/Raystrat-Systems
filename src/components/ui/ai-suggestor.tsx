@@ -1,3 +1,4 @@
+
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
+import { ServiceSuggesterOutput, services } from '@/data/content';
 import { cn } from '@/lib/utils';
 
 function SubmitButton() {
@@ -17,31 +18,8 @@ function SubmitButton() {
     <Button
       type="submit"
       disabled={pending}
-      size="lg"
-      className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl py-3 shadow-md transition h-auto text-base"
-    >
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 animate-spin" />
-          Thinking...
-        </>
-      ) : (
-        <>
-          Get Answers <ArrowRight className="ml-2" />
-        </>
-      )}
-    </Button>
-  );
-}
-
-function FollowUpSubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      disabled={pending}
       size="icon"
-      className="shrink-0 rounded-full h-9 w-9"
+      className="shrink-0 rounded-full h-9 w-9 bg-primary"
     >
       {pending ? (
         <Loader2 className="animate-spin" />
@@ -56,6 +34,7 @@ function FollowUpSubmitButton() {
 interface AiSuggestorProps {
   pageTitle: string;
   pageContent: string;
+  service?: typeof services[0];
   onSuggestionSuccess?: (state: SuggestionState) => void;
 }
 
@@ -74,7 +53,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
   }, [conversation.length, conversation[conversation.length - 1]?.text]); // Also scroll when text streams in
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 -mr-4 pr-4 space-y-6">
       {conversation.map((turn, index) => (
         <div key={index} className="flex items-start gap-3">
           <div className="p-2 rounded-full bg-muted border">
@@ -93,12 +72,11 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiSuggestorProps) {
+export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess }: AiSuggestorProps) {
   const [state, setState] = useState<SuggestionState | null>(null);
   const [isPending, setIsPending] = useState(false);
   
   const formRef = useRef<HTMLFormElement>(null);
-  const followUpFormRef = useRef<HTMLFormElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
 
@@ -131,7 +109,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
             });
         }
     }
-  }, [state, onSuggestionSuccess]); // Removed 'conversation' from dependencies to prevent re-triggering
+  }, [state, onSuggestionSuccess]);
 
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
@@ -149,69 +127,69 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
     setIsPending(false);
 
     if (formRef.current) formRef.current.reset();
-    if (followUpFormRef.current) followUpFormRef.current.reset();
   };
 
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !isPending) {
-      event.preventDefault();
-      const activeForm = formRef.current?.contains(document.activeElement) 
-        ? formRef.current 
-        : followUpFormRef.current;
-      
-      if (activeForm) {
-        handleFormSubmit(new FormData(activeForm));
-      }
-    }
+  const handlePresetQuestionClick = (question: string) => {
+    const formData = new FormData();
+    formData.append('query', question);
+    formData.append('pageTitle', pageTitle);
+    formData.append('pageContent', pageContent);
+    handleFormSubmit(formData);
   };
-
   
   return (
     <div className="w-full h-full flex flex-col">
       {conversation.length > 0 ? (
-          <>
-            <ConversationHistory conversation={conversation} isPending={isPending} />
-            <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2">
-              <input type="hidden" name="pageTitle" value={pageTitle} />
-              <input type="hidden" name="pageContent" value={pageContent} />
-               <Input
-                  name="query"
-                  placeholder="Ask a follow-up..."
-                  className="flex-1 rounded-full border-border bg-transparent focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
-                  required
-                  disabled={isPending}
-                  onKeyDown={handleKeyDown}
-                />
-              <FollowUpSubmitButton />
-            </form>
-          </>
+          <ConversationHistory conversation={conversation} isPending={isPending} />
       ) : (
-        <form ref={formRef} action={handleFormSubmit} className="flex items-center gap-2 mt-auto p-1">
+        <div className="flex-1 mb-4 space-y-6">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-full bg-muted border">
+                <span className="text-xl" role="img" aria-label="Brain">♞</span>
+              </div>
+              <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                <p>Hello! I'm the assistant for the {service ? `**${service.title}**` : "Raystrat"}. How can I help?</p>
+              </div>
+            </div>
+            {service?.presetQuestions && service.presetQuestions.length > 0 && (
+                <div className="space-y-2">
+                    {service.presetQuestions.map((q, i) => (
+                        <Button
+                            key={i}
+                            variant="outline"
+                            size="sm"
+                            className="w-full h-auto text-left justify-start"
+                            onClick={() => handlePresetQuestionClick(q)}
+                        >
+                            {q}
+                        </Button>
+                    ))}
+                </div>
+            )}
+        </div>
+      )}
+
+       <form 
+        ref={formRef} 
+        action={handleFormSubmit} 
+        className="flex gap-2 items-center mt-auto"
+        onSubmit={(e) => { e.preventDefault(); handleFormSubmit(new FormData(e.currentTarget)); }}
+      >
           <input type="hidden" name="pageTitle" value={pageTitle} />
           <input type="hidden" name="pageContent" value={pageContent} />
-          <Input
-            name="query"
-            placeholder="Ask a question or describe a problem..."
-            className="w-full rounded-full border-border bg-transparent focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
-            required
-            disabled={isPending}
-            onKeyDown={handleKeyDown}
-          />
-          <Button type="submit" size="icon" className="h-9 w-9 rounded-full bg-primary shrink-0" disabled={isPending}>
-              {isPending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <Send className="h-5 w-5" />
-              )}
-          </Button>
-          {state?.errors?.query && (
-            <p className="text-sm text-destructive">
-              {state.errors.query[0]}
-            </p>
-          )}
+          <div className="relative flex-1">
+            <Input
+              name="query"
+              placeholder="Ask a question or describe a problem..."
+              className="w-full rounded-full border-border bg-transparent pr-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
+              required
+              disabled={isPending}
+            />
+            <div className="absolute right-1 top-1/2 -translate-y-1/2">
+              <SubmitButton />
+            </div>
+          </div>
         </form>
-      )}
     </div>
   );
 }

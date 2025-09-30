@@ -1,9 +1,10 @@
+
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { getContextualSuggestion, SuggestionState } from '@/app/actions';
+import { SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -15,7 +16,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
@@ -26,10 +26,9 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Brain, Send, User, NotebookText } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { ArrowRight, NotebookText, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
+import { ServiceSuggesterOutput, services } from '@/data/content';
 import { AiSuggestor } from './ai-suggestor';
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
@@ -86,6 +85,9 @@ export function FloatingAiSuggestor() {
   const isBytesPage = pathname.startsWith('/bytes/');
   const isHomePage = pathname === '/';
 
+  const slug = isServicePage || isBytesPage ? pathname.split('/').pop() : undefined;
+  const currentService = services.find(s => s.slug === slug);
+
   useEffect(() => {
     if (isOpen && (isServicePage || isBytesPage)) {
       setPageTitle(document.title);
@@ -131,25 +133,29 @@ export function FloatingAiSuggestor() {
   const aiSuggestorComponent = (
     <AiSuggestor 
         pageTitle={pageTitle} 
-        pageContent={pageContent} 
+        pageContent={pageContent}
+        service={currentService}
         onSuggestionSuccess={onSuggestionSuccess}
     />
   );
   
   // Render a Sheet (sidebar) for service pages, and a Dialog for all other applicable pages.
-  if (isServicePage) {
+  if (isServicePage || isBytesPage) {
     return (
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetContent className="sm:max-w-lg w-full flex flex-col p-6">
-                <SheetHeader>
+             <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                <SheetContent className="sm:max-w-lg w-full flex flex-col p-0">
+                   <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                     <SheetTitle>Agent Assist</SheetTitle>
-                </SheetHeader>
-                <div className="flex-1 overflow-y-auto mt-4">
-                    {aiSuggestorComponent}
-                </div>
-              </SheetContent>
+                     <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-7 w-7">
+                        <X className="h-4 w-4" />
+                     </Button>
+                  </SheetHeader>
+                    <div className="flex-1 overflow-y-auto p-4">
+                        {aiSuggestorComponent}
+                    </div>
+                </SheetContent>
             </Sheet>
         </>
     );
