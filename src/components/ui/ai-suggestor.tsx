@@ -1,4 +1,3 @@
-
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
@@ -118,7 +117,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
-      { actor: 'ai', text: '' }, 
+      { actor:ai', text: '' }, 
     ]);
     
     setIsPending(true);
@@ -148,7 +147,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
                 <span className="text-xl" role="img" aria-label="Brain">♞</span>
               </div>
               <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                <p>Hello! I'm the assistant for the {service ? `**${service.title}**` : "Raystrat"}. How can I help?</p>
+                <ReactMarkdown>{`Hello! I'm the assistant for the ${service ? `**${service.title}**` : "Raystrat"}. How can I help?`}</ReactMarkdown>
               </div>
             </div>
             {service?.presetQuestions && service.presetQuestions.length > 0 && (
