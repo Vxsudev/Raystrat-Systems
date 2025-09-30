@@ -56,7 +56,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
               className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
               onClick={onClick}
             >
-              <span className="text-4xl" role="img" aria-label="Brain">🧠</span>
+              <span className="text-4xl" role="img" aria-label="AI Assistant">♞</span>
               <span className="sr-only">Open AI Assistant</span>
             </Button>
         </TooltipTrigger>
@@ -133,7 +133,7 @@ export function FloatingAiSuggestor() {
   const commonHeader = (
       <>
         <div className="flex justify-center">
-            <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
+            <span className="text-5xl" role="img" aria-label="AI Assistant">♞</span>
         </div>
         <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
         <DialogDescription className="text-lg text-center text-foreground/80">
