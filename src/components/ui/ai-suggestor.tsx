@@ -1,7 +1,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Loader2, Send, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-
+import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -56,7 +56,7 @@ function FollowUpSubmitButton() {
 interface AiSuggestorProps {
   pageTitle: string;
   pageContent: string;
-  onSuggestionClick?: () => void;
+  onSuggestionSuccess?: (state: SuggestionState) => void;
 }
 
 type ConversationTurn = {
@@ -64,8 +64,10 @@ type ConversationTurn = {
     text: string;
 }
 
-export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
-  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, null);
+export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiSuggestorProps) {
+  const [state, setState] = useState<SuggestionState | null>(null);
+  const [isPending, setIsPending] = useState(false);
+  
   const formRef = useRef<HTMLFormElement>(null);
   const followUpFormRef = useRef<HTMLFormElement>(null);
   const conversationContainerRef = useRef<HTMLDivElement>(null);
@@ -74,7 +76,8 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
 
   useEffect(() => {
     if (state?.message === 'Success' && state.data) {
-       const aiResponse = state.data.response || 'Sorry, I could not generate a response.';
+       onSuggestionSuccess?.(state);
+       const aiResponse = 'response' in state.data && state.data.response ? state.data.response : 'Sorry, I could not generate a response.';
        const lastTurn = conversation[conversation.length - 1];
        if (lastTurn && lastTurn.actor === 'ai') {
         // Update the loading state with the actual response
@@ -88,6 +91,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
         ]);
       }
     } else if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
+        onSuggestionSuccess?.(state);
         // Handle errors from the action
         const lastTurn = conversation[conversation.length - 1];
         if (lastTurn && lastTurn.actor === 'ai') {
@@ -95,9 +99,9 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
             setConversation([...conversation]);
         }
     }
-  }, [state]);
+  }, [state, onSuggestionSuccess]);
 
-  const handleFormSubmit = (formData: FormData) => {
+  const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
 
@@ -108,7 +112,10 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
       { actor: 'ai', text: '' }, // Placeholder for loading state
     ]);
     
-    formAction(formData);
+    setIsPending(true);
+    const result = await getContextualSuggestion(formData);
+    setState(result);
+    setIsPending(false);
 
     // Reset the input fields in both forms
     if (formRef.current) formRef.current.reset();
@@ -131,8 +138,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
         : followUpFormRef.current;
       
       if (activeForm) {
-        // We use requestSubmit() to trigger the form's action
-        activeForm.requestSubmit();
+        handleFormSubmit(new FormData(activeForm));
       }
     }
   };
@@ -149,7 +155,7 @@ export function AiSuggestor({ pageTitle, pageContent }: AiSuggestorProps) {
                         {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">🧠</span>}
                       </div>
                       <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                         {(turn.actor === 'ai' && !turn.text) 
+                         {(turn.actor === 'ai' && !turn.text && isPending) 
                           ? <Loader2 className="animate-spin" />
                           : <ReactMarkdown>{turn.text}</ReactMarkdown>
                          }

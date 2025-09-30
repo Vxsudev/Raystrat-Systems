@@ -44,7 +44,7 @@ export type SuggestionState = {
   data?: ServiceSuggesterOutput | ContextualAssistantOutput | null;
 }
 
-export async function getContextualSuggestion(prevState: SuggestionState, formData: FormData): Promise<SuggestionState> {
+export async function getContextualSuggestion(formData: FormData): Promise<SuggestionState> {
     const validatedFields = suggestionSchema.safeParse({
         query: formData.get('query'),
         pageTitle: formData.get('pageTitle'),
@@ -671,7 +671,3 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
-
-    
-
-    
