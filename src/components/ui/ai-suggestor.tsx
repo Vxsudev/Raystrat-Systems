@@ -1,3 +1,4 @@
+
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
@@ -211,3 +212,4 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     </div>
   );
 }
+
