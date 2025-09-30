@@ -145,7 +145,7 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="sm:max-w-lg w-full flex flex-col p-0">
+                <SheetContent className="sm:max-w-md w-full flex flex-col p-0">
                     <SheetHeader className="p-4 border-b">
                         <SheetTitle className="text-lg font-semibold">Agent Assist</SheetTitle>
                     </SheetHeader>
