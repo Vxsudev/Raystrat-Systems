@@ -38,13 +38,23 @@ export async function getContextualAssistantResponse(
   return contextualAssistantFlow(input);
 }
 
+const contextualAssistantTool = ai.defineTool(
+  {
+    name: 'contextualAssistant',
+    description: 'Provide a helpful and relevant response based on the user\'s query and page context.',
+    inputSchema: ContextualAssistantOutputSchema,
+    outputSchema: z.void(),
+  },
+  async (input) => {}
+);
+
 
 const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
   input: {schema: ContextualAssistantInputSchema},
-  output: {schema: ContextualAssistantOutputSchema},
   model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering questions, providing ideas, and offering business suggestions.
+  tools: [contextualAssistantTool],
+  system: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering questions, providing ideas, and offering business suggestions.
 
 You MUST use the provided page context to tailor your response. The context gives you clues about what the user is interested in. Your answer should be directly related to the user's query and the page they are viewing.
 
@@ -56,15 +66,17 @@ Here are the services offered by Raystrat Systems. Refer to them when relevant:
 - Data Command Agent: Centralizes KPIs across leads, sales, ops, and support.
 - Custom AI Agent: A bespoke solution for a unique bottleneck.
 
+Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.
+
+You must provide the response by calling the contextualAssistant tool.`,
+  prompt: `
 **CONTEXT FROM THE USER'S CURRENT PAGE:**
 Page Title: {{{pageTitle}}}
 Page Content Summary:
 {{{pageContent}}}
 
 **USER'S QUERY:**
-"{{{query}}}"
-
-Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.`,
+"{{{query}}}"`,
 });
 
 const contextualAssistantFlow = ai.defineFlow(
@@ -75,6 +87,10 @@ const contextualAssistantFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    const toolRequest = output?.choices[0].message.toolRequest;
+    if (!toolRequest) {
+      throw new Error('No tool request found in the response');
+    }
+    return toolRequest.input as ContextualAssistantOutput;
   }
 );
