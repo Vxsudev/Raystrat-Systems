@@ -23,7 +23,7 @@ function SubmitButton() {
       {pending ? (
         <Loader2 className="animate-spin" />
       ) : (
-        <Send className="h-5 w-5" />
+        <Send className="h-4 w-4" />
       )}
       <span className="sr-only">Send message</span>
     </Button>
@@ -117,7 +117,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
-      { actor:ai', text: '' }, 
+      { actor: 'ai', text: '' }, 
     ]);
     
     setIsPending(true);
@@ -182,10 +182,8 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
               required
               disabled={isPending}
             />
-            <div className="absolute right-1 top-1/2 -translate-y-1/2">
-              <SubmitButton />
-            </div>
           </div>
+           <SubmitButton />
         </form>
     </div>
   );
