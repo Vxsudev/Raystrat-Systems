@@ -2,7 +2,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
@@ -73,13 +73,13 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
           </div>
           {turn.actor === 'ai' && turn.data?.suggestedService && turn.data.suggestedService.slug && (
              <div className="ml-12 mt-2 space-y-2">
-                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref onClick={onNavigate}>
-                    <Button asChild variant="outline" size="sm">
-                        <a>
+                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref legacyBehavior>
+                    <a onClick={onNavigate}>
+                        <Button variant="outline" size="sm">
                             Learn More: {turn.data.suggestedService.title}
                             <ArrowRight className="ml-2 h-4 w-4" />
-                        </a>
-                    </Button>
+                        </Button>
+                    </a>
                 </Link>
             </div>
           )}
@@ -91,7 +91,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 
 
 export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess, onNavigate }: AiSuggestorProps) {
-  const [state, setState] = useState<SuggestionState | null>(null);
+  const [state, formAction] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, errors: {}, data: null });
   const [isPending, setIsPending] = useState(false);
   const { user } = useAuth();
   
@@ -144,7 +144,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     
     setIsPending(true);
     const result = await getContextualSuggestion(formData);
-    setState(result);
+    // The useActionState hook will handle setting the state
     setIsPending(false);
 
     if (formRef.current) formRef.current.reset();
@@ -192,7 +192,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
 
        <form 
         ref={formRef} 
-        action={handleFormSubmit} 
+        action={formAction} 
         className="flex gap-2 items-center mt-auto"
         onSubmit={(e) => { e.preventDefault(); handleFormSubmit(new FormData(e.currentTarget)); }}
       >
@@ -212,4 +212,3 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
     </div>
   );
 }
-
