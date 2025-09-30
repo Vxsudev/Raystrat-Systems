@@ -2,7 +2,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useEffect, useRef, useState, useActionState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
@@ -91,7 +91,6 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 
 
 export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess, onNavigate }: AiSuggestorProps) {
-  const [state, formAction] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, errors: {}, data: null });
   const [isPending, setIsPending] = useState(false);
   const { user } = useAuth();
   
@@ -99,52 +98,43 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
 
-  useEffect(() => {
-    if (state?.message === 'Success' && state.data) {
-       onSuggestionSuccess?.(state);
-       const aiResponseData = state.data as ContextualAssistantOutput;
-       const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-       const lastTurn = conversation[conversation.length - 1];
-       if (lastTurn && lastTurn.actor === 'ai') {
-        // Update the last AI turn's text and data
-        setConversation(prev => {
-          const newConversation = [...prev];
-          newConversation[newConversation.length - 1] = { ...lastTurn, text: aiResponseText, data: aiResponseData };
-          return newConversation;
-        });
-      } else {
-         setConversation(prev => [
-          ...prev,
-          { actor: 'ai', text: aiResponseText, data: aiResponseData },
-        ]);
-      }
-    } else if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
-        onSuggestionSuccess?.(state);
-        const lastTurn = conversation[conversation.length - 1];
-        if (lastTurn && lastTurn.actor === 'ai') {
-            setConversation(prev => {
-              const newConversation = [...prev];
-              newConversation[newConversation.length - 1] = { ...lastTurn, text: state.message! };
-              return newConversation;
-            });
-        }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
-
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
 
+    // Add user message and AI loading placeholder to conversation
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
-      { actor: 'ai', text: '' }, 
+      { actor: 'ai', text: '' }, // Placeholder for AI response
     ]);
     
     setIsPending(true);
+
     const result = await getContextualSuggestion(formData);
-    // The useActionState hook will handle setting the state
+    
+    if (result?.message === 'Success' && result.data) {
+        onSuggestionSuccess?.(result);
+        const aiResponseData = result.data as ContextualAssistantOutput;
+        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
+        
+        // Update the last AI turn (the placeholder) with the actual response
+        setConversation(prev => {
+            const newConversation = [...prev];
+            newConversation[newConversation.length - 1] = { actor: 'ai', text: aiResponseText, data: aiResponseData };
+            return newConversation;
+        });
+
+    } else if (result?.message) {
+        onSuggestionSuccess?.(result);
+        // Update the last AI turn with the error message
+        setConversation(prev => {
+            const newConversation = [...prev];
+            newConversation[newConversation.length - 1] = { actor: 'ai', text: result.message! };
+            return newConversation;
+        });
+    }
+
     setIsPending(false);
 
     if (formRef.current) formRef.current.reset();
@@ -192,7 +182,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
 
        <form 
         ref={formRef} 
-        action={formAction} 
         className="flex gap-2 items-center mt-auto"
         onSubmit={(e) => { e.preventDefault(); handleFormSubmit(new FormData(e.currentTarget)); }}
       >
@@ -207,7 +196,19 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
               disabled={isPending}
             />
           </div>
-           <SubmitButton />
+           <Button
+              type="submit"
+              disabled={isPending}
+              size="icon"
+              className="shrink-0 rounded-full h-9 w-9 bg-primary"
+            >
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+              <span className="sr-only">Send message</span>
+            </Button>
         </form>
     </div>
   );
