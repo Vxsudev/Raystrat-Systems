@@ -41,12 +41,12 @@ function FollowUpSubmitButton() {
       type="submit"
       disabled={pending}
       size="icon"
-      className="shrink-0 rounded-full"
+      className="shrink-0 rounded-full h-9 w-9"
     >
       {pending ? (
         <Loader2 className="animate-spin" />
       ) : (
-        <Send />
+        <Send className="h-5 w-5" />
       )}
       <span className="sr-only">Send message</span>
     </Button>
@@ -153,7 +153,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
   };
 
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && !isPending) {
       event.preventDefault();
       const activeForm = formRef.current?.contains(document.activeElement) 
@@ -172,13 +172,13 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
       {conversation.length > 0 ? (
           <>
             <ConversationHistory conversation={conversation} isPending={isPending} />
-            <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2 border-t">
+            <form ref={followUpFormRef} action={handleFormSubmit} className="flex gap-2 items-center mt-auto pt-2">
               <input type="hidden" name="pageTitle" value={pageTitle} />
               <input type="hidden" name="pageContent" value={pageContent} />
                <Input
                   name="query"
                   placeholder="Ask a follow-up..."
-                  className="flex-1 rounded-full"
+                  className="flex-1 rounded-full border-border bg-transparent focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
                   required
                   disabled={isPending}
                   onKeyDown={handleKeyDown}
@@ -202,7 +202,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
               {isPending ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                <Send className="h-4 w-4" />
+                <Send className="h-5 w-5" />
               )}
           </Button>
           {state?.errors?.query && (
