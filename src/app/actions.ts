@@ -63,7 +63,7 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
     try {
         let result: ServiceSuggesterOutput | ContextualAssistantOutput;
         // If we have page context, use the contextual assistant. Otherwise, use the service suggester.
-        if (pageTitle && pageContent && pageTitle.trim() !== '') {
+        if (pageTitle && pageContent && pageTitle.trim() !== '' && pageContent.trim() !== '') {
             const input: ContextualAssistantInput = { query, pageTitle, pageContent };
             result = await getContextualAssistantResponse(input);
         } else {
@@ -671,5 +671,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
+    
 
     

@@ -50,7 +50,7 @@ USER'S PROBLEM:
 "{{{problemDescription}}}"`,
 });
 
-const serviceSuggesterFlow = ai.defineFlow(
+export const serviceSuggesterFlow = ai.defineFlow(
   {
     name: 'serviceSuggesterFlow',
     inputSchema: ServiceSuggesterInputSchema,
@@ -61,5 +61,7 @@ const serviceSuggesterFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
 
     
