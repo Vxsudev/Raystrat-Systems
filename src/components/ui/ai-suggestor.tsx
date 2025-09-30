@@ -3,7 +3,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,25 +12,6 @@ import { ContextualAssistantOutput, services } from '@/data/content';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      disabled={pending}
-      size="icon"
-      className="shrink-0 rounded-full h-9 w-9 bg-primary"
-    >
-      {pending ? (
-        <Loader2 className="animate-spin" />
-      ) : (
-        <Send className="w-5 h-5" />
-      )}
-      <span className="sr-only">Send message</span>
-    </Button>
-  );
-}
 
 interface AiSuggestorProps {
   pageTitle: string;
@@ -73,13 +53,11 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
           </div>
           {turn.actor === 'ai' && turn.data?.suggestedService && turn.data.suggestedService.slug && (
              <div className="ml-12 mt-2 space-y-2">
-                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref legacyBehavior>
-                    <a onClick={onNavigate}>
-                        <Button variant="outline" size="sm">
-                            Learn More: {turn.data.suggestedService.title}
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </a>
+                <Link href={`/services/${turn.data.suggestedService.slug}`} onClick={onNavigate}>
+                    <Button variant="outline" size="sm">
+                        Learn More: {turn.data.suggestedService.title}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                 </Link>
             </div>
           )}
@@ -130,7 +108,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
         // Update the last AI turn with the error message
         setConversation(prev => {
             const newConversation = [...prev];
-            newConversation[newConversation.length - 1] = { actor: 'ai', text: result.message! };
+            newConversation[newConversation.length - 1] = { actor: 'ai', text: result.errors?.general?.[0] || result.message! };
             return newConversation;
         });
     }
