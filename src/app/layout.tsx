@@ -9,6 +9,7 @@ import { AuthProvider } from '@/contexts/auth-context';
 import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 import { ThemeProvider } from '@/components/theme-provider';
 import { FloatingNoteTaker } from '@/components/ui/floating-note-taker';
+import { GenkitInitializer } from '@/components/genkit-initializer';
 
 const fontBody = Inter({
   subsets: ['latin'],
@@ -100,6 +101,7 @@ export default function RootLayout({
             disableTransitionOnChange
         >
           <AuthProvider>
+            <GenkitInitializer />
             {children}
             <Toaster />
             <FloatingAiSuggestor />
