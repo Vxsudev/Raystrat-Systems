@@ -1,5 +1,5 @@
-// src/ai/flows/contextual-assistant.ts
-import 'server-only';
+
+'use server';
 
 /**
  * @fileOverview A context-aware AI assistant that provides suggestions based on the user's current page.
@@ -75,3 +75,5 @@ export const contextualAssistantFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    

@@ -3,7 +3,6 @@
 
 import { 
   ServiceSuggesterInput,
-  ServiceSuggesterOutput,
   getServiceSuggestion
 } from '@/ai/flows/service-suggester';
 import {
@@ -22,6 +21,7 @@ import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 import { Sequence, SequenceStep, SequenceTemplate } from './dashboard/page';
+import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -79,7 +79,7 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
         console.error('AI Suggestion Error:', error);
         return {
             message: 'Error',
-            errors: { general: error.message || 'An error occurred on our end. Please try again.' },
+            errors: { general: [error.message] || ['An error occurred on our end. Please try again.'] },
             data: null,
         };
     }
@@ -671,3 +671,5 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
+    
