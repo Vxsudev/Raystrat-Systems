@@ -30,7 +30,6 @@ import { ArrowRight, NotebookText, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput, services } from '@/data/content';
 import { AiSuggestor } from './ai-suggestor';
-import { SidebarProvider } from './sidebar';
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -145,22 +144,19 @@ export function FloatingAiSuggestor() {
     return (
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
-             <SidebarProvider>
-                <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                    <SheetContent className="sm:max-w-lg w-full flex flex-col p-0">
-                    <SheetTitle className="sr-only">Agent Assist</SheetTitle>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                <SheetContent className="sm:max-w-lg w-full flex flex-col p-0">
                     <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
-                        <h2 className="text-lg font-semibold">Agent Assist</h2>
+                        <SheetTitle className="text-lg font-semibold">Agent Assist</SheetTitle>
                         <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-7 w-7">
                             <X className="h-4 w-4" />
                         </Button>
                     </SheetHeader>
-                        <div className="flex-1 overflow-y-auto p-4">
-                            {aiSuggestorComponent}
-                        </div>
-                    </SheetContent>
-                </Sheet>
-            </SidebarProvider>
+                    <div className="flex-1 overflow-y-auto p-4">
+                        {aiSuggestorComponent}
+                    </div>
+                </SheetContent>
+            </Sheet>
         </>
     );
   }
