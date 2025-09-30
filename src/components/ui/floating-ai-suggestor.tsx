@@ -3,8 +3,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect, useActionState, useRef } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -101,7 +100,7 @@ export function FloatingAiSuggestor() {
     }
   }, [isOpen, pathname, isServicePage, isBytesPage]);
 
-  const onSuggestionSuccess = (state: SuggestionState) => {
+  const onSuggestionSuccess = async (state: SuggestionState) => {
     if (state.message === 'Success' && state.data) {
         // Check if the data is a service suggestion
         if ('suggestedServiceSlug' in state.data) {
@@ -135,7 +134,7 @@ export function FloatingAiSuggestor() {
         <div className="flex justify-center">
             <span className="text-5xl" role="img" aria-label="AI Assistant">♞</span>
         </div>
-        <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
+        <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
         <DialogDescription className="text-lg text-center text-foreground/80">
             {isServicePage || isBytesPage
                 ? "I have on-page context. Ask me anything about the agent you are exploring."
