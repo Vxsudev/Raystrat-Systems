@@ -1,15 +1,13 @@
-
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
+import { ArrowRight, Loader2, Send, Sparkles, User, BrainCircuit } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ContextualAssistantOutput, services } from '@/data/content';
-import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 
@@ -30,11 +28,11 @@ type ConversationTurn = {
 function ConversationHistory({ conversation, isPending, onNavigate }: { conversation: ConversationTurn[], isPending: boolean, onNavigate?: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useState(() => {
     if (scrollRef.current) {
       scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [conversation.length, conversation[conversation.length - 1]?.text]); // Also scroll when text streams in
+  });
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 -mr-4 pr-4 space-y-6">
@@ -42,7 +40,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
         <div key={index} className="flex flex-col items-start gap-3">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-muted border">
-                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">♞</span>}
+                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <BrainCircuit className="w-5 h-5 text-primary" />}
             </div>
             <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
                 {(turn.actor === 'ai' && !turn.text && isPending) 
