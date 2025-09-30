@@ -4,9 +4,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
@@ -41,7 +40,7 @@ function FollowUpSubmitButton() {
       type="submit"
       disabled={pending}
       size="icon"
-      className="shrink-0"
+      className="shrink-0 rounded-full"
     >
       {pending ? (
         <Loader2 className="animate-spin" />
@@ -69,10 +68,9 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
 
   useEffect(() => {
     if (scrollRef.current) {
-      // Scroll the last element into view, aligning it to the start (top)
       scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [conversation.length]); // Rerun when a new message is added
+  }, [conversation.length]);
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 pr-4 -mr-4 space-y-6">
@@ -109,11 +107,9 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
        const aiResponse = 'response' in state.data && state.data.response ? state.data.response : 'Sorry, I could not generate a response.';
        const lastTurn = conversation[conversation.length - 1];
        if (lastTurn && lastTurn.actor === 'ai') {
-        // Update the loading state with the actual response
         lastTurn.text = aiResponse;
         setConversation([...conversation]);
       } else {
-         // This case might happen on first load, though unlikely with current flow
          setConversation(prev => [
           ...prev,
           { actor: 'ai', text: aiResponse },
@@ -121,24 +117,22 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
       }
     } else if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
         onSuggestionSuccess?.(state);
-        // Handle errors from the action
         const lastTurn = conversation[conversation.length - 1];
         if (lastTurn && lastTurn.actor === 'ai') {
             lastTurn.text = state.message;
             setConversation([...conversation]);
         }
     }
-  }, [state, onSuggestionSuccess]);
+  }, [state, onSuggestionSuccess, conversation]);
 
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
 
-    // Add user message, and a placeholder for the AI response
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
-      { actor: 'ai', text: '' }, // Placeholder for loading state
+      { actor: 'ai', text: '' }, 
     ]);
     
     setIsPending(true);
@@ -146,7 +140,6 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
     setState(result);
     setIsPending(false);
 
-    // Reset the input fields in both forms
     if (formRef.current) formRef.current.reset();
     if (followUpFormRef.current) followUpFormRef.current.reset();
   };
@@ -177,7 +170,7 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
                <Input
                   name="query"
                   placeholder="Ask a follow-up..."
-                  className="flex-1"
+                  className="flex-1 rounded-full"
                   required
                   disabled={isPending}
                   onKeyDown={handleKeyDown}
@@ -189,22 +182,28 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
         <form ref={formRef} action={handleFormSubmit} className="space-y-4 mt-auto">
           <input type="hidden" name="pageTitle" value={pageTitle} />
           <input type="hidden" name="pageContent" value={pageContent} />
-          <Textarea
-            name="query"
-            placeholder="Ask a question or describe a problem... e.g., 'How can I automate my invoice chasing?'"
-            className="min-h-[120px] text-base bg-background/50 border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/30"
-            required
-            disabled={isPending}
-            onKeyDown={handleKeyDown}
-          />
+          <div className="relative">
+             <Input
+                name="query"
+                placeholder="Ask a question or describe a problem..."
+                className="w-full rounded-full pr-12"
+                required
+                disabled={isPending}
+                onKeyDown={handleKeyDown}
+              />
+              <Button type="submit" size="icon" className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full" disabled={isPending}>
+                 {isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+              </Button>
+          </div>
           {state?.errors?.query && (
             <p className="text-sm text-destructive">
               {state.errors.query[0]}
             </p>
           )}
-          <div className="flex justify-center pt-2">
-            <SubmitButton />
-          </div>
         </form>
       )}
     </div>
