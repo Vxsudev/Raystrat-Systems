@@ -138,7 +138,7 @@ export function FloatingAiSuggestor() {
         <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
         <DialogDescription className="text-lg text-center text-foreground/80">
             {isServicePage || isBytesPage
-                ? "Ask a question about this page, or describe a problem."
+                ? "I have on-page context. Ask me anything about the agent you are exploring.."
                 : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
             }
         </DialogDescription>
