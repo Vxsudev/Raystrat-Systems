@@ -149,6 +149,15 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
   },
 ];
 
+export type ContextualAssistantOutput = {
+  response: string;
+  suggestedService?: {
+    slug: string;
+    title: string;
+  };
+  showBookDemo?: boolean;
+};
+
 export const results = {
   stats: [
     {
@@ -358,6 +367,7 @@ export const industries = [
     
 
     
+
 
 
 

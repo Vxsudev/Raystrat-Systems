@@ -8,9 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { ServiceSuggesterOutput, services } from '@/data/content';
+import { ContextualAssistantOutput, services } from '@/data/content';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
+import { CalendlyButton } from './calendly-button';
+import Link from 'next/link';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -41,6 +43,7 @@ interface AiSuggestorProps {
 type ConversationTurn = {
     actor: 'user' | 'ai';
     text: string;
+    data?: ContextualAssistantOutput;
 }
 
 function ConversationHistory({ conversation, isPending }: { conversation: ConversationTurn[], isPending: boolean }) {
@@ -55,16 +58,35 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 -mr-4 pr-4 space-y-6">
       {conversation.map((turn, index) => (
-        <div key={index} className="flex items-start gap-3">
-          <div className="p-2 rounded-full bg-muted border">
-            {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">♞</span>}
+        <div key={index} className="flex flex-col items-start gap-3">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-muted border">
+                {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">♞</span>}
+            </div>
+            <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                {(turn.actor === 'ai' && !turn.text && isPending) 
+                ? <Loader2 className="animate-spin" />
+                : <ReactMarkdown>{turn.text}</ReactMarkdown>
+                }
+            </div>
           </div>
-          <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-            {(turn.actor === 'ai' && !turn.text && isPending) 
-              ? <Loader2 className="animate-spin" />
-              : <ReactMarkdown>{turn.text}</ReactMarkdown>
-            }
-          </div>
+          {turn.actor === 'ai' && turn.data && (
+            <div className="ml-12 mt-2 space-y-2">
+                {turn.data.suggestedService && (
+                    <Button asChild variant="outline" size="sm">
+                        <Link href={`/services/${turn.data.suggestedService.slug}`}>
+                            Learn More: {turn.data.suggestedService.title}
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </Button>
+                )}
+                {turn.data.showBookDemo && (
+                    <CalendlyButton size="sm">
+                        Book a Demo
+                    </CalendlyButton>
+                )}
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -80,23 +102,25 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   const formRef = useRef<HTMLFormElement>(null);
   
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
+  const [conversationCount, setConversationCount] = useState(0);
 
   useEffect(() => {
     if (state?.message === 'Success' && state.data) {
        onSuggestionSuccess?.(state);
-       const aiResponse = 'response' in state.data && state.data.response ? state.data.response : 'Sorry, I could not generate a response.';
+       const aiResponseData = state.data as ContextualAssistantOutput;
+       const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
        const lastTurn = conversation[conversation.length - 1];
        if (lastTurn && lastTurn.actor === 'ai') {
-        // Update the last AI turn's text
+        // Update the last AI turn's text and data
         setConversation(prev => {
           const newConversation = [...prev];
-          newConversation[newConversation.length - 1] = { ...lastTurn, text: aiResponse };
+          newConversation[newConversation.length - 1] = { ...lastTurn, text: aiResponseText, data: aiResponseData };
           return newConversation;
         });
       } else {
          setConversation(prev => [
           ...prev,
-          { actor: 'ai', text: aiResponse },
+          { actor: 'ai', text: aiResponseText, data: aiResponseData },
         ]);
       }
     } else if (state?.message && state.message !== 'Success' && state.message !== 'Invalid input.') {
@@ -115,6 +139,9 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   const handleFormSubmit = async (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query) return;
+
+    setConversationCount(prev => prev + 1);
+    formData.set('conversationCount', String(conversationCount + 1));
 
     setConversation(prev => [
       ...prev,

@@ -17,6 +17,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetClose
 } from '@/components/ui/sheet';
 import {
   Tooltip,
@@ -74,21 +75,21 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
 
 export function FloatingAiSuggestor() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
   
   const isServicePage = pathname.startsWith('/services/');
-  const isBytesPage = pathname.startsWith('/bytes/');
   const isHomePage = pathname === '/';
+  const isBytesPage = pathname.startsWith('/bytes/');
 
   const slug = isServicePage ? pathname.split('/').pop() : undefined;
   const currentService = services.find(s => s.slug === slug);
 
   useEffect(() => {
-    if (isOpen && isServicePage) {
+    if (isOpen && (isServicePage || isBytesPage)) {
       setPageTitle(document.title);
       // A simple way to get some text content from the page.
       // A more robust solution might use a dedicated library or more specific selectors.
@@ -98,12 +99,12 @@ export function FloatingAiSuggestor() {
         setPageTitle('');
         setPageContent('');
     }
-  }, [isOpen, pathname, isServicePage]);
+  }, [isOpen, pathname, isServicePage, isBytesPage]);
 
   const onSuggestionSuccess = async (state: SuggestionState) => {
     if (state.message === 'Success' && state.data) {
-        // Check if the data is a service suggestion
-        if ('suggestedServiceSlug' in state.data) {
+        // Check if the data is a service suggestion (from homepage)
+        if ('suggestedServiceSlug' in state.data && !('response' in state.data)) {
             const suggestion = state.data as ServiceSuggesterOutput;
             const query = (document.querySelector('input[name="query"]') as HTMLInputElement)?.value || '';
 
@@ -125,8 +126,13 @@ export function FloatingAiSuggestor() {
     }
   };
   
-  if (!isHomePage && !isServicePage) {
+  if (!isHomePage && !isServicePage && !isBytesPage) {
       return null;
+  }
+  
+  if (isBytesPage) {
+    // The note taker is handled by FloatingNoteTaker component, so we render nothing here for bytes pages.
+    return null;
   }
 
   const aiSuggestorComponent = (
@@ -145,11 +151,12 @@ export function FloatingAiSuggestor() {
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetContent className="sm:max-w-sm w-full flex flex-col p-0">
-                    <SheetHeader className="p-4 border-b">
+                   <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                         <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                            <span className="text-2xl" role="img" aria-label="AI Assistant">♞</span>
                            Agent Assist
                         </SheetTitle>
+                        <SheetClose />
                     </SheetHeader>
                     <div className="flex-1 overflow-y-auto p-4">
                         {aiSuggestorComponent}
