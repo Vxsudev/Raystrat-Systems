@@ -83,13 +83,12 @@ export function FloatingAiSuggestor() {
   
   const isServicePage = pathname.startsWith('/services/');
   const isHomePage = pathname === '/';
-  const isBytesPage = pathname.startsWith('/bytes/');
 
   const slug = isServicePage ? pathname.split('/').pop() : undefined;
   const currentService = services.find(s => s.slug === slug);
 
   useEffect(() => {
-    if (isOpen && (isServicePage || isBytesPage)) {
+    if (isOpen && isServicePage) {
       setPageTitle(document.title);
       // A simple way to get some text content from the page.
       // A more robust solution might use a dedicated library or more specific selectors.
@@ -99,7 +98,7 @@ export function FloatingAiSuggestor() {
         setPageTitle('');
         setPageContent('');
     }
-  }, [isOpen, pathname, isServicePage, isBytesPage]);
+  }, [isOpen, pathname, isServicePage]);
 
   const onSuggestionSuccess = async (state: SuggestionState) => {
     if (state.message === 'Success' && state.data) {
@@ -126,21 +125,17 @@ export function FloatingAiSuggestor() {
     }
   };
   
-  if (!isHomePage && !isServicePage && !isBytesPage) {
+  if (!isHomePage && !isServicePage) {
       return null;
   }
   
-  if (isBytesPage) {
-    // The note taker is handled by FloatingNoteTaker component, so we render nothing here for bytes pages.
-    return null;
-  }
-
   const aiSuggestorComponent = (
     <AiSuggestor 
         pageTitle={pageTitle} 
         pageContent={pageContent}
         service={currentService}
         onSuggestionSuccess={onSuggestionSuccess}
+        onNavigate={() => setIsOpen(false)}
     />
   );
   
@@ -150,7 +145,7 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="sm:max-w-sm w-full flex flex-col p-0">
+                <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
                    <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                         <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                            <span className="text-2xl" role="img" aria-label="AI Assistant">♞</span>

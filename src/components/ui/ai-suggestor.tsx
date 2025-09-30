@@ -37,6 +37,7 @@ interface AiSuggestorProps {
   pageContent: string;
   service?: typeof services[0];
   onSuggestionSuccess?: (state: SuggestionState) => void;
+  onNavigate?: () => void;
 }
 
 type ConversationTurn = {
@@ -45,7 +46,7 @@ type ConversationTurn = {
     data?: ContextualAssistantOutput;
 }
 
-function ConversationHistory({ conversation, isPending }: { conversation: ConversationTurn[], isPending: boolean }) {
+function ConversationHistory({ conversation, isPending, onNavigate }: { conversation: ConversationTurn[], isPending: boolean, onNavigate?: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,8 +71,8 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
             </div>
           </div>
           {turn.actor === 'ai' && turn.data?.suggestedService && turn.data.suggestedService.slug && (
-            <div className="ml-12 mt-2 space-y-2">
-                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref>
+             <div className="ml-12 mt-2 space-y-2">
+                <Link href={`/services/${turn.data.suggestedService.slug}`} passHref onClick={onNavigate}>
                     <Button asChild variant="outline" size="sm">
                         <a>
                             Learn More: {turn.data.suggestedService.title}
@@ -88,7 +89,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess }: AiSuggestorProps) {
+export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess, onNavigate }: AiSuggestorProps) {
   const [state, setState] = useState<SuggestionState | null>(null);
   const [isPending, setIsPending] = useState(false);
   const { user } = useAuth();
@@ -159,7 +160,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
   return (
     <div className="w-full h-full flex flex-col">
       {conversation.length > 0 ? (
-          <ConversationHistory conversation={conversation} isPending={isPending} />
+          <ConversationHistory conversation={conversation} isPending={isPending} onNavigate={onNavigate} />
       ) : (
         <div className="flex-1 mb-4 flex flex-col justify-center">
             <h2 className="text-4xl font-bold">
