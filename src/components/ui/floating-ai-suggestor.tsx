@@ -1,4 +1,3 @@
-
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
@@ -27,7 +26,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Brain } from 'lucide-react';
+import { ArrowRight, Loader2, Brain, Send, User } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
@@ -158,12 +157,20 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetContent className="sm:max-w-lg w-full flex flex-col">
-                <SheetHeader>
-                   {commonHeader}
-                </SheetHeader>
-                <div className="flex-1 overflow-y-auto">
-                    {aiSuggestorComponent}
+              <SheetContent className="sm:max-w-lg w-full flex flex-col p-0 bg-transparent border-0">
+                {/* External Header that appears part of the main UI */}
+                <div className="absolute top-0 left-0 right-0 h-16 flex items-center justify-start pr-[calc(100vw-100%)]">
+                    <div className="absolute left-0 top-0 w-full h-full bg-background/80 backdrop-blur-sm border-b" />
+                    <div className="relative z-10 text-xl font-bold font-headline pl-4 text-left -translate-x-[calc(100%+2rem)]">
+                        Agent Assist
+                    </div>
+                </div>
+
+                {/* Chat content area, starting below the header */}
+                <div className="flex-1 overflow-y-auto pt-16 bg-background">
+                   <div className="p-6 h-full flex flex-col">
+                     {aiSuggestorComponent}
+                   </div>
                 </div>
               </SheetContent>
             </Sheet>
