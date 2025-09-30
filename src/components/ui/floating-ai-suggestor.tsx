@@ -84,11 +84,11 @@ export function FloatingAiSuggestor() {
   const isBytesPage = pathname.startsWith('/bytes/');
   const isHomePage = pathname === '/';
 
-  const slug = isServicePage || isBytesPage ? pathname.split('/').pop() : undefined;
+  const slug = isServicePage ? pathname.split('/').pop() : undefined;
   const currentService = services.find(s => s.slug === slug);
 
   useEffect(() => {
-    if (isOpen && (isServicePage || isBytesPage)) {
+    if (isOpen && isServicePage) {
       setPageTitle(document.title);
       // A simple way to get some text content from the page.
       // A more robust solution might use a dedicated library or more specific selectors.
@@ -98,7 +98,7 @@ export function FloatingAiSuggestor() {
         setPageTitle('');
         setPageContent('');
     }
-  }, [isOpen, pathname, isServicePage, isBytesPage]);
+  }, [isOpen, pathname, isServicePage]);
 
   const onSuggestionSuccess = async (state: SuggestionState) => {
     if (state.message === 'Success' && state.data) {
@@ -125,7 +125,7 @@ export function FloatingAiSuggestor() {
     }
   };
   
-  if (!isHomePage && !isServicePage && !isBytesPage) {
+  if (!isHomePage && !isServicePage) {
       return null;
   }
 
@@ -139,14 +139,17 @@ export function FloatingAiSuggestor() {
   );
   
   // Render a Sheet (sidebar) for service pages, and a Dialog for all other applicable pages.
-  if (isServicePage || isBytesPage) {
+  if (isServicePage) {
     return (
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetContent className="sm:max-w-sm w-full flex flex-col p-0">
                     <SheetHeader className="p-4 border-b">
-                        <SheetTitle className="text-lg font-semibold">Agent Assist</SheetTitle>
+                        <SheetTitle className="text-lg font-semibold flex items-center gap-2">
+                           <span className="text-2xl" role="img" aria-label="AI Assistant">♞</span>
+                           Agent Assist
+                        </SheetTitle>
                     </SheetHeader>
                     <div className="flex-1 overflow-y-auto p-4">
                         {aiSuggestorComponent}
@@ -167,7 +170,7 @@ export function FloatingAiSuggestor() {
           </div>
           <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
           <DialogDescription className="text-lg text-center text-foreground/80">
-            {isServicePage || isBytesPage
+            {isServicePage
                 ? "I have on-page context. Ask me anything about the agent you are exploring."
                 : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
             }
