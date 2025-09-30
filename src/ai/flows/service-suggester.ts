@@ -38,6 +38,7 @@ const prompt = ai.definePrompt({
   name: 'serviceSuggesterPrompt',
   input: {schema: ServiceSuggesterInputSchema},
   output: {schema: ServiceSuggesterOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are an expert assistant for Raystrat Systems. Your goal is to analyze a user's problem and recommend the single most impactful service to solve it.
 
 Here are the available services:

@@ -37,7 +37,7 @@ const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
   output: {schema: NotesAnalyzerOutputSchema},
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are an expert AI consultant for Raystrat Systems. Your goal is to analyze a user's notes, identify their core problems, and guide them towards a solution.
 
 Your response should be a single, helpful, and consultative paragraph that does the following:

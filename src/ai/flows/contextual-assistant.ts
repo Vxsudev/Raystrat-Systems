@@ -43,7 +43,7 @@ const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
   input: {schema: ContextualAssistantInputSchema},
   output: {schema: ContextualAssistantOutputSchema},
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering questions, providing ideas, and offering business suggestions.
 
 You MUST use the provided page context to tailor your response. The context gives you clues about what the user is interested in. Your answer should be directly related to the user's query and the page they are viewing.
