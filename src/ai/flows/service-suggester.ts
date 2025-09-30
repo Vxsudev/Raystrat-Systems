@@ -38,7 +38,7 @@ const prompt = ai.definePrompt({
   name: 'serviceSuggesterPrompt',
   input: {schema: ServiceSuggesterInputSchema},
   output: {schema: ServiceSuggesterOutputSchema},
-  model: 'googleai/gemini-pro',
+  model: 'googleai/gemini-1.5-flash-latest',
   prompt: `You are an expert consultant for Raystrat Systems. Your goal is to analyze a user's problem and recommend the single most impactful service to solve it.
 
 Here are the available services:
@@ -65,3 +65,4 @@ export const serviceSuggesterFlow = ai.defineFlow(
     
 
     
+
