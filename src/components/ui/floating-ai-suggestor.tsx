@@ -15,6 +15,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -82,7 +89,7 @@ export function FloatingAiSuggestor() {
   const isHomePage = pathname === '/';
 
   useEffect(() => {
-    if (isServicePage || isBytesPage) {
+    if (isOpen && (isServicePage || isBytesPage)) {
       setPageTitle(document.title);
       // A simple way to get some text content from the page.
       // A more robust solution might use a dedicated library or more specific selectors.
@@ -92,7 +99,7 @@ export function FloatingAiSuggestor() {
         setPageTitle('');
         setPageContent('');
     }
-  }, [pathname, isServicePage, isBytesPage]);
+  }, [isOpen, pathname, isServicePage, isBytesPage]);
 
   const onSuggestionSuccess = (state: SuggestionState) => {
     if (state.message === 'Success' && state.data) {
@@ -110,7 +117,7 @@ export function FloatingAiSuggestor() {
             setIsOpen(false);
         }
     } else if (state.message === 'Error') {
-        const errorMessage = state.errors?.general || 'An unknown error occurred.';
+        const errorMessage = state.errors?.general?.join(', ') || 'An unknown error occurred.';
         toast({
             title: 'Error',
             description: errorMessage,
@@ -123,28 +130,57 @@ export function FloatingAiSuggestor() {
       return null;
   }
 
+  const commonHeader = (
+      <>
+        <div className="flex justify-center">
+            <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
+        </div>
+        <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
+        <DialogDescription className="text-lg text-center text-foreground/80">
+            {isServicePage || isBytesPage
+                ? "Ask a question about this page, or describe a problem."
+                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
+            }
+        </DialogDescription>
+      </>
+  );
+
+  const aiSuggestorComponent = (
+    <AiSuggestor 
+        pageTitle={pageTitle} 
+        pageContent={pageContent} 
+        onSuggestionSuccess={onSuggestionSuccess}
+    />
+  );
+  
+  // Render a Sheet (sidebar) for service pages, and a Dialog for all other applicable pages.
+  if (isServicePage) {
+    return (
+        <>
+            <FloatingTrigger onClick={() => setIsOpen(true)} />
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetContent className="sm:max-w-lg w-full flex flex-col">
+                <SheetHeader>
+                   {commonHeader}
+                </SheetHeader>
+                <div className="flex-1 overflow-y-auto">
+                    {aiSuggestorComponent}
+                </div>
+              </SheetContent>
+            </Sheet>
+        </>
+    );
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <FloatingTrigger onClick={() => setIsOpen(true)} />
       <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
         <DialogHeader>
-           <div className="flex justify-center">
-            <span className="text-5xl" role="img" aria-label="Brain">🧠</span>
-          </div>
-          <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">AI Assistant</DialogTitle>
-          <DialogDescription className="text-lg text-center text-foreground/80">
-            {isServicePage || isBytesPage
-                ? "Ask a question about this page, or describe a problem."
-                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
-            }
-          </DialogDescription>
+           {commonHeader}
         </DialogHeader>
         <div className="flex-1 overflow-y-auto">
-            <AiSuggestor 
-                pageTitle={pageTitle} 
-                pageContent={pageContent} 
-                onSuggestionSuccess={onSuggestionSuccess}
-            />
+            {aiSuggestorComponent}
         </div>
       </DialogContent>
     </Dialog>
