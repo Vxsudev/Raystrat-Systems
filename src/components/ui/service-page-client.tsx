@@ -12,6 +12,8 @@ import { FavoriteAgentButton } from '@/components/ui/favorite-agent-button';
 import { NotesTaker } from '@/components/ui/notes-taker';
 import { Separator } from '@/components/ui/separator';
 import type { LucideIcon } from 'lucide-react';
+import { Cpu, Banknote, Workflow, Database, MessageSquareShare, ShieldQuestion, Search } from 'lucide-react';
+
 
 interface Service {
   slug: string;
@@ -29,6 +31,8 @@ interface ServicePageClientProps {
 }
 
 export function ServicePageClient({ service, nextService }: ServicePageClientProps) {
+  const Icon = service.icon;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -40,7 +44,7 @@ export function ServicePageClient({ service, nextService }: ServicePageClientPro
                 <header className="mb-8">
                    <div className="flex items-center gap-4 mb-4">
                      <div className="p-3 rounded-md bg-primary/10">
-                        <service.icon className="w-8 h-8 text-primary" />
+                        <Icon className="w-8 h-8 text-primary" />
                      </div>
                      <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl font-headline">
                         {service.title}
