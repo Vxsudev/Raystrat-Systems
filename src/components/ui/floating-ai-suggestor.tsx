@@ -1,10 +1,9 @@
-
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { SuggestionState } from '@/app/actions';
+import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -26,7 +25,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, NotebookText, X } from 'lucide-react';
+import { ArrowRight, NotebookText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput, services } from '@/data/content';
 import { AiSuggestor } from './ai-suggestor';
@@ -145,7 +144,7 @@ export function FloatingAiSuggestor() {
         <>
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="sm:max-w-md w-full flex flex-col p-0">
+                <SheetContent className="sm:max-w-sm w-full flex flex-col p-0">
                     <SheetHeader className="p-4 border-b">
                         <SheetTitle className="text-lg font-semibold">Agent Assist</SheetTitle>
                     </SheetHeader>
