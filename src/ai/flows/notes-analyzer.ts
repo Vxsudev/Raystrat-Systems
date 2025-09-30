@@ -1,4 +1,5 @@
-import 'server-only';
+
+'use server';
 /**
  * @fileOverview An AI flow that analyzes user notes and provides a tailored suggestion.
  *
@@ -36,7 +37,7 @@ const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
   output: {schema: NotesAnalyzerOutputSchema},
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-pro',
   prompt: `You are an expert AI consultant for Raystrat Systems, skilled in using Neuro-linguistic Programming (NLP) to understand and guide potential clients. Your goal is to analyze a user's notes, identify their core problems AND their underlying objections or hesitations, and then reframe them in a way that builds confidence and guides them towards a solution.
 
 Your response should be a single, helpful, and consultative paragraph that does the following:
@@ -56,7 +57,7 @@ Analyze the user's notes below. Adopt the NLP consultant persona and generate th
 "{{{notes}}}"`,
 });
 
-export const notesAnalyzerFlow = ai.defineFlow(
+const notesAnalyzerFlow = ai.defineFlow(
   {
     name: 'notesAnalyzerFlow',
     inputSchema: NotesAnalyzerInputSchema,
