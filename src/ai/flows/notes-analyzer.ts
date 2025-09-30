@@ -56,7 +56,7 @@ Analyze the user's notes below. Adopt the NLP consultant persona and generate th
 "{{{notes}}}"`,
 });
 
-const notesAnalyzerFlow = ai.defineFlow(
+export const notesAnalyzerFlow = ai.defineFlow(
   {
     name: 'notesAnalyzerFlow',
     inputSchema: NotesAnalyzerInputSchema,

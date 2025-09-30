@@ -66,7 +66,7 @@ Page Content Summary:
 Based on the user's query and the page context, provide a helpful and relevant response. Be concise, actionable, and encouraging. Frame your answer as a helpful assistant.`,
 });
 
-const contextualAssistantFlow = ai.defineFlow(
+export const contextualAssistantFlow = ai.defineFlow(
   {
     name: 'contextualAssistantFlow',
     inputSchema: ContextualAssistantInputSchema,
