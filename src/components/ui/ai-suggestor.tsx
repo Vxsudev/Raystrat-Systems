@@ -6,10 +6,11 @@ import { useFormStatus } from 'react-dom';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Send, User } from 'lucide-react';
+import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ServiceSuggesterOutput, services } from '@/data/content';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/auth-context';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -23,7 +24,7 @@ function SubmitButton() {
       {pending ? (
         <Loader2 className="animate-spin" />
       ) : (
-        <Send className="h-4 w-4" />
+        <Send className="w-5 h-5" />
       )}
       <span className="sr-only">Send message</span>
     </Button>
@@ -74,6 +75,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
 export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSuccess }: AiSuggestorProps) {
   const [state, setState] = useState<SuggestionState | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const { user } = useAuth();
   
   const formRef = useRef<HTMLFormElement>(null);
   
@@ -141,28 +143,30 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
       {conversation.length > 0 ? (
           <ConversationHistory conversation={conversation} isPending={isPending} />
       ) : (
-        <div className="flex-1 mb-4 space-y-6">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-full bg-muted border">
-                <span className="text-xl" role="img" aria-label="Brain">♞</span>
-              </div>
-              <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                <ReactMarkdown>{`Hello! I'm the assistant for the ${service ? `**${service.title}**` : "Raystrat"}. How can I help?`}</ReactMarkdown>
-              </div>
-            </div>
-            {service?.presetQuestions && service.presetQuestions.length > 0 && (
-                <div className="space-y-2">
-                    {service.presetQuestions.map((q, i) => (
-                        <button
-                            key={i}
-                            className="w-full text-left p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                            onClick={() => handlePresetQuestionClick(q)}
-                        >
-                            {q}
-                        </button>
-                    ))}
+        <div className="flex-1 mb-4 flex flex-col justify-center">
+            <h2 className="text-4xl font-bold">
+                <span className="text-primary">Hello, {user?.displayName || 'there'}</span>
+                <br />
+                <span className="text-muted-foreground">How can I help you?</span>
+            </h2>
+            
+            <div className="mt-8">
+                <p className="text-sm text-muted-foreground mb-4">Get started with a prompt</p>
+                <div className="space-y-3">
+                    {service?.presetQuestions && service.presetQuestions.length > 0 && (
+                        service.presetQuestions.map((q, i) => (
+                            <button
+                                key={i}
+                                className="w-full text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3"
+                                onClick={() => handlePresetQuestionClick(q)}
+                            >
+                                <Sparkles className="h-5 w-5 text-primary/70 shrink-0" />
+                                <span>{q}</span>
+                            </button>
+                        ))
+                    )}
                 </div>
-            )}
+            </div>
         </div>
       )}
 

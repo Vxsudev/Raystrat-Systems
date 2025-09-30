@@ -22,9 +22,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     icon: Search,
     pageContent: `<h3>Overview</h3><p>Every pipeline starts with signals. Most businesses wait until demand reaches them—by then, it’s already diluted. The Leads Hunter Agent inverts that. It continuously scans the web for buying intent, filters out noise, and delivers only prospects who are ready to move.</p><p>This isn’t a “list.” It’s a living feed. Every record is fresh, scored, and actionable.</p><h3>The Problem It Solves</h3><ul><li>Static lists go stale.</li><li>Paid ads burn budget on weak clicks.</li><li>Generic scraping floods you with noise.</li><li>Without an agent to detect true intent, businesses either overspend or operate blind.</li></ul><h3>What It Delivers</h3><ul><li><strong>High-Intent Leads Only &rarr;</strong> Every record passes urgency, fit, and contactability checks.</li><li><strong>Freshness by Design &rarr;</strong> Signals are captured and delivered within hours, not weeks.</li><li><strong>Clarity at a Glance &rarr;</strong> Each lead is scored, summarized, and stripped of dead ends.</li></ul><h3>Why It Works</h3><p>Because demand is always visible if you know where to look. The Leads Hunter Agent continuously maps digital footprints—search queries, posts, mentions, requests—and applies strict qualification gates. What gets through isn’t “noise with potential.” It’s demand with direction.</p><h3>Outcome for the Client</h3><ul><li>A pipeline that never runs dry.</li><li>Reduced cost-per-lead, since only qualified intent is delivered.</li><li>Sales teams that focus only on prospects who are already leaning forward.</li></ul><h3>Field Principle</h3><blockquote>Leads aren’t found—they’re detected.<br>The businesses that win are the ones who see demand first.</blockquote>`,
     presetQuestions: [
-        "How does this agent differ from buying a static lead list?",
-        "What kind of 'buying signals' does it look for?",
-        "Can this agent integrate with my existing CRM?",
+        "How is this different than a static list?",
+        "What kind of 'buying signals' does it find?",
+        "Can this integrate with my CRM?",
     ]
   },
   {
@@ -39,9 +39,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     icon: MessageSquareShare,
     pageContent: `<h3>Overview</h3><p>Leads are worthless if they aren’t followed. Most businesses make first contact and then stop — schedules slip, salespeople get busy, and opportunities decay. The Follow-Up Agent removes that weakness.</p><p>It runs disciplined sequences across email, SMS, and WhatsApp — pursuing every prospect until they respond, book, or disqualify. No gaps, no excuses.</p><h3>The Problem It Solves</h3><ul><li>Sales teams forget or delay follow-up.</li><li>Manual pursuit is inconsistent and unscalable.</li><li>Prospects slip through cracks while competitors respond faster.</li><li>Without a systemized agent to relentlessly pursue, pipeline value leaks.</li></ul><h3>What It Delivers</h3><ul><li><strong>Zero Missed Leads &rarr;</strong> Every prospect is followed until outcome.</li><li><strong>Multi-Channel Coverage &rarr;</strong> Outreach runs where the customer actually is.</li><li><strong>Booked Meetings, Not Just Messages &rarr;</strong> Direct integration with calendars.</li></ul><h3>Why It Works</h3><p>Because speed and persistence win deals. The Follow-Up Agent eliminates human lapse, applies uniform pressure, and ensures the business is always first in line. Prospects don’t fall dormant; they either book or exit cleanly.</p><h3>Outcome for the Client</h3><ul><li>Higher conversion rate from the same leads.</li><li>Faster deal cycles due to immediate response.</li><li>A predictable flow of booked calls for the sales team.</li></ul><h3>Field Principle</h3><blockquote>The fortune is not just in the follow-up — it’s in the follow-through.<br>Businesses that close are those that never let go until resolution.</blockquote>`,
     presetQuestions: [
-        "Can I customize the follow-up messages and timing?",
-        "How does the agent know when to stop pursuing a lead?",
-        "What happens when a lead responds to a message?",
+        "Can I customize the follow-up messages?",
+        "How does the agent know when to stop?",
+        "What happens when a lead replies?",
     ]
   },
   {
@@ -56,9 +56,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     icon: ShieldQuestion,
     pageContent: `<h3>Overview</h3><p>Customers expect instant answers. Most businesses fail here — tickets pile up, response times stretch, and trust erodes. The Support Agent fixes this at the root.</p><p>It handles first-line support automatically: resolving common issues, routing exceptions, and logging every interaction against service levels. Always available. Always consistent.</p><h3>The Problem It Solves</h3><ul><li>Slow or inconsistent responses frustrate customers.</li><li>Human agents get overloaded with repetitive questions.</li><li>Escalations lack context, wasting more time.</li><li>Without a dependable agent, customer service becomes a cost center instead of a retention engine.</li></ul><h3>What It Delivers</h3><ul><li><strong>Instant Resolutions &rarr;</strong> FAQs and routine requests closed without delay.</li><li><strong>Smart Escalation &rarr;</strong> Complex cases routed with context, not noise.</li><li><strong>SLA Visibility &rarr;</strong> Every ticket logged and measured against service targets.</li></ul><h3>Why It Works</h3><p>Because 70% of customer queries are repetitive. The Support Agent clears that backlog automatically, giving human staff space to focus only where judgment is required. Customers get speed, and businesses keep control.</p><h3>Outcome for the Client</h3><ul><li>Higher retention through faster, more reliable support.</li><li>Reduced support costs by automating repetitive load.</li><li>Clear accountability with full SLA tracking.</li></ul><h3>Field Principle</h3><blockquote>Retention is defense. Defense wins wars.<br>The businesses that hold customers longest are the ones that answer fastest.</blockquote>`,
     presetQuestions: [
-        "How does the agent learn to answer our specific questions?",
-        "What's the process for escalating a ticket to a human?",
-        "Can this agent integrate with our helpdesk software?",
+        "How does the agent learn to answer questions?",
+        "How are tickets escalated to a human?",
+        "Does this work with our helpdesk software?",
     ]
   },
   {
@@ -73,9 +73,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     icon: Workflow,
     pageContent: `<h3>Overview</h3><p>Every business runs on hundreds of small, repetitive tasks — invoices, notifications, assignments, updates. Humans make mistakes. Processes stall. The Operations Agent turns all of that into a disciplined, automated flow.</p><p>It executes routine work with precision, consistency, and full traceability. No task forgotten. No step skipped.</p><h3>The Problem It Solves</h3><ul><li>Manual repetition drains hours and introduces errors.</li><li>Processes break when they depend on memory or busy staff.</li><li>Lack of visibility into task execution creates bottlenecks.</li><li>Without an agent running the backbone, operations collapse under their own weight.</li></ul><h3>What It Delivers</h3><ul><li><strong>Automated Workflows &rarr;</strong> From invoicing to task routing, everything runs on rails.</li><li><strong>Orchestration Across Teams &rarr;</strong> Handoffs happen without friction or loss.</li><li><strong>Audit Trails &rarr;</strong> Every action logged, every failure visible.</li></ul><h3>Why It Works</h3><p>Because consistency is the core of execution. The Operations Agent standardizes routine processes and eliminates human error from the chain. What used to be ad-hoc becomes a predictable system that never breaks stride.</p><h3>Outcome for the Client</h3><ul><li>More work done with fewer resources.</li><li>Reduced error rates across operations.</li><li>Freed human attention for high-value decisions, not repetitive steps.</li></ul><h3>Field Principle</h3><blockquote>Discipline scales. Memory does not.<br>The businesses that win are those that systemize execution before they scale.</blockquote>`,
     presetQuestions: [
-        "What kind of invoicing workflows can this automate?",
-        "Can this agent assign tasks in our project management tool?",
-        "How detailed is the audit trail for each task?",
+        "What invoicing workflows can this automate?",
+        "Can this assign tasks in our PM tool?",
+        "How detailed is the audit trail?",
     ]
   },
   {
@@ -90,9 +90,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
     icon: Database,
     pageContent: `<h3>Overview</h3><p>Leaders make decisions every day. Without data, those decisions are guesses. The Data Command Agent centralizes the numbers that matter — leads, sales, support, operations — into a single, reliable view.</p><p>It doesn’t just report the past. It shows trends, forecasts, and emerging risks so leaders act with confidence, not speculation.</p><h3>The Problem It Solves</h3><ul><li>Data is scattered across tools and departments.</li><li>Reports arrive late, incomplete, or manipulated.</li><li>Leaders operate without visibility into real performance.</li><li>Without an agent controlling the data flow, the business runs blind.</li></ul><h3>What It Delivers</h3><ul><li><strong>Unified Dashboards &rarr;</strong> All KPIs in one place, updated in real time.</li><li><strong>Predictive Insights &rarr;</strong> Trendlines that reveal what’s coming, not just what’s past.</li><li><strong>Instant Exports &rarr;</strong> Clean data available for reporting and compliance.</li></ul><h3>Why It Works</h3><p>Because decision-making depends on visibility. The Data Command Agent ensures every action is grounded in verified numbers, not gut feel. When the data is clean and current, leadership can steer with precision.</p><h3>Outcome for the Client</h3><ul><li>Faster, more accurate business decisions.</li><li>Reduced risk from acting on outdated or siloed data.</li><li>A culture that runs on truth, not guesswork.</li></ul><h3>Field Principle</h3><blockquote>Command requires visibility. Without it, you’re not leading — you’re gambling.</blockquote>`,
     presetQuestions: [
-        "What data sources can this agent connect to?",
-        "How customizable are the dashboards and reports?",
-        "What kind of predictive trendlines can it generate?",
+        "What data sources can this connect to?",
+        "How customizable are the dashboards?",
+        "What predictive trends can it generate?",
     ]
   },
   {
@@ -142,9 +142,9 @@ export const services: { slug: string; title: string; subhead: string; bullets: 
       <p>The Custom AI Agent eliminates the one constraint only your business faces. Co-engineered with you, optionally locked under SLA, and deployed as permanent infrastructure. This isn’t customization. It’s your moat.</p>
     `,
     presetQuestions: [
-        "What's the process for defining the scope of a custom agent?",
-        "Can a custom agent be built for a highly regulated industry?",
-        "Tell me more about the exclusive SLA lock-in.",
+        "What is the process for a custom agent?",
+        "Can a custom agent work in regulated industries?",
+        "Tell me more about the exclusive SLA.",
     ]
   },
 ];
@@ -358,6 +358,7 @@ export const industries = [
     
 
     
+
 
 
 
