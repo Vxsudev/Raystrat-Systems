@@ -3,7 +3,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { SuggestionState } from '@/app/actions';
+import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
@@ -54,7 +54,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
               onClick={onClick}
             >
               <Sparkles className="h-7 w-7" />
-              <span className="sr-only">Open AI Assistant</span>
+              <span className="sr-only">AI</span>
             </Button>
         </TooltipTrigger>
         <TooltipContent
@@ -101,12 +101,13 @@ export function FloatingAiSuggestor() {
     }
   }, [isOpen, pathname, isServicePage]);
 
-  const onSuggestionSuccess = async (state: SuggestionState) => {
+  const onSuggestionSuccess = async (formData: FormData) => {
+    const state = await getContextualSuggestion(formData);
     if (state.message === 'Success' && state.data) {
         // Check if the data is a service suggestion (from homepage)
         if ('suggestedServiceSlug' in state.data && !('response' in state.data)) {
             const suggestion = state.data as ServiceSuggesterOutput;
-            const query = (document.querySelector('input[name="query"]') as HTMLInputElement)?.value || '';
+            const query = formData.get('query') as string || '';
 
             toast({
                 title: 'Agent Found!',
@@ -124,6 +125,7 @@ export function FloatingAiSuggestor() {
             variant: 'destructive',
         });
     }
+    return state;
   };
   
   if (isBytesPage) {
