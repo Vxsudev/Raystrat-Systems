@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
+import { cn } from '@/lib/utils';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -77,7 +78,7 @@ function ConversationHistory({ conversation, isPending }: { conversation: Conver
       {conversation.map((turn, index) => (
         <div key={index} className="flex items-start gap-3">
           <div className="p-2 rounded-full bg-muted border">
-            {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">🧠</span>}
+            {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <span className="text-xl" role="img" aria-label="Brain">♞</span>}
           </div>
           <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
             {(turn.actor === 'ai' && !turn.text && isPending) 
@@ -182,16 +183,16 @@ export function AiSuggestor({ pageTitle, pageContent, onSuggestionSuccess }: AiS
         <form ref={formRef} action={handleFormSubmit} className="space-y-4 mt-auto">
           <input type="hidden" name="pageTitle" value={pageTitle} />
           <input type="hidden" name="pageContent" value={pageContent} />
-          <div className="relative">
+          <div className="relative rounded-full focus-within:ring-1 focus-within:ring-primary">
              <Input
                 name="query"
                 placeholder="Ask a question or describe a problem..."
-                className="w-full rounded-full pr-12"
+                className="w-full rounded-full pr-12 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 required
                 disabled={isPending}
                 onKeyDown={handleKeyDown}
               />
-              <Button type="submit" size="icon" className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full" disabled={isPending}>
+              <Button type="submit" size="icon" className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-primary" disabled={isPending}>
                  {isPending ? (
                     <Loader2 className="animate-spin" />
                   ) : (
