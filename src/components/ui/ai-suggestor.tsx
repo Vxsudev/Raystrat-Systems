@@ -154,15 +154,13 @@ export function AiSuggestor({ pageTitle, pageContent, service, onSuggestionSucce
             {service?.presetQuestions && service.presetQuestions.length > 0 && (
                 <div className="space-y-2">
                     {service.presetQuestions.map((q, i) => (
-                        <Button
+                        <button
                             key={i}
-                            variant="outline"
-                            size="sm"
-                            className="w-full h-auto text-left justify-start"
+                            className="w-full text-left p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                             onClick={() => handlePresetQuestionClick(q)}
                         >
                             {q}
-                        </Button>
+                        </button>
                     ))}
                 </div>
             )}
