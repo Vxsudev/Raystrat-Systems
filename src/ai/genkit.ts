@@ -9,6 +9,7 @@ console.warn('GEMINI_API_KEY not set');
 
 export const ai = genkit({
   plugins: [googleAI()],
+  model: 'googleai/gemini-2.0-flash',
 });
 
 export { z };
