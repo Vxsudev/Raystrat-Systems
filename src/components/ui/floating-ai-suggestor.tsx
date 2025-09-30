@@ -26,7 +26,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Loader2, Brain, Send, User } from 'lucide-react';
+import { ArrowRight, Loader2, Brain, Send, User, NotebookText } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
@@ -128,21 +128,6 @@ export function FloatingAiSuggestor() {
       return null;
   }
 
-  const commonHeader = (
-      <>
-        <div className="flex justify-center">
-            <span className="text-5xl" role="img" aria-label="AI Assistant">♞</span>
-        </div>
-        <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
-        <DialogDescription className="text-lg text-center text-foreground/80">
-            {isServicePage || isBytesPage
-                ? "I have on-page context. Ask me anything about the agent you are exploring."
-                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
-            }
-        </DialogDescription>
-      </>
-  );
-
   const aiSuggestorComponent = (
     <AiSuggestor 
         pageTitle={pageTitle} 
@@ -158,10 +143,11 @@ export function FloatingAiSuggestor() {
             <FloatingTrigger onClick={() => setIsOpen(true)} />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetContent className="sm:max-w-lg w-full flex flex-col p-0 bg-transparent border-0">
-                {/* External Header that appears part of the main UI */}
+                 {/* Add a visually hidden title for accessibility */}
+                <SheetTitle className="sr-only">Agent Assist</SheetTitle>
                 <div className="absolute top-0 left-0 right-0 h-16 flex items-center justify-start pr-[calc(100vw-100%)]">
                     <div className="absolute left-0 top-0 w-full h-full bg-background/80 backdrop-blur-sm border-b" />
-                    <div className="relative z-10 text-xl font-bold font-headline pl-4 text-left -translate-x-[calc(100%+2rem)]">
+                    <div className="relative z-10 text-xl font-bold font-headline pl-4">
                         Agent Assist
                     </div>
                 </div>
@@ -183,7 +169,16 @@ export function FloatingAiSuggestor() {
       <FloatingTrigger onClick={() => setIsOpen(true)} />
       <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
         <DialogHeader>
-           {commonHeader}
+          <div className="flex justify-center">
+              <span className="text-5xl" role="img" aria-label="AI Assistant">♞</span>
+          </div>
+          <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
+          <DialogDescription className="text-lg text-center text-foreground/80">
+            {isServicePage || isBytesPage
+                ? "I have on-page context. Ask me anything about the agent you are exploring."
+                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
+            }
+          </DialogDescription>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto">
             {aiSuggestorComponent}
