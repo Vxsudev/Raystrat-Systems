@@ -49,8 +49,10 @@ const prompt = ai.definePrompt({
   name: 'contextualAssistantPrompt',
   input: {schema: ContextualAssistantInputSchema},
   output: {schema: ContextualAssistantOutputSchema},
-  model: 'googleai/gemini-2.0-flash',
-  prompt: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering their questions and guiding them to the right solution with professional precision.
+  model: 'googleai/gemini-1.5-flash-latest',
+  prompt: `You are the Raystrat Systems AI Assistant. Your goal is to help users by answering questions, providing ideas, and offering business suggestions.
+
+You MUST use the provided page context to tailor your response. Your answer should be directly related to the user's query and the page they are viewing.
 
 **BEHAVIOR RULES (READ AND FOLLOW STRICTLY):**
 
@@ -72,7 +74,7 @@ Page Content Summary:
 **USER'S QUERY:**
 "{{{query}}}"
 
-Based on all the strict rules, context, and the user's query, provide a helpful and professional response and populate the output fields correctly. Your default behavior should be to answer the direct question and leave 'suggestedService' empty.`,
+Based on all the strict rules, context, and the user's query, provide a helpful and professional response and populate the output fields correctly. Be concise, actionable, and encouraging. Your default behavior should be to answer the direct question and leave 'suggestedService' empty.`,
 });
 
 const contextualAssistantFlow = ai.defineFlow(
