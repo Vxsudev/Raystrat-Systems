@@ -32,18 +32,28 @@ export async function getServiceSuggestion(
   return serviceSuggesterFlow(input);
 }
 
-const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
+const serviceList = services.map(s => `- ${s.title} (slug: ${s.slug}): ${s.subhead}`).join('\n');
 
 const prompt = ai.definePrompt({
   name: 'serviceSuggesterPrompt',
   input: {schema: ServiceSuggesterInputSchema},
   output: {schema: ServiceSuggesterOutputSchema},
-  prompt: `You are an expert consultant for Raystrat Systems. Your goal is to analyze a user's problem and recommend the single most impactful service to solve it.
+  prompt: `You are an expert consultant for Raystrat Systems. Your only job is to analyze a user's business problem and recommend the single most impactful service to solve it.
 
-Here are the available services:
+Here are the available services you can recommend from:
 ${serviceList}
 
-Analyze the user's problem description. Based on their problem, you must select the single best service from the list and provide a concise justification for your recommendation.`,
+**Instructions:**
+1.  Read the user's problem description very carefully.
+2.  Compare the problem against the service descriptions in the list provided.
+3.  Select the **one** service that is the most direct and effective solution for the user's stated problem.
+4.  You MUST provide the exact title and slug for the service you choose. Do not make up new services.
+5.  Write a concise, single-sentence justification that directly connects the user's problem to the benefit of the recommended service.
+
+**User's Problem:**
+"{{{problemDescription}}}"
+
+Now, analyze the problem and provide your recommendation based on the rules above.`,
 });
 
 export const serviceSuggesterFlow = ai.defineFlow(
