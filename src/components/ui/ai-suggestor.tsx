@@ -1,4 +1,3 @@
-
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
@@ -88,19 +87,17 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   
   useEffect(() => {
-    // This effect runs when a form submission starts
     if (isPending && currentQuery) {
       setConversation(prev => [
         ...prev,
         { actor: 'user', text: currentQuery },
-        { actor: 'ai', text: '' },
+        { actor: 'ai', text: '' }, // Add AI placeholder
       ]);
-      setCurrentQuery(''); // Reset current query after adding to conversation
+      setCurrentQuery('');
     }
   }, [isPending, currentQuery]);
 
   useEffect(() => {
-    // When the action is successful, update conversation and call the onSuccess callback
     if (state.message === 'Success' && state.data) {
         onSuccess(state.data);
         const aiResponseData = state.data as ContextualAssistantOutput;
@@ -109,9 +106,18 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
         setConversation(prev => {
             const newConversation = [...prev];
             const lastTurn = newConversation[newConversation.length - 1];
-            if(lastTurn.actor === 'ai') {
+            
+            // Check if last turn is an AI placeholder, then update it.
+            // Otherwise, add a new AI turn.
+            if (lastTurn && lastTurn.actor === 'ai' && lastTurn.text === '') {
               lastTurn.text = aiResponseText;
               lastTurn.data = aiResponseData;
+            } else {
+              newConversation.push({
+                actor: 'ai',
+                text: aiResponseText,
+                data: aiResponseData,
+              });
             }
             return newConversation;
         });
@@ -120,10 +126,9 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
         const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
         setConversation(prev => {
             const newConversation = [...prev];
-            // Find the last pending AI turn and update it with the error
-            const lastPendingAITurnIndex = newConversation.map(t => t.actor).lastIndexOf('ai');
-            if (lastPendingAITurnIndex !== -1 && newConversation[lastPendingAITurnIndex].text === '') {
-              newConversation[lastPendingAITurnIndex].text = `Error: ${errorMessage}`;
+            const lastTurn = newConversation[newConversation.length - 1];
+            if (lastTurn && lastTurn.actor === 'ai' && lastTurn.text === '') {
+              lastTurn.text = `Error: ${errorMessage}`;
             }
             return newConversation;
         });
@@ -151,21 +156,21 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
                             <form 
                                 key={i}
                                 action={(formData: FormData) => {
-                                    setCurrentQuery(q);
+                                    setCurrentQuery(formData.get('query') as string);
                                     formAction(formData);
                                 }}
                             >
                                 <input type="hidden" name="pageTitle" value={pageTitle} />
                                 <input type="hidden" name="pageContent" value={pageContent} />
                                 <input type="hidden" name="query" value={q} />
-                                <button
+                                <Button
                                     type="submit"
                                     disabled={isPending}
                                     className="w-full text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3 disabled:opacity-50"
                                 >
                                     <Sparkles className="h-5 w-5 text-primary/70 shrink-0" />
                                     <span>{q}</span>
-                                </button>
+                                </Button>
                             </form>
                         ))
                     )}
