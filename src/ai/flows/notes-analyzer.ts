@@ -37,7 +37,6 @@ const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
   output: {schema: NotesAnalyzerOutputSchema},
-  model: 'googleai/gemini-2.0-flash',
   prompt: `You are an expert AI consultant for Raystrat Systems, skilled in using Neuro-linguistic Programming (NLP) to understand and guide potential clients. Your goal is to analyze a user's notes, identify their core problems AND their underlying objections or hesitations, and then reframe them in a way that builds confidence and guides them towards a solution.
 
 Your response should be a single, helpful, and consultative paragraph that does the following:
@@ -68,4 +67,3 @@ const notesAnalyzerFlow = ai.defineFlow(
     return output!;
   }
 );
-
