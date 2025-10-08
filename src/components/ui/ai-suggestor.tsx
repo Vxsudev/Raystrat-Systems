@@ -1,15 +1,17 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useRef, useState, useActionState, useEffect } from 'react';
+import { useRef, useState, useActionState, useEffect, useTransition } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { ContextualAssistantOutput, services, ServiceSuggesterOutput } from '@/data/content';
+import { services } from '@/data/content';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
+import type { ServiceSuggesterOutput, ContextualAssistantOutput } from '@/data/content';
+
 
 interface AiSuggestorProps {
   pageTitle: string;
@@ -61,6 +63,16 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
           )}
         </div>
       ))}
+       {isPending && conversation[conversation.length - 1]?.actor !== 'ai' && (
+           <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-muted border">
+                <Sparkles className="w-5 h-5 text-primary" />
+            </div>
+            <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
+                <Loader2 className="animate-spin" />
+            </div>
+          </div>
+       )}
     </div>
   );
 }
@@ -72,10 +84,53 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
   
   const formRef = useRef<HTMLFormElement>(null);
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const [currentQuery, setCurrentQuery] = useState('');
+  
+  useEffect(() => {
+    // When the action is successful, update conversation and call the onSuccess callback
+    if (state.message === 'Success' && state.data) {
+        onSuccess(state.data);
+        const aiResponseData = state.data as ContextualAssistantOutput;
+        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
+        
+        setConversation(prev => {
+            const newConversation = [...prev];
+            const lastTurn = newConversation[newConversation.length - 1];
+            if(lastTurn.actor === 'ai') {
+              lastTurn.text = aiResponseText;
+              lastTurn.data = aiResponseData;
+            }
+            return newConversation;
+        });
+
+    } else if (state.message === 'Error') {
+        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+        setConversation(prev => {
+            const newConversation = [...prev];
+            const lastTurn = newConversation[newConversation.length - 1];
+            if(lastTurn.actor === 'ai') {
+                lastTurn.text = errorMessage;
+            }
+            return newConversation;
+        });
+    }
+  }, [state, onSuccess]);
 
 
-  const handleFormSubmit = (formData: FormData) => {
+  const handlePresetQuestionClick = (question: string) => {
+    if (!formRef.current) return;
+    const formData = new FormData(formRef.current);
+    formData.set('query', question);
+    
+    // Manually trigger form action and conversation update
+    setConversation(prev => [
+      ...prev,
+      { actor: 'user', text: question },
+      { actor: 'ai', text: '' },
+    ]);
+    formAction(formData);
+  };
+
+  const handleFormAction = (formData: FormData) => {
     const query = formData.get('query') as string;
     if (!query || isPending) return;
 
@@ -84,41 +139,10 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
       { actor: 'user', text: query },
       { actor: 'ai', text: '' },
     ]);
-    
+
     formAction(formData);
-    setCurrentQuery('');
-  };
-  
-  useEffect(() => {
-    if (state.message === 'Success' && state.data) {
-        onSuccess(state.data);
-        const aiResponseData = state.data as ContextualAssistantOutput;
-        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-        
-        setConversation(prev => {
-            const newConversation = [...prev];
-            newConversation[newConversation.length - 1] = { actor: 'ai', text: aiResponseText, data: aiResponseData };
-            return newConversation;
-        });
-
-    } else if (state.message === 'Error') {
-        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-        setConversation(prev => {
-            const newConversation = [...prev];
-            newConversation[newConversation.length - 1] = { actor: 'ai', text: errorMessage };
-            return newConversation;
-        });
-    }
-  }, [state, onSuccess]);
-
-
-  const handlePresetQuestionClick = (question: string) => {
-    const formData = new FormData();
-    formData.append('query', question);
-    formData.append('pageTitle', pageTitle);
-    formData.append('pageContent', pageContent);
-    handleFormSubmit(formData);
-  };
+    formRef.current?.reset();
+  }
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -154,16 +178,14 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
 
        <form 
         ref={formRef} 
+        action={formAction}
         className="flex gap-2 items-center mt-auto"
-        onSubmit={(e) => { e.preventDefault(); handleFormSubmit(new FormData(e.currentTarget)); }}
       >
           <input type="hidden" name="pageTitle" value={pageTitle} />
           <input type="hidden" name="pageContent" value={pageContent} />
           <div className="relative flex-1">
             <Input
               name="query"
-              value={currentQuery}
-              onChange={(e) => setCurrentQuery(e.target.value)}
               placeholder="Ask a question or describe a problem..."
               className="w-full rounded-full border-border bg-transparent pr-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
               required
