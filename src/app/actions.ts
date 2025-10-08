@@ -1,4 +1,3 @@
-
 'use server';
 
 import { 
@@ -45,7 +44,7 @@ export type SuggestionState = {
   data?: ServiceSuggesterOutput | ContextualAssistantOutput | null;
 }
 
-export async function getContextualSuggestion(formData: FormData): Promise<SuggestionState> {
+export async function getContextualSuggestion(prevState: SuggestionState, formData: FormData): Promise<SuggestionState> {
     const validatedFields = suggestionSchema.safeParse({
         query: formData.get('query'),
         pageTitle: formData.get('pageTitle'),
@@ -643,7 +642,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
 
   try {
     // 1. Write lead to Firestore
-    await db.collection('playbook_leads').add({
+    await db.collection('playbook_requests').add({
       name,
       email,
       createdAt: new Date().toISOString(),

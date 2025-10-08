@@ -1,7 +1,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useRef, useState, useActionState, useEffect, useTransition } from 'react';
+import { useRef, useState, useActionState, useEffect } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -83,8 +83,19 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
   const { user } = useAuth();
   
   const formRef = useRef<HTMLFormElement>(null);
+  const [currentQuery, setCurrentQuery] = useState('');
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   
+  useEffect(() => {
+    if (isPending) {
+      setConversation(prev => [
+        ...prev,
+        { actor: 'user', text: currentQuery },
+        { actor: 'ai', text: '' },
+      ]);
+    }
+  }, [isPending, currentQuery]);
+
   useEffect(() => {
     // When the action is successful, update conversation and call the onSuccess callback
     if (state.message === 'Success' && state.data) {
@@ -120,29 +131,9 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
     if (!formRef.current) return;
     const formData = new FormData(formRef.current);
     formData.set('query', question);
-    
-    // Manually trigger form action and conversation update
-    setConversation(prev => [
-      ...prev,
-      { actor: 'user', text: question },
-      { actor: 'ai', text: '' },
-    ]);
+    setCurrentQuery(question); // Set current query for conversation history
     formAction(formData);
   };
-
-  const handleFormAction = (formData: FormData) => {
-    const query = formData.get('query') as string;
-    if (!query || isPending) return;
-
-    setConversation(prev => [
-      ...prev,
-      { actor: 'user', text: query },
-      { actor: 'ai', text: '' },
-    ]);
-
-    formAction(formData);
-    formRef.current?.reset();
-  }
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -178,7 +169,13 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
 
        <form 
         ref={formRef} 
-        action={formAction}
+        action={(formData) => {
+            const query = formData.get('query') as string;
+            if (!query || isPending) return;
+            setCurrentQuery(query);
+            formAction(formData);
+            formRef.current?.reset();
+        }}
         className="flex gap-2 items-center mt-auto"
       >
           <input type="hidden" name="pageTitle" value={pageTitle} />
