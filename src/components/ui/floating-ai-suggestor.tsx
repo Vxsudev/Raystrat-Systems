@@ -129,6 +129,7 @@ export function FloatingAiSuggestor() {
         service={currentService}
         onNavigate={() => setIsOpen(false)}
         onSuccess={onSuggestionSuccess}
+        variant={isServicePage ? 'sheet' : 'dialog'}
     />
   );
   

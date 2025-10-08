@@ -11,6 +11,7 @@ import { services } from '@/data/content';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 import type { ServiceSuggesterOutput, ContextualAssistantOutput } from '@/data/content';
+import { cn } from '@/lib/utils';
 
 
 interface AiSuggestorProps {
@@ -19,6 +20,7 @@ interface AiSuggestorProps {
   service?: typeof services[0];
   onNavigate?: () => void;
   onSuccess: (data: ServiceSuggesterOutput | ContextualAssistantOutput) => void;
+  variant?: 'dialog' | 'sheet';
 }
 
 type ConversationTurn = {
@@ -78,8 +80,8 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuccess }: AiSuggestorProps) {
-  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null });
+export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuccess, variant = 'dialog' }: AiSuggestorProps) {
+  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null });
   const { user } = useAuth();
   
   const formRef = useRef<HTMLFormElement>(null);
@@ -107,8 +109,6 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
             const newConversation = [...prev];
             const lastTurn = newConversation[newConversation.length - 1];
             
-            // Check if last turn is an AI placeholder, then update it.
-            // Otherwise, add a new AI turn.
             if (lastTurn && lastTurn.actor === 'ai' && lastTurn.text === '') {
               lastTurn.text = aiResponseText;
               lastTurn.data = aiResponseData;
@@ -142,13 +142,13 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
           <ConversationHistory conversation={conversation} isPending={isPending} onNavigate={onNavigate} />
       ) : (
         <div className="flex-1 mb-4 flex flex-col justify-center">
-            <h2 className="text-4xl font-bold">
+            <h2 className={cn("font-bold", variant === 'dialog' ? 'text-4xl' : 'text-2xl')}>
                 <span className="text-primary">Hello, {user?.displayName || 'there'}</span>
                 <br />
-                <span className="text-muted-foreground">How can I help you?</span>
+                <span className={cn("text-muted-foreground", variant === 'dialog' ? '' : 'text-xl')}>How can I help you?</span>
             </h2>
             
-            <div className="mt-8">
+            <div className={cn("mt-8", variant === 'dialog' ? '' : 'mt-6')}>
                 <p className="text-sm text-muted-foreground mb-4">Get started with a prompt</p>
                 <div className="space-y-3">
                     {service?.presetQuestions && service.presetQuestions.length > 0 && (
@@ -166,7 +166,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
                                 <Button
                                     type="submit"
                                     disabled={isPending}
-                                    className="w-full text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3 disabled:opacity-50"
+                                    className="w-full justify-start text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3 disabled:opacity-50"
                                 >
                                     <Sparkles className="h-5 w-5 text-primary/70 shrink-0" />
                                     <span>{q}</span>
