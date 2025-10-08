@@ -30,12 +30,13 @@ if (process.env.SENDGRID_API_KEY) {
 // --- AI Service Suggester & Contextual Assistant Action ---
 
 const suggestionSchema = z.object({
-  query: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
+  query: z.string().min(1, { message: 'Please enter a question or problem.' }),
   pageTitle: z.string().optional(),
   pageContent: z.string().optional(),
 });
 
 export type SuggestionState = {
+  id?: number; // Unique ID for the response
   errors?: {
     query?: string[];
     general?: string;
@@ -53,6 +54,7 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
 
     if (!validatedFields.success) {
         return {
+            id: Date.now(),
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Error',
         };
@@ -72,12 +74,14 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
         }
 
         return {
+            id: Date.now(),
             message: 'Success',
             data: result,
         };
     } catch (error: any) {
         console.error('AI Suggestion Error:', error);
         return {
+            id: Date.now(),
             message: 'Error',
             errors: { general: [error.message] || ['An error occurred on our end. Please try again.'] },
             data: null,

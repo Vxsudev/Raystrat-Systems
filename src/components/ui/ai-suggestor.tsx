@@ -81,57 +81,45 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 
 
 export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuccess, variant = 'dialog' }: AiSuggestorProps) {
-  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null });
+  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {} });
   const { user } = useAuth();
   
   const formRef = useRef<HTMLFormElement>(null);
   const [currentQuery, setCurrentQuery] = useState('');
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  
+  const lastProcessedId = useRef<number | null>(null);
+
   useEffect(() => {
     if (isPending && currentQuery) {
       setConversation(prev => [
         ...prev,
         { actor: 'user', text: currentQuery },
-        { actor: 'ai', text: '' }, // Add AI placeholder
       ]);
       setCurrentQuery('');
     }
   }, [isPending, currentQuery]);
 
   useEffect(() => {
-    if (state.message === 'Success' && state.data) {
-        onSuccess(state.data);
-        const aiResponseData = state.data as ContextualAssistantOutput;
-        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-        
-        setConversation(prev => {
-            const newConversation = [...prev];
-            const lastTurn = newConversation[newConversation.length - 1];
-            
-            if (lastTurn && lastTurn.actor === 'ai' && lastTurn.text === '') {
-              lastTurn.text = aiResponseText;
-              lastTurn.data = aiResponseData;
-            } else {
-              newConversation.push({
-                actor: 'ai',
-                text: aiResponseText,
-                data: aiResponseData,
-              });
-            }
-            return newConversation;
-        });
+    if (state.id && state.id !== lastProcessedId.current) {
+        lastProcessedId.current = state.id;
 
-    } else if (state.message === 'Error') {
-        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-        setConversation(prev => {
-            const newConversation = [...prev];
-            const lastTurn = newConversation[newConversation.length - 1];
-            if (lastTurn && lastTurn.actor === 'ai' && lastTurn.text === '') {
-              lastTurn.text = `Error: ${errorMessage}`;
-            }
-            return newConversation;
-        });
+        if (state.message === 'Success' && state.data) {
+            onSuccess(state.data);
+            const aiResponseData = state.data as ContextualAssistantOutput;
+            const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
+            
+            setConversation(prev => [
+                ...prev,
+                { actor: 'ai', text: aiResponseText, data: aiResponseData },
+            ]);
+
+        } else if (state.message === 'Error') {
+            const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+            setConversation(prev => [
+                ...prev,
+                { actor: 'ai', text: `Error: ${errorMessage}` },
+            ]);
+        }
     }
   }, [state, onSuccess]);
 
@@ -153,10 +141,12 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
                 <div className="space-y-3">
                     {service?.presetQuestions && service.presetQuestions.length > 0 && (
                         service.presetQuestions.map((q, i) => (
-                            <form 
+                            <form
                                 key={i}
                                 action={(formData: FormData) => {
-                                    setCurrentQuery(formData.get('query') as string);
+                                    const query = formData.get('query') as string;
+                                    if (!query) return;
+                                    setCurrentQuery(query);
                                     formAction(formData);
                                 }}
                             >
@@ -200,7 +190,14 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
               required
               disabled={isPending}
               autoComplete='off'
+              onChange={(e) => {
+                if (state.errors?.query) {
+                    // Clear error when user starts typing
+                    state.errors.query = undefined;
+                }
+              }}
             />
+             {state.errors?.query && <p className="text-sm text-destructive absolute -bottom-5 left-2">{state.errors.query[0]}</p>}
           </div>
            <Button
               type="submit"
