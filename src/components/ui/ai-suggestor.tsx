@@ -1,13 +1,13 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useActionState, useEffect } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { ContextualAssistantOutput, services } from '@/data/content';
+import { ContextualAssistantOutput, services, ServiceSuggesterOutput } from '@/data/content';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 
@@ -16,6 +16,7 @@ interface AiSuggestorProps {
   pageContent: string;
   service?: typeof services[0];
   onNavigate?: () => void;
+  onSuccess: (data: ServiceSuggesterOutput | ContextualAssistantOutput) => void;
 }
 
 type ConversationTurn = {
@@ -27,11 +28,11 @@ type ConversationTurn = {
 function ConversationHistory({ conversation, isPending, onNavigate }: { conversation: ConversationTurn[], isPending: boolean, onNavigate?: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useState(() => {
+  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  });
+  }, [conversation]);
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 -mr-4 pr-4 space-y-6">
@@ -65,53 +66,51 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, service, onNavigate }: AiSuggestorProps) {
-  const [isPending, setIsPending] = useState(false);
+export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuccess }: AiSuggestorProps) {
+  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null });
   const { user } = useAuth();
   
   const formRef = useRef<HTMLFormElement>(null);
-  
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
+  const [currentQuery, setCurrentQuery] = useState('');
 
-  const handleFormSubmit = async (formData: FormData) => {
+
+  const handleFormSubmit = (formData: FormData) => {
     const query = formData.get('query') as string;
-    if (!query) return;
+    if (!query || isPending) return;
 
-    // Add user message and AI loading placeholder to conversation
     setConversation(prev => [
       ...prev,
       { actor: 'user', text: query },
-      { actor: 'ai', text: '' }, // Placeholder for AI response
+      { actor: 'ai', text: '' },
     ]);
     
-    setIsPending(true);
-
-    const result = await getContextualSuggestion(formData);
-    
-    if (result?.message === 'Success' && result.data) {
-        const aiResponseData = result.data as ContextualAssistantOutput;
+    formAction(formData);
+    setCurrentQuery('');
+  };
+  
+  useEffect(() => {
+    if (state.message === 'Success' && state.data) {
+        onSuccess(state.data);
+        const aiResponseData = state.data as ContextualAssistantOutput;
         const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
         
-        // Update the last AI turn (the placeholder) with the actual response
         setConversation(prev => {
             const newConversation = [...prev];
             newConversation[newConversation.length - 1] = { actor: 'ai', text: aiResponseText, data: aiResponseData };
             return newConversation;
         });
 
-    } else if (result?.message) {
-        // Update the last AI turn with the error message
+    } else if (state.message === 'Error') {
+        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
         setConversation(prev => {
             const newConversation = [...prev];
-            newConversation[newConversation.length - 1] = { actor: 'ai', text: result.errors?.general?.[0] || result.message! };
+            newConversation[newConversation.length - 1] = { actor: 'ai', text: errorMessage };
             return newConversation;
         });
     }
+  }, [state, onSuccess]);
 
-    setIsPending(false);
-
-    if (formRef.current) formRef.current.reset();
-  };
 
   const handlePresetQuestionClick = (question: string) => {
     const formData = new FormData();
@@ -163,6 +162,8 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate }: AiS
           <div className="relative flex-1">
             <Input
               name="query"
+              value={currentQuery}
+              onChange={(e) => setCurrentQuery(e.target.value)}
               placeholder="Ask a question or describe a problem..."
               className="w-full rounded-full border-border bg-transparent pr-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
               required

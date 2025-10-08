@@ -101,31 +101,21 @@ export function FloatingAiSuggestor() {
     }
   }, [isOpen, pathname, isServicePage]);
 
-  const onSuggestionSuccess = async (formData: FormData) => {
-    const state = await getContextualSuggestion(formData);
-    if (state.message === 'Success' && state.data) {
-        // Check if the data is a service suggestion (from homepage)
-        if ('suggestedServiceSlug' in state.data && !('response' in state.data)) {
-            const suggestion = state.data as ServiceSuggesterOutput;
-            const query = formData.get('query') as string || '';
+  const onSuggestionSuccess = (data: ServiceSuggesterOutput | ContextualAssistantOutput) => {
+    // Check if the data is a service suggestion (from homepage)
+    if ('suggestedServiceSlug' in data && !('response' in data)) {
+        const suggestion = data as ServiceSuggesterOutput;
+        const query = (document.querySelector('input[name="query"]') as HTMLInputElement)?.value || '';
 
-            toast({
-                title: 'Agent Found!',
-                description: suggestion.justification,
-            });
-            const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
-            router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
-            setIsOpen(false);
-        }
-    } else if (state.message === 'Error') {
-        const errorMessage = state.errors?.general?.join(', ') || 'An unknown error occurred.';
         toast({
-            title: 'Error',
-            description: errorMessage,
-            variant: 'destructive',
+            title: 'Agent Found!',
+            description: suggestion.justification,
         });
+        const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
+        router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
+        setIsOpen(false);
     }
-    return state;
+    // If it's a contextual response, we don't need to do anything here as it's handled in the conversation UI.
   };
   
   if (isBytesPage) {
@@ -138,6 +128,7 @@ export function FloatingAiSuggestor() {
         pageContent={pageContent}
         service={currentService}
         onNavigate={() => setIsOpen(false)}
+        onSuccess={onSuggestionSuccess}
     />
   );
   
