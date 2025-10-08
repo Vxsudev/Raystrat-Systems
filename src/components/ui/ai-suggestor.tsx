@@ -1,3 +1,4 @@
+
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
@@ -87,12 +88,14 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   
   useEffect(() => {
-    if (isPending) {
+    // This effect runs when a form submission starts
+    if (isPending && currentQuery) {
       setConversation(prev => [
         ...prev,
         { actor: 'user', text: currentQuery },
         { actor: 'ai', text: '' },
       ]);
+      setCurrentQuery(''); // Reset current query after adding to conversation
     }
   }, [isPending, currentQuery]);
 
@@ -117,23 +120,16 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
         const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
         setConversation(prev => {
             const newConversation = [...prev];
-            const lastTurn = newConversation[newConversation.length - 1];
-            if(lastTurn.actor === 'ai') {
-                lastTurn.text = errorMessage;
+            // Find the last pending AI turn and update it with the error
+            const lastPendingAITurnIndex = newConversation.map(t => t.actor).lastIndexOf('ai');
+            if (lastPendingAITurnIndex !== -1 && newConversation[lastPendingAITurnIndex].text === '') {
+              newConversation[lastPendingAITurnIndex].text = `Error: ${errorMessage}`;
             }
             return newConversation;
         });
     }
   }, [state, onSuccess]);
 
-
-  const handlePresetQuestionClick = (question: string) => {
-    if (!formRef.current) return;
-    const formData = new FormData(formRef.current);
-    formData.set('query', question);
-    setCurrentQuery(question); // Set current query for conversation history
-    formAction(formData);
-  };
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -152,14 +148,25 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
                 <div className="space-y-3">
                     {service?.presetQuestions && service.presetQuestions.length > 0 && (
                         service.presetQuestions.map((q, i) => (
-                            <button
+                            <form 
                                 key={i}
-                                className="w-full text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3"
-                                onClick={() => handlePresetQuestionClick(q)}
+                                action={(formData: FormData) => {
+                                    setCurrentQuery(q);
+                                    formAction(formData);
+                                }}
                             >
-                                <Sparkles className="h-5 w-5 text-primary/70 shrink-0" />
-                                <span>{q}</span>
-                            </button>
+                                <input type="hidden" name="pageTitle" value={pageTitle} />
+                                <input type="hidden" name="pageContent" value={pageContent} />
+                                <input type="hidden" name="query" value={q} />
+                                <button
+                                    type="submit"
+                                    disabled={isPending}
+                                    className="w-full text-left p-0 bg-transparent text-foreground/80 hover:text-foreground transition-colors flex items-center gap-3 disabled:opacity-50"
+                                >
+                                    <Sparkles className="h-5 w-5 text-primary/70 shrink-0" />
+                                    <span>{q}</span>
+                                </button>
+                            </form>
                         ))
                     )}
                 </div>
@@ -187,6 +194,7 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
               className="w-full rounded-full border-border bg-transparent pr-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
               required
               disabled={isPending}
+              autoComplete='off'
             />
           </div>
            <Button
