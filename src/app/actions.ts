@@ -3,7 +3,8 @@
 
 import { 
   ServiceSuggesterInput,
-  getServiceSuggestion
+  getServiceSuggestion,
+  ServiceSuggesterOutput
 } from '@/ai/flows/service-suggester';
 import {
   NotesAnalyzerInput,
@@ -21,7 +22,7 @@ import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { db, adminAuth } from '@/lib/firebase/admin';
 import sgMail from '@sendgrid/mail';
 import { Sequence, SequenceStep, SequenceTemplate } from './dashboard/page';
-import { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
+
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -671,3 +672,5 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
+    
