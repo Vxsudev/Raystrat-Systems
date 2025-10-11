@@ -36,13 +36,14 @@ const suggestionSchema = z.object({
 });
 
 export type SuggestionState = {
-  id?: number; // Unique ID for the response
+  id: number | null; // Unique ID for the response
   errors?: {
     query?: string[];
     general?: string;
   };
   message: 'Success' | 'Error' | null;
   data?: ServiceSuggesterOutput | ContextualAssistantOutput | null;
+  formData?: FormData;
 }
 
 export async function getContextualSuggestion(prevState: SuggestionState, formData: FormData): Promise<SuggestionState> {
@@ -77,6 +78,7 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
             id: Date.now(),
             message: 'Success',
             data: result,
+            formData: formData,
         };
     } catch (error: any) {
         console.error('AI Suggestion Error:', error);

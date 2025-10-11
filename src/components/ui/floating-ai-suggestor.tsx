@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useActionState } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -26,10 +26,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Sparkles, BrainCircuit } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceSuggesterOutput, services, ContextualAssistantOutput } from '@/data/content';
-import { AiSuggestor } from './ai-suggestor';
+import { AiSuggestor, ConversationTurn } from './ai-suggestor';
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -80,6 +80,10 @@ export function FloatingAiSuggestor() {
   const [isOpen, setIsOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
+
+  // --- State Lifted Up from AiSuggestor ---
+  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
+  const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   
   const isServicePage = pathname.startsWith('/services/');
   const isHomePage = pathname === '/';
@@ -92,32 +96,49 @@ export function FloatingAiSuggestor() {
     if (isOpen && isServicePage) {
       setPageTitle(document.title);
       // A simple way to get some text content from the page.
-      // A more robust solution might use a dedicated library or more specific selectors.
       const contentElement = document.querySelector('article');
       setPageContent(contentElement?.innerText.substring(0, 2000) || '');
-    } else {
+    } else if (!isServicePage) {
         setPageTitle('');
         setPageContent('');
     }
   }, [isOpen, pathname, isServicePage]);
 
-  const onSuggestionSuccess = (data: ServiceSuggesterOutput | ContextualAssistantOutput) => {
-    // Check if the data is a service suggestion (from homepage)
-    if ('suggestedServiceSlug' in data && !('response' in data)) {
-        const suggestion = data as ServiceSuggesterOutput;
-        const query = (document.querySelector('input[name="query"]') as HTMLInputElement)?.value || '';
+  // Handle the result from the server action
+  useEffect(() => {
+    if (state.id && state.message === 'Success' && state.data) {
+        // This is the successful response from the AI
+        const aiResponseData = state.data as ContextualAssistantOutput; // Both outputs have this structure now
+        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
+        
+        setConversation(prev => [
+            ...prev,
+            { actor: 'ai', text: aiResponseText, data: aiResponseData },
+        ]);
 
-        toast({
-            title: 'Agent Found!',
-            description: suggestion.justification,
-        });
-        const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
-        router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
-        setIsOpen(false);
+        // Homepage specific logic: redirect on success
+        if (!isServicePage) {
+            const suggestion = state.data as ServiceSuggesterOutput;
+            if (suggestion.suggestedServiceSlug) {
+                 toast({
+                    title: 'Agent Found!',
+                    description: suggestion.justification,
+                });
+                const query = state.formData?.get('query') as string || '';
+                const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
+                router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
+                setIsOpen(false);
+            }
+        }
+    } else if (state.id && state.message === 'Error') {
+        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+        setConversation(prev => [
+            ...prev,
+            { actor: 'ai', text: `Error: ${errorMessage}` },
+        ]);
     }
-    // If it's a contextual response, we don't need to do anything here as it's handled in the conversation UI.
-  };
-  
+  }, [state, toast, router, isServicePage]);
+
   if (isBytesPage) {
       return null;
   }
@@ -128,7 +149,12 @@ export function FloatingAiSuggestor() {
         pageContent={pageContent}
         service={currentService}
         onNavigate={() => setIsOpen(false)}
-        onSuccess={onSuggestionSuccess}
+        // Pass state and actions down
+        conversation={conversation}
+        setConversation={setConversation}
+        formAction={formAction}
+        isPending={isPending}
+        formState={state}
         variant={isServicePage ? 'sheet' : 'dialog'}
     />
   );

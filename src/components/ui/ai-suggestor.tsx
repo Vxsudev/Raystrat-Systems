@@ -1,8 +1,8 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
-import { useRef, useState, useActionState, useEffect } from 'react';
-import { getContextualSuggestion, SuggestionState } from '@/app/actions';
+import { useRef, useState, useEffect } from 'react';
+import { SuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
@@ -14,20 +14,26 @@ import type { ServiceSuggesterOutput, ContextualAssistantOutput } from '@/data/c
 import { cn } from '@/lib/utils';
 
 
+export type ConversationTurn = {
+    actor: 'user' | 'ai';
+    text: string;
+    data?: ContextualAssistantOutput;
+}
+
 interface AiSuggestorProps {
   pageTitle: string;
   pageContent: string;
   service?: typeof services[0];
   onNavigate?: () => void;
-  onSuccess: (data: ServiceSuggesterOutput | ContextualAssistantOutput) => void;
+  // --- Props passed down from parent ---
+  conversation: ConversationTurn[];
+  setConversation: React.Dispatch<React.SetStateAction<ConversationTurn[]>>;
+  formAction: (formData: FormData) => void;
+  isPending: boolean;
+  formState: SuggestionState;
   variant?: 'dialog' | 'sheet';
 }
 
-type ConversationTurn = {
-    actor: 'user' | 'ai';
-    text: string;
-    data?: ContextualAssistantOutput;
-}
 
 function ConversationHistory({ conversation, isPending, onNavigate }: { conversation: ConversationTurn[], isPending: boolean, onNavigate?: () => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -65,7 +71,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
           )}
         </div>
       ))}
-       {isPending && conversation[conversation.length - 1]?.actor !== 'ai' && (
+       {isPending && conversation.length > 0 && conversation[conversation.length - 1]?.actor !== 'ai' && (
            <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-muted border">
                 <Sparkles className="w-5 h-5 text-primary" />
@@ -80,48 +86,32 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
 }
 
 
-export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuccess, variant = 'dialog' }: AiSuggestorProps) {
-  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {} });
+export function AiSuggestor({ 
+    pageTitle, 
+    pageContent, 
+    service, 
+    onNavigate,
+    conversation,
+    setConversation,
+    formAction,
+    isPending,
+    formState, 
+    variant = 'dialog' 
+}: AiSuggestorProps) {
   const { user } = useAuth();
-  
   const formRef = useRef<HTMLFormElement>(null);
   const [currentQuery, setCurrentQuery] = useState('');
-  const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const lastProcessedId = useRef<number | null>(null);
-
+  
   useEffect(() => {
+    // When a form submission starts, add the user's query to the conversation
     if (isPending && currentQuery) {
       setConversation(prev => [
         ...prev,
         { actor: 'user', text: currentQuery },
       ]);
-      setCurrentQuery('');
+      setCurrentQuery(''); // Clear the temp state
     }
-  }, [isPending, currentQuery]);
-
-  useEffect(() => {
-    if (state.id && state.id !== lastProcessedId.current) {
-        lastProcessedId.current = state.id;
-
-        if (state.message === 'Success' && state.data) {
-            onSuccess(state.data);
-            const aiResponseData = state.data as ContextualAssistantOutput;
-            const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-            
-            setConversation(prev => [
-                ...prev,
-                { actor: 'ai', text: aiResponseText, data: aiResponseData },
-            ]);
-
-        } else if (state.message === 'Error') {
-            const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-            setConversation(prev => [
-                ...prev,
-                { actor: 'ai', text: `Error: ${errorMessage}` },
-            ]);
-        }
-    }
-  }, [state, onSuccess]);
+  }, [isPending, currentQuery, setConversation]);
 
   
   return (
@@ -191,13 +181,13 @@ export function AiSuggestor({ pageTitle, pageContent, service, onNavigate, onSuc
               disabled={isPending}
               autoComplete='off'
               onChange={(e) => {
-                if (state.errors?.query) {
+                if (formState.errors?.query) {
                     // Clear error when user starts typing
-                    state.errors.query = undefined;
+                    formState.errors.query = undefined;
                 }
               }}
             />
-             {state.errors?.query && <p className="text-sm text-destructive absolute -bottom-5 left-2">{state.errors.query[0]}</p>}
+             {formState.errors?.query && <p className="text-sm text-destructive absolute -bottom-5 left-2">{formState.errors.query[0]}</p>}
           </div>
            <Button
               type="submit"
