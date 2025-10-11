@@ -1,7 +1,7 @@
 // src/components/ui/service-suggester.tsx
 'use client';
 
-import React, { useState, useEffect, useActionState } from 'react';
+import React, { useState, useEffect, useActionState, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import {
   Dialog,
@@ -9,15 +9,18 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Bot, Loader2, ArrowRight, BrainCircuit } from 'lucide-react';
-import { getServiceSuggestion, ServiceSuggestionState } from '@/app/actions';
+import { suggestServiceAction, ServiceSuggestionState } from '@/app/actions';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from './alert';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+
+// This is Component A: The AI Service Suggester for the Homepage
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -41,6 +44,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
   return (
     <Button
       variant="outline"
+      id="service-suggester-trigger"
       className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
       onClick={onClick}
     >
@@ -52,11 +56,16 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
 
 export function ServiceSuggester() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState<ServiceSuggestionState, FormData>(getServiceSuggestion, {
+  const router = useRouter();
+  const { toast } = useToast();
+  
+  const [state, formAction] = useActionState<ServiceSuggestionState, FormData>(suggestServiceAction, {
     message: null,
     errors: {},
     data: null,
   });
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Automatically open the dialog on the homepage after a delay
   useEffect(() => {
@@ -70,24 +79,33 @@ export function ServiceSuggester() {
     }
   }, []);
 
-  const resetForm = () => {
-    // A bit of a hack to reset the action state
-    formAction(new FormData());
-  };
-
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (!open) {
-      // Reset state when closing the dialog
-      setTimeout(resetForm, 300);
+    if (!open && formRef.current) {
+        // Reset state when closing the dialog
+        formRef.current.reset();
+        // A little hacky, but useActionState doesn't have a built-in reset
+        formAction(new FormData()); 
     }
   };
+
+  useEffect(() => {
+    if (state.message === 'Success' && state.data?.suggestedServiceSlug) {
+      toast({
+        title: 'Agent Found!',
+        description: state.data.justification,
+      });
+      const note = (formRef.current?.elements.namedItem('bottleneck') as HTMLInputElement)?.value || '';
+      router.push(`/services/${state.data.suggestedServiceSlug}?note=${encodeURIComponent(note)}`);
+      handleOpenChange(false);
+    }
+  }, [state, router, toast]);
 
   return (
     <>
       <FloatingTrigger onClick={() => setIsOpen(true)} />
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent id="service-suggester-container" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-headline">
               <Bot className="h-6 w-6 text-primary" />
@@ -98,52 +116,29 @@ export function ServiceSuggester() {
             </DialogDescription>
           </DialogHeader>
 
-          {state.message === 'Success' && state.data ? (
-            <div className="py-4 space-y-4">
-              <Alert>
-                <BrainCircuit className="h-4 w-4" />
-                <AlertTitle className="font-bold">Recommendation: {state.data.suggestedServiceTitle}</AlertTitle>
-                <AlertDescription>
-                  {state.data.justification}
-                </AlertDescription>
-              </Alert>
-              <DialogFooter className="gap-2 sm:justify-end">
-                <Button variant="outline" onClick={() => handleOpenChange(false)}>
-                  Close
-                </Button>
-                <Button asChild>
-                  <Link href={`/services/${state.data.suggestedServiceSlug}?note=${encodeURIComponent((document.querySelector('textarea[name="bottleneck"]') as HTMLTextAreaElement)?.value || '')}`}>
-                    Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </DialogFooter>
+          <form ref={formRef} action={formAction} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
+              <Textarea
+                id="bottleneck"
+                name="bottleneck"
+                placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
+                className="min-h-[100px]"
+                required
+              />
+              {state.errors?.problemDescription && (
+                <p className="text-sm text-destructive">{state.errors.problemDescription[0]}</p>
+              )}
+              {state.errors?.general && (
+                  <p className="text-sm text-destructive">{state.errors.general[0]}</p>
+              )}
             </div>
-          ) : (
-            <form action={formAction} className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
-                <Textarea
-                  id="bottleneck"
-                  name="bottleneck"
-                  placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
-                  className="min-h-[100px]"
-                  required
-                />
-                {state.errors?.bottleneck && (
-                  <p className="text-sm text-destructive">{state.errors.bottleneck[0]}</p>
-                )}
-                {state.errors?.general && (
-                    <p className="text-sm text-destructive">{state.errors.general[0]}</p>
-                )}
-              </div>
-              <DialogFooter>
-                <SubmitButton />
-              </DialogFooter>
-            </form>
-          )}
+            <div className="pt-2">
+              <SubmitButton />
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </>
   );
 }
-    

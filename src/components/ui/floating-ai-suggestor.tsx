@@ -1,18 +1,10 @@
-
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect, useActionState, useRef } from 'react';
-import { getContextualSuggestion, SuggestionState } from '@/app/actions';
+import { getContextualSuggestion, ContextualSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import {
   Sheet,
   SheetContent,
@@ -28,9 +20,10 @@ import {
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { ServiceSuggesterOutput, services, ContextualAssistantOutput } from '@/data/content';
+import { services, ContextualAssistantOutput } from '@/data/content';
 import { AiSuggestor, ConversationTurn } from './ai-suggestor';
+
+// This is Component B: The Contextual AI Assistant for Service Pages
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
@@ -51,11 +44,12 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
            <Button
               variant="default"
               size="icon"
+              id="contextual-ai-trigger"
               className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
               onClick={onClick}
             >
               <Sparkles className="h-7 w-7" />
-              <span className="sr-only">AI</span>
+              <span className="sr-only">AI Assistant</span>
             </Button>
         </TooltipTrigger>
         <TooltipContent
@@ -66,7 +60,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
             'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
           )}
         >
-          <p className="font-semibold">Have a bottleneck? I can help.</p>
+          <p className="font-semibold">Have questions? Ask me anything.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -76,138 +70,98 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
 
 export function FloatingAiSuggestor() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
 
-  // --- State Lifted Up from AiSuggestor ---
-  const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
+  const [state, formAction, isPending] = useActionState<ContextualSuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   const lastProcessedId = useRef<number | null>(null);
   
-  const isServicePage = pathname.startsWith('/services/');
-  const isHomePage = pathname === '/';
-  const isBytesPage = pathname.startsWith('/bytes');
-
-  const slug = isServicePage ? pathname.split('/').pop() : undefined;
+  const slug = pathname.split('/').pop();
   const currentService = services.find(s => s.slug === slug);
+
+  // Load conversation from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedConversation = localStorage.getItem(`conversationHistory-${pathname}`);
+      if (savedConversation) {
+        setConversation(JSON.parse(savedConversation));
+      }
+    } catch (error) {
+      console.error("Failed to load conversation from localStorage", error);
+    }
+  }, [pathname]);
+
+  // Save conversation to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(`conversationHistory-${pathname}`, JSON.stringify(conversation));
+    } catch (error) {
+      console.error("Failed to save conversation to localStorage", error);
+    }
+  }, [conversation, pathname]);
+
 
   useEffect(() => {
     if (isOpen) {
-      if (isServicePage) {
         setPageTitle(document.title);
-        // A simple way to get some text content from the page.
         const contentElement = document.querySelector('article');
         setPageContent(contentElement?.innerText.substring(0, 2000) || '');
-      } else {
-        setPageTitle('');
-        setPageContent('');
-      }
     }
-  }, [isOpen, pathname, isServicePage]);
+  }, [isOpen, pathname]);
 
   // Handle the result from the server action
   useEffect(() => {
-    if (state.id && state.id !== lastProcessedId.current && state.message === 'Success' && state.data) {
+    if (state.id && state.id !== lastProcessedId.current) {
         lastProcessedId.current = state.id; // Mark this response as processed
 
-        const aiResponseData = state.data as ContextualAssistantOutput;
-        const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-        
-        setConversation(prev => [
-            ...prev,
-            { actor: 'ai', text: aiResponseText, data: aiResponseData },
-        ]);
-
-        // Homepage specific logic: redirect on success
-        if (pathname === '/') {
-            const suggestion = state.data as ServiceSuggesterOutput;
-            if (suggestion.suggestedServiceSlug) {
-                 toast({
-                    title: 'Agent Found!',
-                    description: suggestion.justification,
-                });
-                const query = state.formData?.get('query') as string || '';
-                const noteParam = query ? `?note=${encodeURIComponent(query)}` : '';
-                router.push(`/services/${suggestion.suggestedServiceSlug}${noteParam}`);
-                setIsOpen(false);
-            }
+        if (state.message === 'Success' && state.data) {
+            const aiResponseData = state.data as ContextualAssistantOutput;
+            const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
+            
+            setConversation(prev => [
+                ...prev,
+                { actor: 'ai', text: aiResponseText, data: aiResponseData },
+            ]);
+        } else if (state.message === 'Error') {
+            const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
+            setConversation(prev => [
+                ...prev,
+                { actor: 'ai', text: `Error: ${errorMessage}` },
+            ]);
         }
-    } else if (state.id && state.id !== lastProcessedId.current && state.message === 'Error') {
-        lastProcessedId.current = state.id; // Also mark error responses as processed
-        const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-        setConversation(prev => [
-            ...prev,
-            { actor: 'ai', text: `Error: ${errorMessage}` },
-        ]);
     }
-  }, [state, toast]);
-
-  if (isBytesPage) {
-      return null;
-  }
+  }, [state]);
   
-  const aiSuggestorComponent = (
-    <AiSuggestor 
-        pageTitle={pageTitle} 
-        pageContent={pageContent}
-        service={currentService}
-        onNavigate={() => setIsOpen(false)}
-        // Pass state and actions down
-        conversation={conversation}
-        setConversation={setConversation}
-        formAction={formAction}
-        isPending={isPending}
-        formState={state}
-        variant={isServicePage ? 'sheet' : 'dialog'}
-    />
-  );
-  
-  // Render a Sheet (sidebar) for service pages, and a Dialog for all other applicable pages.
-  if (isServicePage) {
-    return (
-        <>
-            <FloatingTrigger onClick={() => setIsOpen(true)} />
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="w-full sm:max-w-sm flex flex-col p-0">
-                   <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
-                        <SheetTitle className="text-lg font-semibold flex items-center gap-2">
-                           <Sparkles className="w-6 h-6 text-primary" />
-                           Agent Assist
-                        </SheetTitle>
-                        <SheetClose />
-                    </SheetHeader>
-                    <div className="flex-1 overflow-y-auto p-4">
-                        {aiSuggestorComponent}
-                    </div>
-                </SheetContent>
-            </Sheet>
-        </>
-    );
-  }
-
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <>
       <FloatingTrigger onClick={() => setIsOpen(true)} />
-      <DialogContent className="sm:max-w-lg h-[60vh] flex flex-col">
-        <DialogHeader>
-          <div className="flex justify-center">
-              <Sparkles className="w-10 h-10 text-primary" />
-          </div>
-          <DialogTitle className="text-3xl text-center font-bold tracking-tighter font-headline sm:text-4xl">Agent Assist</DialogTitle>
-          <DialogDescription className="text-lg text-center text-foreground/80">
-            {isServicePage
-                ? "I have on-page context. Ask me anything about the agent you are exploring."
-                : "Describe your biggest business bottleneck, and I'll suggest the right agent to solve it."
-            }
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex-1 overflow-y-auto">
-            {aiSuggestorComponent}
-        </div>
-      </DialogContent>
-    </Dialog>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetContent id="contextual-ai-container" className="w-full sm:max-w-sm flex flex-col p-0">
+              <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
+                  <SheetTitle className="text-lg font-semibold flex items-center gap-2">
+                      <Sparkles className="w-6 h-6 text-primary" />
+                      Agent Assist
+                  </SheetTitle>
+                  <SheetClose />
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto p-4">
+                  <AiSuggestor 
+                      pageTitle={pageTitle} 
+                      pageContent={pageContent}
+                      service={currentService}
+                      onNavigate={() => setIsOpen(false)}
+                      conversation={conversation}
+                      setConversation={setConversation}
+                      formAction={formAction}
+                      isPending={isPending}
+                      formState={state}
+                      variant='sheet'
+                  />
+              </div>
+          </SheetContent>
+      </Sheet>
+    </>
   );
 }

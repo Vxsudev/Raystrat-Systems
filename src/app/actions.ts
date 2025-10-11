@@ -3,7 +3,6 @@
 import { 
   ServiceSuggesterInput,
   getServiceSuggestion,
-  ServiceSuggesterOutput
 } from '@/ai/flows/service-suggester';
 import {
   NotesAnalyzerInput,
@@ -27,27 +26,78 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// --- AI Service Suggester & Contextual Assistant Action ---
+// --- (A) HOMEPAGE AI SERVICE SUGGESTER ACTION ---
+const serviceSuggestionSchema = z.object({
+  problemDescription: z.string().min(10, { message: 'Please describe your bottleneck in at least 10 characters.' }),
+});
 
-const suggestionSchema = z.object({
+export type ServiceSuggestionState = {
+  errors?: {
+    problemDescription?: string[];
+    general?: string;
+  };
+  message: 'Success' | 'Error' | null;
+  data?: {
+    suggestedServiceTitle: string;
+    suggestedServiceSlug: string;
+    justification: string;
+  } | null;
+}
+
+export async function suggestServiceAction(
+  prevState: ServiceSuggestionState, 
+  formData: FormData
+): Promise<ServiceSuggestionState> {
+  const validatedFields = serviceSuggestionSchema.safeParse({
+    problemDescription: formData.get('bottleneck'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Error',
+      data: null,
+    };
+  }
+
+  try {
+    const suggestion = await getServiceSuggestion(validatedFields.data);
+    return {
+      message: 'Success',
+      errors: {},
+      data: suggestion,
+    };
+  } catch (error: any) {
+    console.error('Service Suggestion Error:', error);
+    return {
+      message: 'Error',
+      errors: { general: [error.message] || ['An error occurred. Please try again.'] },
+      data: null,
+    };
+  }
+}
+
+
+// --- (B) SERVICE PAGE CONTEXTUAL ASSISTANT ACTION ---
+const contextualSuggestionSchema = z.object({
   query: z.string().min(1, { message: 'Please enter a question or problem.' }),
   pageTitle: z.string().optional(),
   pageContent: z.string().optional(),
 });
 
-export type SuggestionState = {
+export type ContextualSuggestionState = {
   id: number | null; // Unique ID for the response
   errors?: {
     query?: string[];
     general?: string;
   };
   message: 'Success' | 'Error' | null;
-  data?: ServiceSuggesterOutput | ContextualAssistantOutput | null;
+  data?: ContextualAssistantOutput | null;
   formData?: FormData;
 }
 
-export async function getContextualSuggestion(prevState: SuggestionState, formData: FormData): Promise<SuggestionState> {
-    const validatedFields = suggestionSchema.safeParse({
+export async function getContextualSuggestion(prevState: ContextualSuggestionState, formData: FormData): Promise<ContextualSuggestionState> {
+    const validatedFields = contextualSuggestionSchema.safeParse({
         query: formData.get('query'),
         pageTitle: formData.get('pageTitle'),
         pageContent: formData.get('pageContent'),
@@ -64,14 +114,15 @@ export async function getContextualSuggestion(prevState: SuggestionState, formDa
     const { query, pageTitle, pageContent } = validatedFields.data;
 
     try {
-        let result: ServiceSuggesterOutput | ContextualAssistantOutput;
-        // If we have page context, use the contextual assistant. Otherwise, use the service suggester.
+        let result: ContextualAssistantOutput;
         if (pageTitle && pageContent && pageTitle.trim() !== '' && pageContent.trim() !== '') {
             const input: ContextualAssistantInput = { query, pageTitle, pageContent };
             result = await getContextualAssistantResponse(input);
         } else {
+             // Fallback to service suggester if context is missing, though this path shouldn't be hit on service pages.
             const input: ServiceSuggesterInput = { problemDescription: query };
-            result = await getServiceSuggestion(input);
+            const serviceSuggesterResult = await getServiceSuggestion(input);
+            result = { response: serviceSuggesterResult.justification, suggestedService: { slug: serviceSuggesterResult.suggestedServiceSlug, title: serviceSuggesterResult.suggestedServiceTitle }};
         }
 
         return {
@@ -172,7 +223,7 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
 }
 
 
-// --- Notes Taker Action ---
+// --- (C) NOTES TAKER / ANALYZER ACTION ---
 
 const notesSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),

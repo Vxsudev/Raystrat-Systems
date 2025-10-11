@@ -2,7 +2,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { SuggestionState } from '@/app/actions';
+import { ContextualSuggestionState } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
@@ -10,8 +10,9 @@ import ReactMarkdown from 'react-markdown';
 import { services } from '@/data/content';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
-import type { ServiceSuggesterOutput, ContextualAssistantOutput } from '@/data/content';
+import type { ContextualAssistantOutput } from '@/data/content';
 import { cn } from '@/lib/utils';
+import { useFormStatus } from 'react-dom';
 
 
 export type ConversationTurn = {
@@ -30,7 +31,7 @@ interface AiSuggestorProps {
   setConversation: React.Dispatch<React.SetStateAction<ConversationTurn[]>>;
   formAction: (formData: FormData) => void;
   isPending: boolean;
-  formState: SuggestionState;
+  formState: ContextualSuggestionState;
   variant?: 'dialog' | 'sheet';
 }
 
@@ -131,7 +132,7 @@ export function AiSuggestor({
                 <div className="space-y-3">
                     {service?.presetQuestions && service.presetQuestions.length > 0 && (
                         service.presetQuestions.map((q, i) => (
-                            <form
+                           <form
                                 key={i}
                                 action={(formData: FormData) => {
                                     const query = formData.get('query') as string;

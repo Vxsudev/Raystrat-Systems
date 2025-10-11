@@ -1,4 +1,3 @@
-
 // src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
@@ -10,6 +9,7 @@ import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 import { ThemeProvider } from '@/components/theme-provider';
 import { FloatingNoteTaker } from '@/components/ui/floating-note-taker';
 import { GenkitInitializer } from '@/components/genkit-initializer';
+import { AppContent } from '@/components/app-content';
 
 const fontBody = Inter({
   subsets: ['latin'],
@@ -102,10 +102,10 @@ export default function RootLayout({
         >
           <AuthProvider>
             <GenkitInitializer />
-            {children}
+            <AppContent>
+              {children}
+            </AppContent>
             <Toaster />
-            <FloatingAiSuggestor />
-            <FloatingNoteTaker />
           </AuthProvider>
         </ThemeProvider>
       </body>
