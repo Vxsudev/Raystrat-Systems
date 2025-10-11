@@ -1,8 +1,9 @@
+
 // src/components/ui/floating-ai-suggestor.tsx
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect, useActionState } from 'react';
+import { useState, useEffect, useActionState, useRef } from 'react';
 import { getContextualSuggestion, SuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -84,6 +85,7 @@ export function FloatingAiSuggestor() {
   // --- State Lifted Up from AiSuggestor ---
   const [state, formAction, isPending] = useActionState<SuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
+  const lastProcessedId = useRef<number | null>(null);
   
   const isServicePage = pathname.startsWith('/services/');
   const isHomePage = pathname === '/';
@@ -93,22 +95,25 @@ export function FloatingAiSuggestor() {
   const currentService = services.find(s => s.slug === slug);
 
   useEffect(() => {
-    if (isOpen && isServicePage) {
-      setPageTitle(document.title);
-      // A simple way to get some text content from the page.
-      const contentElement = document.querySelector('article');
-      setPageContent(contentElement?.innerText.substring(0, 2000) || '');
-    } else if (!isServicePage) {
+    if (isOpen) {
+      if (isServicePage) {
+        setPageTitle(document.title);
+        // A simple way to get some text content from the page.
+        const contentElement = document.querySelector('article');
+        setPageContent(contentElement?.innerText.substring(0, 2000) || '');
+      } else {
         setPageTitle('');
         setPageContent('');
+      }
     }
   }, [isOpen, pathname, isServicePage]);
 
   // Handle the result from the server action
   useEffect(() => {
-    if (state.id && state.message === 'Success' && state.data) {
-        // This is the successful response from the AI
-        const aiResponseData = state.data as ContextualAssistantOutput; // Both outputs have this structure now
+    if (state.id && state.id !== lastProcessedId.current && state.message === 'Success' && state.data) {
+        lastProcessedId.current = state.id; // Mark this response as processed
+
+        const aiResponseData = state.data as ContextualAssistantOutput;
         const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
         
         setConversation(prev => [
@@ -117,7 +122,7 @@ export function FloatingAiSuggestor() {
         ]);
 
         // Homepage specific logic: redirect on success
-        if (!isServicePage) {
+        if (pathname === '/') {
             const suggestion = state.data as ServiceSuggesterOutput;
             if (suggestion.suggestedServiceSlug) {
                  toast({
@@ -130,14 +135,15 @@ export function FloatingAiSuggestor() {
                 setIsOpen(false);
             }
         }
-    } else if (state.id && state.message === 'Error') {
+    } else if (state.id && state.id !== lastProcessedId.current && state.message === 'Error') {
+        lastProcessedId.current = state.id; // Also mark error responses as processed
         const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
         setConversation(prev => [
             ...prev,
             { actor: 'ai', text: `Error: ${errorMessage}` },
         ]);
     }
-  }, [state, toast, router, isServicePage]);
+  }, [state, toast]);
 
   if (isBytesPage) {
       return null;
