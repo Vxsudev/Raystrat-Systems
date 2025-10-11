@@ -65,6 +65,8 @@ export function ServiceSuggester() {
     data: null,
   });
 
+  const [suggestionData, setSuggestionData] = useState<ServiceSuggestionState['data']>(null);
+
   const formRef = useRef<HTMLFormElement>(null);
 
   // Automatically open the dialog on the homepage after a delay
@@ -81,16 +83,18 @@ export function ServiceSuggester() {
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (!open && formRef.current) {
-        // Reset state when closing the dialog
+    if (!open) {
+      // Reset state when closing the dialog
+      if (formRef.current) {
         formRef.current.reset();
-        // A little hacky, but useActionState doesn't have a built-in reset
-        formAction(new FormData()); 
+      }
+      setSuggestionData(null);
     }
   };
 
   useEffect(() => {
     if (state.message === 'Success' && state.data?.suggestedServiceSlug) {
+      setSuggestionData(state.data);
       toast({
         title: 'Agent Found!',
         description: state.data.justification,
