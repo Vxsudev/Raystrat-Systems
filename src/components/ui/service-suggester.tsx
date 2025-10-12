@@ -1,3 +1,4 @@
+
 // src/components/ui/service-suggester.tsx
 'use client';
 
@@ -17,8 +18,7 @@ import { Bot, Loader2, BrainCircuit } from 'lucide-react';
 import { suggestServiceAction, ServiceSuggestionState } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-
-// This is Component A: The AI Service Suggester for the Homepage
+import type { ServiceSuggesterOutput } from '@/ai/flows/service-suggester';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -63,6 +63,8 @@ export function ServiceSuggester() {
     data: null,
   });
 
+  const [suggestion, setSuggestion] = useState<ServiceSuggesterOutput | null>(null);
+
   const formRef = useRef<HTMLFormElement>(null);
 
   // Automatically open the dialog on the homepage after a delay
@@ -81,23 +83,35 @@ export function ServiceSuggester() {
     setIsOpen(open);
     if (!open) {
       // Reset form when closing the dialog
-      if (formRef.current) {
-        formRef.current.reset();
-      }
+      formRef.current?.reset();
+      setSuggestion(null);
     }
   };
 
   useEffect(() => {
-    if (state.message === 'Success' && state.data?.suggestedServiceSlug) {
+    if (state.message === 'Success' && state.data) {
+      const suggestionData = state.data as ServiceSuggesterOutput;
+      setSuggestion(suggestionData);
+
       toast({
         title: 'Agent Found!',
-        description: state.data.justification,
+        description: suggestionData.justification,
       });
+
       const note = (formRef.current?.elements.namedItem('bottleneck') as HTMLInputElement)?.value || '';
-      router.push(`/services/${state.data.suggestedServiceSlug}?note=${encodeURIComponent(note)}`);
-      handleOpenChange(false);
+      router.push(`/services/${suggestionData.suggestedServiceSlug}?note=${encodeURIComponent(note)}`);
+      
+      // Delay closing to allow user to see the change
+      setTimeout(() => handleOpenChange(false), 500);
     }
   }, [state, router, toast]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  };
 
   return (
     <>
@@ -114,27 +128,36 @@ export function ServiceSuggester() {
             </DialogDescription>
           </DialogHeader>
 
-          <form ref={formRef} action={formAction} className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
-              <Textarea
-                id="bottleneck"
-                name="bottleneck"
-                placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
-                className="min-h-[100px]"
-                required
-              />
-              {state.errors?.problemDescription && (
-                <p className="text-sm text-destructive">{state.errors.problemDescription[0]}</p>
-              )}
-              {state.errors?.general && (
-                  <p className="text-sm text-destructive">{state.errors.general[0]}</p>
-              )}
+          {suggestion ? (
+            <div className="py-4 text-center">
+              <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
+              <p className="mt-4 font-semibold">Suggestion Found: {suggestion.suggestedServiceTitle}</p>
+              <p className="text-sm text-muted-foreground">Redirecting you now...</p>
             </div>
-            <div className="pt-2">
-              <SubmitButton />
-            </div>
-          </form>
+          ) : (
+            <form ref={formRef} action={formAction} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
+                <Textarea
+                  id="bottleneck"
+                  name="bottleneck"
+                  placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
+                  className="min-h-[100px]"
+                  required
+                  onKeyDown={handleKeyDown}
+                />
+                {state.errors?.problemDescription && (
+                  <p className="text-sm text-destructive">{state.errors.problemDescription[0]}</p>
+                )}
+                {state.errors?.general && (
+                    <p className="text-sm text-destructive">{state.errors.general[0]}</p>
+                )}
+              </div>
+              <div className="pt-2">
+                <SubmitButton />
+              </div>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </>
