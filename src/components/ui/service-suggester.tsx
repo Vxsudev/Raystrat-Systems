@@ -2,8 +2,8 @@
 // src/components/ui/service-suggester.tsx
 'use client';
 
-import React, { useState, useEffect, useActionState, useRef } from 'react';
-import { useFormStatus } from 'react-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useFormStatus, useActionState } from 'react-dom';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Bot, Loader2, BrainCircuit } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { suggestServiceAction, ServiceSuggestionState } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -31,7 +31,11 @@ function SubmitButton() {
         </>
       ) : (
         <>
-          Get Suggestion <Bot className="ml-2 h-4 w-4" />
+          Get Suggestion
+          <span className="relative flex h-3 w-3 ml-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
         </>
       )}
     </Button>
@@ -46,7 +50,10 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
       className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
       onClick={onClick}
     >
-      <BrainCircuit className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+      <span className="relative flex h-3 w-3">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+      </span>
       <span className="ml-2 font-semibold hidden sm:inline">Suggest an Agent</span>
     </Button>
   );
@@ -83,7 +90,6 @@ export function ServiceSuggester() {
     setIsOpen(open);
     if (!open) {
       // Reset form when closing the dialog
-      formRef.current?.reset();
       setSuggestion(null);
     }
   };
@@ -120,7 +126,10 @@ export function ServiceSuggester() {
         <DialogContent id="service-suggester-container" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-headline">
-              <Bot className="h-6 w-6 text-primary" />
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
               AI-Powered Agent Suggester
             </DialogTitle>
             <DialogDescription>
