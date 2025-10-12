@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useActionState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getContextualSuggestion, ContextualSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -74,33 +74,47 @@ export function FloatingAiSuggestor() {
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
 
-  const [state, formAction, isPending] = useActionState<ContextualSuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
+  const [state, setState] = useState<ContextualSuggestionState>({ message: null, data: null, errors: {}, id: null });
+  const [isPending, setIsPending] = useState(false);
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   const lastProcessedId = useRef<number | null>(null);
   
   const slug = pathname.split('/').pop();
   const currentService = services.find(s => s.slug === slug);
 
+  const handleFormAction = async (formData: FormData) => {
+    setIsPending(true);
+    const result = await getContextualSuggestion(state, formData);
+    setState(result);
+    setIsPending(false);
+  }
+
   // Load conversation from localStorage on mount
   useEffect(() => {
+    if (!isOpen) return;
     try {
       const savedConversation = localStorage.getItem(`conversationHistory-${pathname}`);
       if (savedConversation) {
         setConversation(JSON.parse(savedConversation));
+      } else {
+        setConversation([]);
       }
     } catch (error) {
       console.error("Failed to load conversation from localStorage", error);
+      setConversation([]);
     }
-  }, [pathname]);
+  }, [isOpen, pathname]);
 
   // Save conversation to localStorage whenever it changes
   useEffect(() => {
-    try {
-      localStorage.setItem(`conversationHistory-${pathname}`, JSON.stringify(conversation));
-    } catch (error) {
-      console.error("Failed to save conversation to localStorage", error);
+    if (isOpen) {
+      try {
+        localStorage.setItem(`conversationHistory-${pathname}`, JSON.stringify(conversation));
+      } catch (error) {
+        console.error("Failed to save conversation to localStorage", error);
+      }
     }
-  }, [conversation, pathname]);
+  }, [conversation, isOpen, pathname]);
 
 
   useEffect(() => {
@@ -120,16 +134,27 @@ export function FloatingAiSuggestor() {
             const aiResponseData = state.data as ContextualAssistantOutput;
             const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
             
-            setConversation(prev => [
-                ...prev,
-                { actor: 'ai', text: aiResponseText, data: aiResponseData },
-            ]);
+            setConversation(prev => {
+                // Replace the pending AI placeholder with the actual response
+                const newConversation = [...prev];
+                const lastTurn = newConversation[newConversation.length - 1];
+                if (lastTurn?.actor === 'ai' && !lastTurn.text) {
+                    newConversation[newConversation.length - 1] = { actor: 'ai', text: aiResponseText, data: aiResponseData };
+                    return newConversation;
+                }
+                return [...prev, { actor: 'ai', text: aiResponseText, data: aiResponseData }];
+            });
         } else if (state.message === 'Error') {
             const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-            setConversation(prev => [
-                ...prev,
-                { actor: 'ai', text: `Error: ${errorMessage}` },
-            ]);
+            setConversation(prev => {
+                 const newConversation = [...prev];
+                const lastTurn = newConversation[newConversation.length - 1];
+                if (lastTurn?.actor === 'ai' && !lastTurn.text) {
+                    newConversation[newConversation.length - 1] = { actor: 'ai', text: `Error: ${errorMessage}` };
+                    return newConversation;
+                }
+                return [...prev, { actor: 'ai', text: `Error: ${errorMessage}` }];
+            });
         }
     }
   }, [state]);
@@ -154,7 +179,7 @@ export function FloatingAiSuggestor() {
                       onNavigate={() => setIsOpen(false)}
                       conversation={conversation}
                       setConversation={setConversation}
-                      formAction={formAction}
+                      formAction={handleFormAction}
                       isPending={isPending}
                       formState={state}
                       variant='sheet'

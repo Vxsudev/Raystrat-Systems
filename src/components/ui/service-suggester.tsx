@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useFormStatus, useActionState } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import {
   Dialog,
   DialogContent,
@@ -32,7 +32,7 @@ function SubmitButton() {
       ) : (
         <>
           Get Suggestion
-          <span className="relative flex h-3 w-3 ml-2">
+           <span className="relative flex h-3 w-3 ml-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
           </span>
@@ -50,10 +50,10 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
       className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
       onClick={onClick}
     >
-      <span className="relative flex h-3 w-3">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-      </span>
+        <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
       <span className="ml-2 font-semibold hidden sm:inline">Suggest an Agent</span>
     </Button>
   );
@@ -64,12 +64,7 @@ export function ServiceSuggester() {
   const router = useRouter();
   const { toast } = useToast();
   
-  const [state, formAction] = useActionState<ServiceSuggestionState, FormData>(suggestServiceAction, {
-    message: null,
-    errors: {},
-    data: null,
-  });
-
+  const [state, setState] = useState<ServiceSuggestionState>({ message: null, errors: {}, data: null });
   const [suggestion, setSuggestion] = useState<ServiceSuggesterOutput | null>(null);
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -91,9 +86,11 @@ export function ServiceSuggester() {
     if (!open) {
       // Reset form when closing the dialog
       setSuggestion(null);
+      setState({ message: null, errors: {}, data: null });
+      formRef.current?.reset();
     }
   };
-
+  
   useEffect(() => {
     if (state.message === 'Success' && state.data) {
       const suggestionData = state.data as ServiceSuggesterOutput;
@@ -118,6 +115,11 @@ export function ServiceSuggester() {
       formRef.current?.requestSubmit();
     }
   };
+  
+  const handleFormAction = async (formData: FormData) => {
+    const result = await suggestServiceAction(state, formData);
+    setState(result);
+  }
 
   return (
     <>
@@ -126,7 +128,7 @@ export function ServiceSuggester() {
         <DialogContent id="service-suggester-container" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-headline">
-              <span className="relative flex h-3 w-3">
+               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
@@ -144,7 +146,7 @@ export function ServiceSuggester() {
               <p className="text-sm text-muted-foreground">Redirecting you now...</p>
             </div>
           ) : (
-            <form ref={formRef} action={formAction} className="space-y-4 py-4">
+            <form ref={formRef} action={handleFormAction} className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="bottleneck">What is your primary business challenge?</Label>
                 <Textarea
