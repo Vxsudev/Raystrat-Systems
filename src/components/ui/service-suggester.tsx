@@ -13,10 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Bot, Loader2, ArrowRight, BrainCircuit } from 'lucide-react';
+import { Bot, Loader2, BrainCircuit } from 'lucide-react';
 import { suggestServiceAction, ServiceSuggestionState } from '@/app/actions';
-import Link from 'next/link';
-import { Alert, AlertDescription, AlertTitle } from './alert';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
@@ -65,8 +63,6 @@ export function ServiceSuggester() {
     data: null,
   });
 
-  const [suggestionData, setSuggestionData] = useState<ServiceSuggestionState['data']>(null);
-
   const formRef = useRef<HTMLFormElement>(null);
 
   // Automatically open the dialog on the homepage after a delay
@@ -76,7 +72,7 @@ export function ServiceSuggester() {
       const timer = setTimeout(() => {
         setIsOpen(true);
         sessionStorage.setItem('hasSeenSuggesterPopup', 'true');
-      }, 3000); // 3-second delay
+      }, 30000); // 30-second delay
       return () => clearTimeout(timer);
     }
   }, []);
@@ -84,17 +80,15 @@ export function ServiceSuggester() {
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
-      // Reset state when closing the dialog
+      // Reset form when closing the dialog
       if (formRef.current) {
         formRef.current.reset();
       }
-      setSuggestionData(null);
     }
   };
 
   useEffect(() => {
     if (state.message === 'Success' && state.data?.suggestedServiceSlug) {
-      setSuggestionData(state.data);
       toast({
         title: 'Agent Found!',
         description: state.data.justification,
