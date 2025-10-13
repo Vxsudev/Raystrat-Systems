@@ -148,7 +148,7 @@ export function ServiceSuggester() {
                 <Textarea
                   id="bottleneck"
                   name="bottleneck"
-                  placeholder="e.g.,\n• 'Our lead pipeline has gone cold.'\n• 'Our sales team has no time for follow-up.'"
+                  placeholder="- Our leads are not converting into sales"
                   className="min-h-[100px] p-3"
                   required
                   onKeyDown={handleKeyDown}
