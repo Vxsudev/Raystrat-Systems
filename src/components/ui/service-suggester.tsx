@@ -1,3 +1,4 @@
+
 // src/components/ui/service-suggester.tsx
 'use client';
 
@@ -147,7 +148,7 @@ export function ServiceSuggester() {
                 <Textarea
                   id="bottleneck"
                   name="bottleneck"
-                  placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
+                  placeholder="e.g.,\n• 'Our lead pipeline has gone cold.'\n• 'Our sales team has no time for follow-up.'"
                   className="min-h-[100px] p-3"
                   required
                   onKeyDown={handleKeyDown}
