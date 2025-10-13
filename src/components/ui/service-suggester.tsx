@@ -148,7 +148,7 @@ export function ServiceSuggester() {
                 <Textarea
                   id="bottleneck"
                   name="bottleneck"
-                  placeholder="- Our leads are not converting into sales"
+                  placeholder="Your pain point"
                   className="min-h-[100px] p-3"
                   required
                   onKeyDown={handleKeyDown}
