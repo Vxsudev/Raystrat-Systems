@@ -1,4 +1,3 @@
-
 // src/components/ui/service-suggester.tsx
 'use client';
 
@@ -30,9 +29,7 @@ function SubmitButton() {
           Analyzing...
         </>
       ) : (
-        <>
-          Get Suggestion
-        </>
+        'Get Suggestion'
       )}
     </Button>
   );
@@ -46,10 +43,6 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
       className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
       onClick={onClick}
     >
-        <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-        </span>
       <span className="ml-2 font-semibold hidden sm:inline">Suggest an Agent</span>
     </Button>
   );
@@ -87,6 +80,11 @@ export function ServiceSuggester() {
     }
   };
   
+  const handleFormAction = async (formData: FormData) => {
+    const result = await suggestServiceAction(state, formData);
+    setState(result);
+  }
+  
   useEffect(() => {
     if (state.message === 'Success' && state.data) {
       const suggestionData = state.data as ServiceSuggesterOutput;
@@ -118,11 +116,6 @@ export function ServiceSuggester() {
     }
   };
   
-  const handleFormAction = async (formData: FormData) => {
-    const result = await suggestServiceAction(state, formData);
-    setState(result);
-  }
-
   return (
     <>
       <FloatingTrigger onClick={() => setIsOpen(true)} />
@@ -155,15 +148,15 @@ export function ServiceSuggester() {
                   id="bottleneck"
                   name="bottleneck"
                   placeholder="e.g., 'We spend too much time chasing unpaid invoices,' or 'Our team can't keep up with customer support tickets.'"
-                  className="min-h-[100px]"
+                  className="min-h-[100px] p-3"
                   required
                   onKeyDown={handleKeyDown}
                 />
                 {state.errors?.problemDescription && (
-                  <p className="text-sm text-destructive">{state.errors.problemDescription[0]}</p>
+                  <p className="text-sm text-destructive mt-1">{state.errors.problemDescription[0]}</p>
                 )}
                 {state.errors?.general && (
-                    <p className="text-sm text-destructive">{state.errors.general[0]}</p>
+                    <p className="text-sm text-destructive mt-1">{state.errors.general[0]}</p>
                 )}
               </div>
               <div className="pt-2">
