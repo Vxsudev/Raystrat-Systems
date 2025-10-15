@@ -124,7 +124,7 @@ export function AiSuggestor({
             </h2>
             
             <div className={cn("mt-8", variant === 'dialog' ? '' : 'mt-6')}>
-                <p className="text-sm text-muted-foreground mb-4">Get started with a prompt</p>
+                
                 <div className="space-y-3">
                     {service?.presetQuestions && service.presetQuestions.length > 0 && (
                         service.presetQuestions.map((q, i) => (
