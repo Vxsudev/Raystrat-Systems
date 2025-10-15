@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { 
@@ -249,17 +250,19 @@ export type NotesState = {
 function parseAIResponse(responseText: string): Record<string, string> {
     const sections: Record<string, string> = {};
     const lines = responseText.split('\n');
+    
+    // Adjusted to handle multi-line sections correctly.
+    const sectionHeaders = ["Pain:", "Diagnosis:", "Suggestion:", "CTA:"];
     let currentSection = '';
     
     for (const line of lines) {
-        const match = line.match(/^([A-Za-z\s]+):/);
-        if (match && match[1]) {
-            const sectionName = match[1].trim().toLowerCase().replace(/\s+/g, '');
-            currentSection = sectionName;
-            const content = line.substring(match[0].length).trim();
+        const headerMatch = sectionHeaders.find(h => line.startsWith(h));
+        if (headerMatch) {
+            currentSection = headerMatch.replace(':', '').trim().toLowerCase();
+            const content = line.substring(headerMatch.length).trim();
             sections[currentSection] = content;
         } else if (currentSection && line.trim() !== '') {
-            sections[currentSection] += (sections[currentSection] ? '\n' : '') + line;
+            sections[currentSection] = (sections[currentSection] ? sections[currentSection] + '\n' : '') + line.trim();
         }
     }
     return sections;
@@ -361,21 +364,20 @@ export async function saveAndSendNotes(
           <p>Hi ${name},</p>
           <p>Thank you for sharing your notes with us. Based on what you wrote, here is our initial analysis.</p>
           ${parsedAnalysis ? `
-          <div class="notes-box">
-            <div class="section">
+          <div class="notes-box" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
               <span class="label">Pain:</span> 
               <div class="content">${parsedAnalysis.pain || ''}</div>
             </div>
-            <div class="section">
+            <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
               <span class="label">Diagnosis:</span> 
               <div class="content">${parsedAnalysis.diagnosis || ''}</div>
             </div>
-            <div class="section">
+            <div class="section" style="border-bottom: 0; padding-bottom: 0; margin-bottom: 0;">
               <span class="label">Suggestion:</span> 
-              <div class="content">${parsedAnalysis.suggestion || ''}</div>
+              <div class="content" style="margin-bottom: 0;">${parsedAnalysis.suggestion || ''}</div>
             </div>
           </div>
-          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
           <p><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
           ` : `
           <p>If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>

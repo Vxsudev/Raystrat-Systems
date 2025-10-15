@@ -66,15 +66,25 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
   const nextService = nextServiceSlug ? services.find((s) => s.slug === nextServiceSlug) : undefined;
   
   const searchParams = useSearchParams();
-  const initialNote = searchParams.get('note') || '';
   const justification = searchParams.get('justification');
+  const initialNote = searchParams.get('note') || '';
 
   const [noteContent, setNoteContent] = useState(initialNote);
 
   // This function will be called by the popup to trigger the animation
   const handleAnimateToNotes = (textToAnimate: string) => {
-    // We are no longer animating the text into the notes,
-    // so this function can be left empty or used for other effects.
+    // Combine the initial note with the justification
+    const fullText = (initialNote ? `${initialNote}\n\n` : '') + `Justification: ${textToAnimate}`;
+
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < fullText.length) {
+        setNoteContent(prev => fullText.substring(0, prev.length + 1));
+        i++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 20); // Adjust typing speed here
   };
 
 
