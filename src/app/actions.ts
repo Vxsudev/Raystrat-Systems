@@ -1,3 +1,4 @@
+
 'use server';
 
 import { 
@@ -244,6 +245,31 @@ export type NotesState = {
   message: string | null;
 };
 
+// Helper function to parse the AI's structured text response
+function parseAIResponse(responseText: string): Record<string, string> {
+    const sections: Record<string, string> = {};
+    const lines = responseText.split('\n');
+    let currentSection = '';
+    
+    for (const line of lines) {
+        const match = line.match(/^([A-Za-z\s]+):/);
+        if (match && match[1]) {
+            const sectionName = match[1].trim().toLowerCase().replace(/\s+/g, '');
+            currentSection = sectionName;
+            const content = line.substring(match[0].length).trim();
+            if (content) {
+              sections[currentSection] = content;
+            } else {
+              sections[currentSection] = '';
+            }
+        } else if (currentSection && line.trim() !== '') {
+            sections[currentSection] += (sections[currentSection] ? '\n' : '') + line;
+        }
+    }
+    return sections;
+}
+
+
 export async function saveAndSendNotes(
   prevState: NotesState | null,
   formData: FormData
@@ -272,54 +298,122 @@ export async function saveAndSendNotes(
   }
 
   try {
-    let aiSuggestion: NotesAnalyzerOutput | null = null;
+    let analysisResult: NotesAnalyzerOutput | null = null;
+    let parsedAnalysis: Record<string, string> | null = null;
+
     try {
       const analysisInput: NotesAnalyzerInput = { notes };
-      aiSuggestion = await analyzeNotes(analysisInput);
+      analysisResult = await analyzeNotes(analysisInput);
+      if (analysisResult?.response) {
+        parsedAnalysis = parseAIResponse(analysisResult.response);
+      }
     } catch (aiError) {
       console.error('AI Note Analysis Error:', aiError);
-      // If AI fails, we can fall back to a default message.
+      // Fallback: AI fails, we proceed without analysis.
     }
     
-    const suggestionText = aiSuggestion?.suggestion 
-        ? `<p>${aiSuggestion.suggestion}</p>`
-        : '<p>If you\'d like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>';
+    const formatPlan = (plan: string) => {
+        if (!plan) return '';
+        return '<ul>' + plan.split('\n').map(line => `<li>${line.replace(/—/g, '&mdash;')}</li>`).join('') + '</ul>';
+    }
     
+    const formatBullets = (items: string) => {
+        if (!items) return '';
+        return '<ul>' + items.split('\n').map(item => `<li>${item}</li>`).join('') + '</ul>';
+    }
+    
+    const emailStyles = `
+        <style>
+            .container { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; color: #333; }
+            h2, h3 { color: #111; }
+            .section { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+            .label { font-weight: bold; color: #555; display: block; margin-bottom: 5px; }
+            .content { margin-bottom: 10px; }
+            .notes-box { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+            ul { padding-left: 20px; }
+            li { margin-bottom: 5px; }
+        </style>
+    `;
+
+    const ownerEmailHtml = `
+      <html><head>${emailStyles}</head><body><div class="container">
+          <h2>New Lead via Notes Taker</h2>
+          <div class="section">
+              <span class="label">From Page:</span>
+              <div class="content">${serviceName}</div>
+          </div>
+          <div class="section">
+              <span class="label">Lead Details:</span>
+              <ul>
+                  <li><strong>Name:</strong> ${name}</li>
+                  <li><strong>Email:</strong> ${email}</li>
+                  <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
+                  <li><strong>Industry:</strong> ${industry || 'Not provided'}</li>
+              </ul>
+          </div>
+          <div class="notes-box">
+              <span class="label">Original Notes:</span>
+              <pre style="white-space: pre-wrap; font-family: sans-serif;">${notes}</pre>
+          </div>
+          ${parsedAnalysis ? `
+          <h2>AI Revenue Analysis</h2>
+          <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
+          <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
+          <div class="section"><span class="label">Impact:</span> <div class="content">${parsedAnalysis.impact || ''}</div></div>
+          <div class="section"><span class="label">Fastest Fix:</span> <div class="content">${parsedAnalysis.fastestfix || ''}</div></div>
+          <div class="section"><span class="label">72h Plan:</span> <div class="content">${formatPlan(parsedAnalysis['72hplan'] || '')}</div></div>
+          <div class="section"><span class="label">Assets Needed:</span> <div class="content">${formatBullets(parsedAnalysis.assetsneeded || '')}</div></div>
+          <div class="section"><span class="label">KPIs:</span> <div class="content">${parsedAnalysis.kpis || ''}</div></div>
+          <div class="section"><span class="label">Deadline:</span> <div class="content">${parsedAnalysis.deadline || ''}</div></div>
+          <div class="section"><span class="label">CTA:</span> <div class="content">${parsedAnalysis.cta || ''}</div></div>
+          <div class="section"><span class="label">Fallback:</span> <div class="content">${parsedAnalysis.fallback || ''}</div></div>
+          ` : `
+          <h2>No AI Analysis Generated</h2>
+          <p>The AI analysis could not be generated for this lead.</p>
+          `}
+      </div></body></html>
+    `;
+
+    const userEmailHtml = `
+      <html><head>${emailStyles}</head><body><div class="container">
+          <h2>Your Notes from Raystrat Systems</h2>
+          <p>Hi ${name},</p>
+          <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of your notes and our initial analysis.</p>
+          <div class="notes-box">
+              <span class="label">Your Notes:</span>
+              <pre style="white-space: pre-wrap; font-family: sans-serif;">${notes}</pre>
+          </div>
+          ${parsedAnalysis ? `
+          <h2>Our Initial Analysis</h2>
+          <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
+          <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
+          <div class="section"><span class="label">Impact:</span> <div class="content">${parsedAnalysis.impact || ''}</div></div>
+          <div class="section"><span class="label">Fastest Fix:</span> <div class="content">${parsedAnalysis.fastestfix || ''}</div></div>
+          <h3>Your 72-Hour Action Plan</h3>
+          <div class="content">${formatPlan(parsedAnalysis['72hplan'] || '')}</div>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          <p><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
+          <p>If you're not ready, here's an alternative: ${parsedAnalysis.fallback || 'Let us know what would be a smaller first step for you.'}</p>
+          ` : `
+          <p>If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
+          `}
+          <p>Best,<br>The Raystrat Systems Team</p>
+      </div></body></html>
+    `;
+
     // Define the two emails to send
     const emailToOwner = {
       to: process.env.SENDGRID_FROM_EMAIL,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: `New Notes Lead from ${name} (${serviceName})`,
-      html: `
-          <h2>New Lead via Notes Taker</h2>
-          <p>You've received a new lead from the notes section on the <strong>${serviceName}</strong> page.</p>
-          <ul>
-              <li><strong>Name:</strong> ${name}</li>
-              <li><strong><strong>Email:</strong> ${email}</li>
-              <li><strong>Business:</strong> ${businessName || 'Not provided'}</li>
-              <li><strong>Industry:</strong> ${industry || 'Not provided'}</li>
-          </ul>
-          <h3>Notes:</h3>
-          <pre>${notes}</pre>
-          <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
-          ${suggestionText}
-      `,
+      subject: parsedAnalysis?.subject || `New Notes Lead from ${name} (${serviceName})`,
+      html: ownerEmailHtml,
     };
 
     const emailToUser = {
       to: email,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: `Your Notes on ${serviceName} from Raystrat Systems`,
-      html: `
-          <h2>Your Notes from Raystrat Systems</h2>
-          <p>Hi ${name},</p>
-          <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of the notes you took for your records:</p>
-          <hr>
-          <pre>${notes}</pre>
-          <hr>
-          <h3>Raystrat's Follow-Up Agent Analysis (AI) :</h3>
-          ${suggestionText}
-      `,
+      subject: parsedAnalysis?.subject || `Your Notes on ${serviceName} from Raystrat Systems`,
+      html: userEmailHtml,
     };
 
     // Send both emails in parallel
