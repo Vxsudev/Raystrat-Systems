@@ -257,11 +257,7 @@ function parseAIResponse(responseText: string): Record<string, string> {
             const sectionName = match[1].trim().toLowerCase().replace(/\s+/g, '');
             currentSection = sectionName;
             const content = line.substring(match[0].length).trim();
-            if (content) {
-              sections[currentSection] = content;
-            } else {
-              sections[currentSection] = '';
-            }
+            sections[currentSection] = content;
         } else if (currentSection && line.trim() !== '') {
             sections[currentSection] += (sections[currentSection] ? '\n' : '') + line;
         }
@@ -312,22 +308,13 @@ export async function saveAndSendNotes(
       // Fallback: AI fails, we proceed without analysis.
     }
     
-    const formatPlan = (plan: string) => {
-        if (!plan) return '';
-        return '<ul>' + plan.split('\n').map(line => `<li>${line.replace(/—/g, '&mdash;')}</li>`).join('') + '</ul>';
-    }
-    
-    const formatBullets = (items: string) => {
-        if (!items) return '';
-        return '<ul>' + items.split('\n').map(item => `<li>${item}</li>`).join('') + '</ul>';
-    }
-    
     const emailStyles = `
         <style>
-            .container { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; color: #333; }
+            body { font-family: sans-serif; color: #333; }
+            .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 5px; }
             h2, h3 { color: #111; }
-            .section { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
-            .label { font-weight: bold; color: #555; display: block; margin-bottom: 5px; }
+            .section { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+            .label { font-weight: bold; color: #555; display: block; margin-bottom: 4px; }
             .content { margin-bottom: 10px; }
             .notes-box { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 20px 0; }
             ul { padding-left: 20px; }
@@ -359,14 +346,8 @@ export async function saveAndSendNotes(
           <h2>AI Revenue Analysis</h2>
           <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
           <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
-          <div class="section"><span class="label">Impact:</span> <div class="content">${parsedAnalysis.impact || ''}</div></div>
-          <div class="section"><span class="label">Fastest Fix:</span> <div class="content">${parsedAnalysis.fastestfix || ''}</div></div>
-          <div class="section"><span class="label">72h Plan:</span> <div class="content">${formatPlan(parsedAnalysis['72hplan'] || '')}</div></div>
-          <div class="section"><span class="label">Assets Needed:</span> <div class="content">${formatBullets(parsedAnalysis.assetsneeded || '')}</div></div>
-          <div class="section"><span class="label">KPIs:</span> <div class="content">${parsedAnalysis.kpis || ''}</div></div>
-          <div class="section"><span class="label">Deadline:</span> <div class="content">${parsedAnalysis.deadline || ''}</div></div>
+          <div class="section"><span class="label">Suggestion:</span> <div class="content">${parsedAnalysis.suggestion || ''}</div></div>
           <div class="section"><span class="label">CTA:</span> <div class="content">${parsedAnalysis.cta || ''}</div></div>
-          <div class="section"><span class="label">Fallback:</span> <div class="content">${parsedAnalysis.fallback || ''}</div></div>
           ` : `
           <h2>No AI Analysis Generated</h2>
           <p>The AI analysis could not be generated for this lead.</p>
@@ -387,13 +368,9 @@ export async function saveAndSendNotes(
           <h2>Our Initial Analysis</h2>
           <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
           <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
-          <div class="section"><span class="label">Impact:</span> <div class="content">${parsedAnalysis.impact || ''}</div></div>
-          <div class="section"><span class="label">Fastest Fix:</span> <div class="content">${parsedAnalysis.fastestfix || ''}</div></div>
-          <h3>Your 72-Hour Action Plan</h3>
-          <div class="content">${formatPlan(parsedAnalysis['72hplan'] || '')}</div>
+          <div class="section"><span class="label">Suggestion:</span> <div class="content">${parsedAnalysis.suggestion || ''}</div></div>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
           <p><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
-          <p>If you're not ready, here's an alternative: ${parsedAnalysis.fallback || 'Let us know what would be a smaller first step for you.'}</p>
           ` : `
           <p>If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
           `}
@@ -405,14 +382,14 @@ export async function saveAndSendNotes(
     const emailToOwner = {
       to: process.env.SENDGRID_FROM_EMAIL,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: parsedAnalysis?.subject || `New Notes Lead from ${name} (${serviceName})`,
+      subject: `New Notes Lead from ${name} (${serviceName})`,
       html: ownerEmailHtml,
     };
 
     const emailToUser = {
       to: email,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: parsedAnalysis?.subject || `Your Notes on ${serviceName} from Raystrat Systems`,
+      subject: `Your Notes on ${serviceName} from Raystrat Systems`,
       html: userEmailHtml,
     };
 
