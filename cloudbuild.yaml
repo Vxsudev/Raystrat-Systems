@@ -9,7 +9,7 @@ steps:
   - '$_IMAGE'
   - '.'
   - '-f'
-  - 'apps/agents/Dockerfile'
+  - 'Dockerfile'
 images:
 - '$_IMAGE'
 substitutions:
