@@ -10,7 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { services } from '@/data/content';
 
 const NotesAnalyzerInputSchema = z.object({
   notes: z
@@ -20,7 +19,7 @@ const NotesAnalyzerInputSchema = z.object({
 export type NotesAnalyzerInput = z.infer<typeof NotesAnalyzerInputSchema>;
 
 const NotesAnalyzerOutputSchema = z.object({
-  suggestion: z.string().describe("A concise, one-paragraph analysis of the user's notes, suggesting the most relevant Raystrat Systems agent and linking to its service page. The tone should be helpful and consultative."),
+  response: z.string().describe("The full, structured email response as plain text."),
 });
 export type NotesAnalyzerOutput = z.infer<typeof NotesAnalyzerOutputSchema>;
 
@@ -30,30 +29,62 @@ export async function analyzeNotes(
   return notesAnalyzerFlow(input);
 }
 
-const serviceList = services.map(s => `- ${s.title} (${s.slug}): ${s.subhead}`).join('\n');
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystratsystems.com';
-
 const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
-  output: {schema: NotesAnalyzerOutputSchema},
-  prompt: `You are an expert AI consultant for Raystrat Systems, skilled in using Neuro-linguistic Programming (NLP) to understand and guide potential clients. Your goal is to analyze a user's notes, identify their core problems AND their underlying objections or hesitations, and then reframe them in a way that builds confidence and guides them towards a solution.
+  output: {schema: z.object({ response: z.string() }) },
+  prompt: `You are a revenue-focused note interpreter. Read the client’s notes and produce a short email-ready response that does three things: acknowledge the pain in their own words, diagnose the root cause in business terms, and prescribe a concrete fix they can execute within 72 hours. Keep it punchy, direct, and action-led.
 
-Your response should be a single, helpful, and consultative paragraph that does the following:
-1.  **Acknowledge the Concern, Not Just the Problem:** Start by acknowledging the user's situation. Do not just repeat their words. Instead, identify the deeper worry (e.g., "It sounds like you're concerned about reclaiming time without adding complexity," or "It seems the core issue is building a predictable sales pipeline, and past efforts have not provided the control you need.").
-2.  **Reframe and Dispel Objections:** Gently counter any implied objections. If they say "this is too expensive," reframe it as an investment in ROI. If they say "this seems complex," reframe it as a system that handles complexity for them. Use phrases like "A common perspective is..., but what our most successful clients find is..." or "That is a valid concern, and it is precisely why our approach focuses on..."
-3.  **Bridge to the Solution:** Seamlessly connect their reframed problem to the single most impactful Raystrat Systems agent.
-4.  **Provide a Clear Call to Action:** End with a direct call to action to book a free audit. This is the most important step. You MUST include a link to https://calendly.com/raystrat/15-min-audit.
+Do the following in order:
 
-The link format for a service page is: ${siteUrl}/services/{service_slug}
+1.  **Mirror the client’s phrasing:** open with a one–two sentence acknowledgment that reflects 2–3 exact phrases from their notes.
+2.  **Name one root cause:** describe the single most likely operational/process cause in business language. No lists.
+3.  **Quantify impact:** estimate the revenue/time loss in a single sentence using ranges if needed.
+4.  **Prescribe the fix:** give a one–two sentence solution that is the fastest, lowest-resistance path.
+5.  **Issue a 72-hour plan:** three command-style steps, each with owner label (client or us) and ETA in hours.
+6.  **Request assets:** bullet three–five specific items needed to start today.
+7.  **Define success:** list one–three measurable KPIs.
+8.  **Set a deadline:** give a concrete calendar date in the client’s timezone.
+9.  **Push a single CTA:** one clear next action the client must reply or do now.
+10. **Offer a fallback:** a simpler alternative if they stall.
 
-Here are the available services:
-${serviceList}
+**Tone rules:**
+*   Direct, pragmatic, zero fluff.
+*   One pain, one cause, one fix.
+*   Commands only; no suggestions or hedging.
+*   No apologies. No theory.
+*   Write like a senior operator, not a coach.
+*   Keep total length under 180 words.
 
-Analyze the user's notes below. Adopt the NLP consultant persona and generate the suggestion paragraph.
+**Content constraints:**
+*   If notes are vague (<20 words), default acknowledgment to: “You’ve flagged a bottleneck without details.” Then ask for exactly three clarifiers: channel, volume per week, and current follow-up timing. Still propose a minimal fix and a single CTA.
+*   If the problem is clearly outside sales/ops, reframe into the nearest commercial lever (lead capture, follow-up, offer clarity, booking friction).
+*   Never output multiple options; choose the highest-ROI path.
+
+**Output sections in plain text, in this order, each on its own line:**
+Subject:
+Preview:
+Pain:
+Diagnosis:
+Impact:
+Fastest fix:
+72h plan:
+Assets needed:
+KPIs:
+Deadline:
+CTA:
+Fallback:
+
+**72h plan formatting:**
+[Command] — Owner: [client|us] — ETA: [hours]
+[Command] — Owner: [client|us] — ETA: [hours]
+[Command] — Owner: [client|us] — ETA: [hours]
 
 **USER'S NOTES:**
-"{{{notes}}}"`,
+"{{{notes}}}"
+
+**RESPONSE:**
+`,
 });
 
 const notesAnalyzerFlow = ai.defineFlow(
@@ -64,6 +95,6 @@ const notesAnalyzerFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    return { response: output!.response };
   }
 );
