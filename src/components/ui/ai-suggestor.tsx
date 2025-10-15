@@ -2,7 +2,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { ContextualSuggestionState } from '@/app/actions';
+import { ContextualSuggestionState, getContextualSuggestion } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2, Send, Sparkles, User } from 'lucide-react';
@@ -96,7 +96,19 @@ export function AiSuggestor({
 }: AiSuggestorProps) {
   const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
-  const { pending: isPending } = useFormStatus();
+  const [isPending, startTransition] = React.useTransition();
+  
+  const clientAction = async (formData: FormData) => {
+    const query = formData.get('query') as string;
+    if (!query || isPending) return;
+
+    startTransition(async () => {
+      setConversation(prev => [...prev, { actor: 'user', text: query }]);
+      formRef.current?.reset();
+      await handleFormAction(formData);
+    });
+  };
+
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -104,10 +116,10 @@ export function AiSuggestor({
           <ConversationHistory conversation={conversation} isPending={isPending} onNavigate={onNavigate} />
       ) : (
         <div className="flex-1 mb-4 flex flex-col justify-center">
-            <h2 className={cn("font-bold", variant === 'dialog' ? 'text-4xl' : 'text-2xl')}>
+            <h2 className={cn("font-bold", variant === 'dialog' ? 'text-4xl' : 'text-3xl')}>
                 <span className="text-primary">Hello, {user?.displayName || 'there'}</span>
                 <br />
-                <span className={cn("text-muted-foreground", variant === 'dialog' ? '' : 'text-xl')}>How can I help you?</span>
+                <span className={cn("text-muted-foreground", variant === 'dialog' ? '' : 'text-2xl')}>How can I help you?</span>
             </h2>
             
             <div className={cn("mt-8", variant === 'dialog' ? '' : 'mt-6')}>
@@ -117,12 +129,7 @@ export function AiSuggestor({
                         service.presetQuestions.map((q, i) => (
                            <form
                                 key={i}
-                                action={async (formData: FormData) => {
-                                    const query = formData.get('query') as string;
-                                    if (!query) return;
-                                    setConversation(prev => [...prev, { actor: 'user', text: query }]);
-                                    await handleFormAction(formData);
-                                }}
+                                action={clientAction}
                             >
                                 <input type="hidden" name="pageTitle" value={pageTitle} />
                                 <input type="hidden" name="pageContent" value={pageContent} />
@@ -145,13 +152,7 @@ export function AiSuggestor({
 
        <form 
         ref={formRef} 
-        action={async (formData) => {
-            const query = formData.get('query') as string;
-            if (!query || isPending) return;
-            setConversation(prev => [...prev, { actor: 'user', text: query }]);
-            formRef.current?.reset();
-            await handleFormAction(formData);
-        }}
+        action={clientAction}
         className="flex gap-2 items-center mt-auto"
       >
           <input type="hidden" name="pageTitle" value={pageTitle} />
