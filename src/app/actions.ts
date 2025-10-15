@@ -357,18 +357,24 @@ export async function saveAndSendNotes(
 
     const userEmailHtml = `
       <html><head>${emailStyles}</head><body><div class="container">
-          <h2>Your Notes from Raystrat Systems</h2>
+          <h2>Your Analysis from Raystrat Systems</h2>
           <p>Hi ${name},</p>
-          <p>Thank you for your interest in the <strong>${serviceName}</strong>. Here is a copy of your notes and our initial analysis.</p>
-          <div class="notes-box">
-              <span class="label">Your Notes:</span>
-              <pre style="white-space: pre-wrap; font-family: sans-serif;">${notes}</pre>
-          </div>
+          <p>Thank you for sharing your notes with us. Based on what you wrote, here is our initial analysis.</p>
           ${parsedAnalysis ? `
-          <h2>Our Initial Analysis</h2>
-          <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
-          <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
-          <div class="section"><span class="label">Suggestion:</span> <div class="content">${parsedAnalysis.suggestion || ''}</div></div>
+          <div class="notes-box">
+            <div class="section">
+              <span class="label">Pain:</span> 
+              <div class="content">${parsedAnalysis.pain || ''}</div>
+            </div>
+            <div class="section">
+              <span class="label">Diagnosis:</span> 
+              <div class="content">${parsedAnalysis.diagnosis || ''}</div>
+            </div>
+            <div class="section">
+              <span class="label">Suggestion:</span> 
+              <div class="content">${parsedAnalysis.suggestion || ''}</div>
+            </div>
+          </div>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
           <p><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
           ` : `
@@ -389,7 +395,7 @@ export async function saveAndSendNotes(
     const emailToUser = {
       to: email,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: `Your Notes on ${serviceName} from Raystrat Systems`,
+      subject: `Your Analysis from Raystrat Systems`,
       html: userEmailHtml,
     };
 

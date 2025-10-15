@@ -73,17 +73,8 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
 
   // This function will be called by the popup to trigger the animation
   const handleAnimateToNotes = (textToAnimate: string) => {
-    const fullText = `${noteContent}\n\nAI Suggestion: ${textToAnimate}`;
-    let i = noteContent.length; // Start typing from the end of existing content
-    
-    const typingInterval = setInterval(() => {
-        if (i < fullText.length) {
-            setNoteContent(fullText.substring(0, i + 1));
-            i++;
-        } else {
-            clearInterval(typingInterval);
-        }
-    }, 20); // Adjust typing speed here
+    // We are no longer animating the text into the notes,
+    // so this function can be left empty or used for other effects.
   };
 
 
