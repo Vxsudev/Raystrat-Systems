@@ -15,6 +15,9 @@ const NotesAnalyzerInputSchema = z.object({
   notes: z
     .string()
     .describe("The user's notes, which describe their business problems or questions."),
+  serviceName: z
+    .string()
+    .describe("The name of the service page the user is currently viewing. This provides context for the analysis."),
 });
 export type NotesAnalyzerInput = z.infer<typeof NotesAnalyzerInputSchema>;
 
@@ -33,25 +36,28 @@ const prompt = ai.definePrompt({
   name: 'notesAnalyzerPrompt',
   input: {schema: NotesAnalyzerInputSchema},
   output: {schema: z.object({ response: z.string() }) },
-  prompt: `You are a revenue-focused note interpreter. Read the client’s notes and produce a short, email-ready response.
+  prompt: `You are a revenue-focused note interpreter. Your task is to read a client’s notes and produce a short, email-ready response.
 
-**Instructions:**
+**CONTEXT:**
+The user wrote these notes while on the "{{serviceName}}" service page. You MUST use this context to make your diagnosis and suggestion more specific, detailed, and relevant.
+
+**INSTRUCTIONS:**
 1.  Read the user's notes carefully.
-2.  You MUST work with the information provided, no matter how brief. You are not allowed to ask for more details. Make your best expert inference.
+2.  You are not allowed to ask for more information. You MUST work with the information provided, no matter how brief. Make your best expert inference based on their notes and the context of the "{{serviceName}}" page.
 3.  Produce a response with ONLY the following sections, in this exact order, each on a new line:
     *   **Pain:** Acknowledge the user's stated problem in their own words.
-    *   **Diagnosis:** Describe the single most likely root cause in simple, operational business language. No jargon. No lists.
-    *   **Suggestion:** Propose a single, concrete next step to address the diagnosis. This must be a simple, actionable command.
+    *   **Diagnosis:** Describe the single most likely root cause in simple, operational business language. Your diagnosis MUST be more elaborate and directly relate to the purpose of the {{serviceName}}.
+    *   **Suggestion:** Propose a single, concrete next step to address the diagnosis. This suggestion MUST be more detailed and explicitly mention how the {{serviceName}} solves their problem. It MUST end with a concluding sentence about deploying the {{serviceName}} agent.
     *   **CTA:** Write a clear, one-sentence call to action that directs the user to book a free audit. This MUST include the link: https://calendly.com/raystrat/15-min-audit
 
-**Tone Rules:**
-*   Direct, pragmatic, zero fluff.
+**TONE RULES:**
+*   Direct, pragmatic, and professional.
 *   One pain, one diagnosis, one suggestion.
-*   Use simple, operational language. No marketing buzzwords.
+*   Use simple, operational language. No marketing buzzwords or jargon.
 *   Write like a senior operator, not a coach.
 *   Keep the total response under 120 words.
 
-**Output sections in plain text, in this order, each on its own line:**
+**OUTPUT SECTIONS (plain text, each on its own line):**
 Pain:
 Diagnosis:
 Suggestion:
@@ -60,7 +66,7 @@ CTA:
 **USER'S NOTES:**
 "{{{notes}}}"
 
-**RESPONSE:**
+**YOUR RESPONSE:**
 `,
 });
 

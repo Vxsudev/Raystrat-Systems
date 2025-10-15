@@ -301,7 +301,7 @@ export async function saveAndSendNotes(
     let parsedAnalysis: Record<string, string> | null = null;
 
     try {
-      const analysisInput: NotesAnalyzerInput = { notes };
+      const analysisInput: NotesAnalyzerInput = { notes, serviceName };
       analysisResult = await analyzeNotes(analysisInput);
       if (analysisResult?.response) {
         parsedAnalysis = parseAIResponse(analysisResult.response);
