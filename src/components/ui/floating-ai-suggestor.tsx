@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useRef, useActionState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getContextualSuggestion, ContextualSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -74,12 +74,16 @@ export function FloatingAiSuggestor() {
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
 
-  const [state, formAction, isPending] = useActionState<ContextualSuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
+  const [state, setState] = useState<ContextualSuggestionState>({ message: null, errors: {}, data: null });
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
-  const lastProcessedId = useRef<number | null>(null);
   
   const slug = pathname.split('/').pop();
   const currentService = services.find(s => s.slug === slug);
+  
+  const handleFormAction = async (formData: FormData) => {
+    const result = await getContextualSuggestion(state, formData);
+    setState(result);
+  };
   
   // Load conversation from localStorage on mount
   useEffect(() => {
@@ -119,19 +123,26 @@ export function FloatingAiSuggestor() {
 
   // Handle the result from the server action
   useEffect(() => {
-    if (state.id && state.id !== lastProcessedId.current) {
-        lastProcessedId.current = state.id; // Mark this response as processed
-
-        if (state.message === 'Success' && state.data) {
+    // Check if there's a successful response to process
+    if (state.message === 'Success' && state.data) {
+        // Ensure we don't process the same response multiple times
+        if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'user') {
             const aiResponseData = state.data as ContextualAssistantOutput;
             const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
             setConversation(prev => [...prev, { actor: 'ai', text: aiResponseText, data: aiResponseData }]);
-        } else if (state.message === 'Error') {
+        }
+    } else if (state.message === 'Error') {
+         if (conversation.length > 0 && conversation[conversation.length - 1].actor === 'user') {
             const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
             setConversation(prev => [...prev, { actor: 'ai', text: `Error: ${errorMessage}` }]);
-        }
+         }
     }
-  }, [state]);
+  }, [state, conversation]);
+
+  const handleNewConversation = () => {
+    setConversation([]);
+    // The useEffect for 'conversation' will handle saving the empty array to localStorage
+  };
   
   return (
     <>
@@ -143,7 +154,12 @@ export function FloatingAiSuggestor() {
                       <Sparkles className="w-6 h-6 text-primary" />
                       Agent Assist
                   </SheetTitle>
-                  <SheetClose />
+                   <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={handleNewConversation}>
+                      New Conversation
+                    </Button>
+                    <SheetClose />
+                  </div>
               </SheetHeader>
               <div className="flex-1 overflow-y-auto p-4">
                   <AiSuggestor 
@@ -153,8 +169,7 @@ export function FloatingAiSuggestor() {
                       onNavigate={() => setIsOpen(false)}
                       conversation={conversation}
                       setConversation={setConversation}
-                      formAction={formAction}
-                      isPending={isPending}
+                      handleFormAction={handleFormAction}
                       formState={state}
                       variant='sheet'
                   />

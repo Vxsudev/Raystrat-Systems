@@ -29,8 +29,7 @@ interface AiSuggestorProps {
   // --- Props passed down from parent ---
   conversation: ConversationTurn[];
   setConversation: React.Dispatch<React.SetStateAction<ConversationTurn[]>>;
-  formAction: (formData: FormData) => void;
-  isPending: boolean;
+  handleFormAction: (formData: FormData) => Promise<void>;
   formState: ContextualSuggestionState;
   variant?: 'dialog' | 'sheet';
 }
@@ -43,7 +42,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
     if (scrollRef.current) {
       scrollRef.current.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [conversation]);
+  }, [conversation, isPending]);
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto mb-4 -mr-4 pr-4 space-y-6">
@@ -54,10 +53,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
                 {turn.actor === 'user' ? <User className="w-5 h-5 text-primary" /> : <Sparkles className="w-5 h-5 text-primary" />}
             </div>
             <div className="pt-1.5 prose prose-invert prose-sm max-w-none text-foreground/80">
-                {(turn.actor === 'ai' && !turn.text && isPending) 
-                ? <Loader2 className="animate-spin" />
-                : <ReactMarkdown>{turn.text}</ReactMarkdown>
-                }
+                <ReactMarkdown>{turn.text}</ReactMarkdown>
             </div>
           </div>
           {turn.actor === 'ai' && turn.data?.suggestedService && turn.data.suggestedService.slug && (
@@ -94,13 +90,13 @@ export function AiSuggestor({
     onNavigate,
     conversation,
     setConversation,
-    formAction,
-    isPending,
+    handleFormAction,
     formState, 
     variant = 'dialog' 
 }: AiSuggestorProps) {
   const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
+  const { pending: isPending } = useFormStatus();
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -121,11 +117,11 @@ export function AiSuggestor({
                         service.presetQuestions.map((q, i) => (
                            <form
                                 key={i}
-                                action={(formData: FormData) => {
+                                action={async (formData: FormData) => {
                                     const query = formData.get('query') as string;
                                     if (!query) return;
                                     setConversation(prev => [...prev, { actor: 'user', text: query }]);
-                                    formAction(formData);
+                                    await handleFormAction(formData);
                                 }}
                             >
                                 <input type="hidden" name="pageTitle" value={pageTitle} />
@@ -149,12 +145,12 @@ export function AiSuggestor({
 
        <form 
         ref={formRef} 
-        action={(formData) => {
+        action={async (formData) => {
             const query = formData.get('query') as string;
             if (!query || isPending) return;
             setConversation(prev => [...prev, { actor: 'user', text: query }]);
-            formAction(formData);
             formRef.current?.reset();
+            await handleFormAction(formData);
         }}
         className="flex gap-2 items-center mt-auto"
       >
