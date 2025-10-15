@@ -43,6 +43,7 @@ export type ServiceSuggestionState = {
     suggestedServiceTitle: string;
     suggestedServiceSlug: string;
     justification: string;
+    problemDescription: string;
   } | null;
 }
 
@@ -67,7 +68,7 @@ export async function suggestServiceAction(
     return {
       message: 'Success',
       errors: {},
-      data: suggestion,
+      data: { ...suggestion, problemDescription: validatedFields.data.problemDescription },
     };
   } catch (error: any) {
     console.error('Service Suggestion Error:', error);
@@ -251,18 +252,17 @@ function parseAIResponse(responseText: string): Record<string, string> {
     const sections: Record<string, string> = {};
     const lines = responseText.split('\n');
     
-    // Adjusted to handle multi-line sections correctly.
-    const sectionHeaders = ["Pain:", "Diagnosis:", "Suggestion:", "CTA:"];
-    let currentSection = '';
+    const sectionHeaders = ["Subject:", "Pain:", "Diagnosis:", "Suggestion:", "CTA:"];
+    let currentSectionKey = '';
     
     for (const line of lines) {
         const headerMatch = sectionHeaders.find(h => line.startsWith(h));
         if (headerMatch) {
-            currentSection = headerMatch.replace(':', '').trim().toLowerCase();
+            currentSectionKey = headerMatch.replace(':', '').trim().toLowerCase();
             const content = line.substring(headerMatch.length).trim();
-            sections[currentSection] = content;
-        } else if (currentSection && line.trim() !== '') {
-            sections[currentSection] = (sections[currentSection] ? sections[currentSection] + '\n' : '') + line.trim();
+            sections[currentSectionKey] = content;
+        } else if (currentSectionKey && line.trim() !== '') {
+            sections[currentSectionKey] = (sections[currentSectionKey] ? sections[currentSectionKey] + '\n' : '') + line.trim();
         }
     }
     return sections;
@@ -299,16 +299,20 @@ export async function saveAndSendNotes(
   try {
     let analysisResult: NotesAnalyzerOutput | null = null;
     let parsedAnalysis: Record<string, string> | null = null;
+    let emailSubject = `Your Analysis from Raystrat Systems`; // Default subject
 
     try {
       const analysisInput: NotesAnalyzerInput = { notes, serviceName };
       analysisResult = await analyzeNotes(analysisInput);
       if (analysisResult?.response) {
         parsedAnalysis = parseAIResponse(analysisResult.response);
+        if (parsedAnalysis.subject) {
+            emailSubject = parsedAnalysis.subject;
+        }
       }
     } catch (aiError) {
       console.error('AI Note Analysis Error:', aiError);
-      // Fallback: AI fails, we proceed without analysis.
+      // Fallback: AI fails, we proceed without analysis but still send the notes.
     }
     
     const emailStyles = `
@@ -322,7 +326,7 @@ export async function saveAndSendNotes(
             .notes-box { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 20px 0; }
             ul { padding-left: 20px; }
             li { margin-bottom: 5px; }
-            pre { white-space: pre-wrap; font-family: sans-serif; }
+            pre { white-space: pre-wrap; font-family: sans-serif; font-size: 14px; }
         </style>
     `;
 
@@ -398,14 +402,14 @@ export async function saveAndSendNotes(
     const emailToOwner = {
       to: process.env.SENDGRID_FROM_EMAIL,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: `New Notes Lead from ${name} (${serviceName})`,
+      subject: `Notes Lead: ${emailSubject}`,
       html: ownerEmailHtml,
     };
 
     const emailToUser = {
       to: email,
       from: process.env.SENDGRID_FROM_EMAIL,
-      subject: `Your Analysis from Raystrat Systems`,
+      subject: emailSubject,
       html: userEmailHtml,
     };
 
@@ -815,3 +819,4 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+

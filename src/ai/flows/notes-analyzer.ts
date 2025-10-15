@@ -45,6 +45,7 @@ The user wrote these notes while on the "{{serviceName}}" service page. You MUST
 1.  Read the user's notes carefully.
 2.  You are not allowed to ask for more information. You MUST work with the information provided, no matter how brief. Make your best expert inference based on their notes and the context of the "{{serviceName}}" page.
 3.  Produce a response with ONLY the following sections, in this exact order, each on a new line:
+    *   **Subject:** A compelling, personalized email subject line based on the user's problem.
     *   **Pain:** Acknowledge the user's stated problem in their own words.
     *   **Diagnosis:** Describe the single most likely root cause in simple, operational business language. Your diagnosis MUST be more elaborate and directly relate to the purpose of the {{serviceName}}.
     *   **Suggestion:** Propose a single, concrete next step to address the diagnosis. This suggestion MUST be more detailed and explicitly mention how the {{serviceName}} solves their problem. It MUST end with a concluding sentence about deploying the {{serviceName}} agent.
@@ -56,8 +57,10 @@ The user wrote these notes while on the "{{serviceName}}" service page. You MUST
 *   Use simple, operational language. No marketing buzzwords or jargon.
 *   Write like a senior operator, not a coach.
 *   Keep the total response under 120 words.
+*   The 'Suggestion' must NOT contain jargon and must be immediately actionable in its description.
 
 **OUTPUT SECTIONS (plain text, each on its own line):**
+Subject:
 Pain:
 Diagnosis:
 Suggestion:
@@ -81,3 +84,4 @@ const notesAnalyzerFlow = ai.defineFlow(
     return { response: output!.response };
   }
 );
+
