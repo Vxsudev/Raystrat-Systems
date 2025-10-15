@@ -73,13 +73,14 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
 
   // This function will be called by the popup to trigger the animation
   const handleAnimateToNotes = (textToAnimate: string) => {
-    // Combine the initial note with the justification
-    const fullText = (initialNote ? `${initialNote}\n\n` : '') + `Justification: ${textToAnimate}`;
+    // Append the justification to the existing note content
+    const fullText = (noteContent ? `${noteContent}\n\n` : '') + `Justification: ${textToAnimate}`;
 
-    let i = 0;
+    // A simple typewriter effect
+    let i = noteContent.length; // Start typing from the end of existing content
     const typingInterval = setInterval(() => {
       if (i < fullText.length) {
-        setNoteContent(prev => fullText.substring(0, prev.length + 1));
+        setNoteContent(prev => fullText.substring(0, i + 1));
         i++;
       } else {
         clearInterval(typingInterval);

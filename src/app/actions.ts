@@ -322,6 +322,7 @@ export async function saveAndSendNotes(
             .notes-box { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 20px 0; }
             ul { padding-left: 20px; }
             li { margin-bottom: 5px; }
+            pre { white-space: pre-wrap; font-family: sans-serif; }
         </style>
     `;
 
@@ -343,7 +344,7 @@ export async function saveAndSendNotes(
           </div>
           <div class="notes-box">
               <span class="label">Original Notes:</span>
-              <pre style="white-space: pre-wrap; font-family: sans-serif;">${notes}</pre>
+              <pre>${notes}</pre>
           </div>
           ${parsedAnalysis ? `
           <h2>AI Revenue Analysis</h2>
@@ -362,25 +363,32 @@ export async function saveAndSendNotes(
       <html><head>${emailStyles}</head><body><div class="container">
           <h2>Your Analysis from Raystrat Systems</h2>
           <p>Hi ${name},</p>
-          <p>Thank you for sharing your notes with us. Based on what you wrote, here is our initial analysis.</p>
-          ${parsedAnalysis ? `
-          <div class="notes-box" style="padding-top: 10px; padding-bottom: 10px;">
-            <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
-              <span class="label">Pain:</span> 
-              <div class="content">${parsedAnalysis.pain || ''}</div>
-            </div>
-            <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
-              <span class="label">Diagnosis:</span> 
-              <div class="content">${parsedAnalysis.diagnosis || ''}</div>
-            </div>
-            <div class="section" style="border-bottom: 0; padding-bottom: 0; margin-bottom: 0;">
-              <span class="label">Suggestion:</span> 
-              <div class="content" style="margin-bottom: 0;">${parsedAnalysis.suggestion || ''}</div>
-            </div>
+          <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
+          
+          <div class="notes-box">
+              <span class="label">Your Original Notes:</span>
+              <pre>${notes}</pre>
           </div>
-          <p><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
+
+          ${parsedAnalysis ? `
+            <h3>Our Initial Analysis</h3>
+            <div style="border-top: 1px solid #ddd; padding-top: 15px;">
+              <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
+                <span class="label">Pain:</span> 
+                <div class="content">${parsedAnalysis.pain || ''}</div>
+              </div>
+              <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
+                <span class="label">Diagnosis:</span> 
+                <div class="content">${parsedAnalysis.diagnosis || ''}</div>
+              </div>
+              <div class="section" style="border-bottom: 0; padding-bottom: 0; margin-bottom: 0;">
+                <span class="label">Suggestion:</span> 
+                <div class="content" style="margin-bottom: 0;">${parsedAnalysis.suggestion || ''}</div>
+              </div>
+            </div>
+            <p style="margin-top: 20px;"><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
           ` : `
-          <p>If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
+            <p style="margin-top: 20px;">If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
           `}
           <p>Best,<br>The Raystrat Systems Team</p>
       </div></body></html>
