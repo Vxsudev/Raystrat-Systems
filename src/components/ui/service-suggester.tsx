@@ -1,4 +1,3 @@
-
 // src/components/ui/service-suggester.tsx
 'use client';
 
@@ -44,6 +43,10 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
       className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
       onClick={onClick}
     >
+        <span className="relative flex h-3 w-3 mr-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
       <span className="ml-2 font-semibold hidden sm:inline">Suggest an Agent</span>
     </Button>
   );
@@ -59,7 +62,6 @@ export function ServiceSuggester() {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Automatically open the dialog on the homepage after a delay
   useEffect(() => {
     const hasSeenPopup = sessionStorage.getItem('hasSeenSuggesterPopup');
     if (!hasSeenPopup) {
@@ -74,7 +76,6 @@ export function ServiceSuggester() {
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
-      // Reset form when closing the dialog
       setSuggestion(null);
       setState({ message: null, errors: {}, data: null });
       formRef.current?.reset();
@@ -91,15 +92,14 @@ export function ServiceSuggester() {
       const suggestionData = state.data as ServiceSuggesterOutput;
       setSuggestion(suggestionData);
 
-      toast({
-        title: 'Agent Found!',
-        description: suggestionData.justification,
-      });
-
       const note = (formRef.current?.elements.namedItem('bottleneck') as HTMLInputElement)?.value || '';
-      router.push(`/services/${suggestionData.suggestedServiceSlug}?note=${encodeURIComponent(note)}`);
       
-      // Delay closing to allow user to see the change
+      const params = new URLSearchParams();
+      params.set('note', note);
+      params.set('justification', suggestionData.justification);
+      
+      router.push(`/services/${suggestionData.suggestedServiceSlug}?${params.toString()}`);
+      
       setTimeout(() => handleOpenChange(false), 500);
     } else if (state.message === 'Error') {
        toast({
@@ -153,11 +153,11 @@ export function ServiceSuggester() {
                   required
                   onKeyDown={handleKeyDown}
                 />
-                {state.errors?.problemDescription && (
-                  <p className="text-sm text-destructive mt-1">{state.errors.problemDescription[0]}</p>
+                 {state.errors?.problemDescription && (
+                  <p className="text-sm text-destructive mt-1 h-4">{state.errors.problemDescription[0]}</p>
                 )}
                 {state.errors?.general && (
-                    <p className="text-sm text-destructive mt-1">{state.errors.general[0]}</p>
+                    <p className="text-sm text-destructive mt-1 h-4">{state.errors.general[0]}</p>
                 )}
               </div>
               <div className="pt-2">

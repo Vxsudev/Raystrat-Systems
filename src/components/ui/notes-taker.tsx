@@ -1,4 +1,3 @@
-
 // src/components/ui/notes-taker.tsx
 'use client';
 
@@ -52,14 +51,12 @@ function SubmitButton() {
 
 interface NotesTakerProps {
   serviceName: string;
+  initialNote?: string;
+  onNoteChange?: (newNote: string) => void;
 }
 
-export function NotesTaker({ serviceName }: NotesTakerProps) {
+export function NotesTaker({ serviceName, initialNote = '', onNoteChange }: NotesTakerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  
-  const searchParams = useSearchParams();
-  const initialNote = searchParams.get('note') || '';
-  
   const [notes, setNotes] = useState(initialNote);
   const [state, formAction] = useActionState(saveAndSendNotes, {
     message: null,
@@ -68,6 +65,17 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    setNotes(initialNote);
+  }, [initialNote]);
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNotes(e.target.value);
+    if (onNoteChange) {
+        onNoteChange(e.target.value);
+    }
+  };
+  
   useEffect(() => {
     if (state?.message === 'Success! Your notes have been sent to your email.') {
       toast({
@@ -94,7 +102,7 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
         <Textarea
           placeholder="Your notes should be specific to your business for maximum personalisation from our agents. Shoot!"
           value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+          onChange={handleNoteChange}
           className="min-h-[120px] text-base"
         />
         <DialogTrigger asChild>
@@ -109,7 +117,7 @@ export function NotesTaker({ serviceName }: NotesTakerProps) {
         <p
           className={cn(
             'text-xs text-center text-muted-foreground transition-opacity',
-            notesAreEmpty && !initialNote ? 'opacity-100' : 'opacity-0'
+            notesAreEmpty ? 'opacity-100' : 'opacity-0'
           )}
         >
           Jot down your questions, ideas and requirements as you read. Save the note to see our operations and follow-up agents in action!

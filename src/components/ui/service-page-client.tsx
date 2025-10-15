@@ -1,16 +1,60 @@
-
+// src/components/ui/service-page-client.tsx
 'use client';
 
+import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { services } from '@/data/content';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { CalendlyButton } from '@/components/ui/calendly-button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { FavoriteAgentButton } from '@/components/ui/favorite-agent-button';
 import { NotesTaker } from '@/components/ui/notes-taker';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import { Button } from './button';
+
+
+interface JustificationPopupProps {
+  justification: string;
+  onAnimate: (text: string) => void;
+}
+
+function JustificationPopup({ justification, onAnimate }: JustificationPopupProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 500); // Delay appearance
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleDismiss = () => {
+    setIsVisible(false);
+    onAnimate(justification);
+  };
+
+  return (
+     <div className={cn(
+        "fixed bottom-20 right-6 z-50 w-full max-w-sm rounded-lg border border-primary bg-card text-card-foreground shadow-2xl transition-all duration-300",
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+     )}>
+      <div className="p-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h4 className="font-bold font-headline text-primary">Agent Found!</h4>
+            <p className="mt-1 text-sm text-foreground/80">{justification}</p>
+          </div>
+          <Button variant="ghost" size="icon" className="h-7 w-7 -mr-2 -mt-2 shrink-0" onClick={handleDismiss}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 interface ServicePageClientProps {
   slug: string;
@@ -18,13 +62,32 @@ interface ServicePageClientProps {
 }
 
 export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientProps) {
-  // Find the full service object on the client side using the slug prop
   const service = services.find((s) => s.slug === slug);
   const nextService = nextServiceSlug ? services.find((s) => s.slug === nextServiceSlug) : undefined;
+  
+  const searchParams = useSearchParams();
+  const initialNote = searchParams.get('note') || '';
+  const justification = searchParams.get('justification');
+
+  const [noteContent, setNoteContent] = useState(initialNote);
+
+  // This function will be called by the popup to trigger the animation
+  const handleAnimateToNotes = (textToAnimate: string) => {
+    const fullText = `${noteContent}\n\nAI Suggestion: ${textToAnimate}`;
+    let i = noteContent.length; // Start typing from the end of existing content
+    
+    const typingInterval = setInterval(() => {
+        if (i < fullText.length) {
+            setNoteContent(fullText.substring(0, i + 1));
+            i++;
+        } else {
+            clearInterval(typingInterval);
+        }
+    }, 20); // Adjust typing speed here
+  };
+
 
   if (!service) {
-    // This could be a 404 page or a loading state, but for now we'll just return null
-    // as the page logic in `page.tsx` should have already handled `notFound()`.
     return null;
   }
 
@@ -33,6 +96,12 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
+       {justification && (
+        <JustificationPopup 
+          justification={justification} 
+          onAnimate={handleAnimateToNotes}
+        />
+      )}
       <main className="flex-1">
         <article className="py-16 md:py-24 lg:py-32">
           <div className="container">
@@ -72,7 +141,11 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
                         <FavoriteAgentButton agentName={service.title} agentSlug={service.slug} />
                       </div>
                       <Separator className="my-6" />
-                      <NotesTaker serviceName={service.title} />
+                      <NotesTaker 
+                        serviceName={service.title} 
+                        initialNote={noteContent}
+                        onNoteChange={setNoteContent}
+                      />
                 </div>
               </aside>
             </div>
