@@ -72,7 +72,7 @@ function ConversationHistory({ conversation, isPending, onNavigate }: { conversa
           )}
         </div>
       ))}
-       {isPending && conversation.length > 0 && conversation[conversation.length - 1]?.actor !== 'ai' && (
+       {isPending && conversation.length > 0 && conversation[conversation.length - 1]?.actor === 'user' && (
            <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-muted border">
                 <Sparkles className="w-5 h-5 text-primary" />
@@ -101,19 +101,6 @@ export function AiSuggestor({
 }: AiSuggestorProps) {
   const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
-  const [currentQuery, setCurrentQuery] = useState('');
-  
-  useEffect(() => {
-    // When a form submission starts, add the user's query to the conversation
-    if (isPending && currentQuery) {
-      setConversation(prev => [
-        ...prev,
-        { actor: 'user', text: currentQuery },
-      ]);
-      setCurrentQuery(''); // Clear the temp state
-    }
-  }, [isPending, currentQuery, setConversation]);
-
   
   return (
     <div className="w-full h-full flex flex-col">
@@ -137,7 +124,7 @@ export function AiSuggestor({
                                 action={(formData: FormData) => {
                                     const query = formData.get('query') as string;
                                     if (!query) return;
-                                    setCurrentQuery(query);
+                                    setConversation(prev => [...prev, { actor: 'user', text: query }]);
                                     formAction(formData);
                                 }}
                             >
@@ -165,7 +152,7 @@ export function AiSuggestor({
         action={(formData) => {
             const query = formData.get('query') as string;
             if (!query || isPending) return;
-            setCurrentQuery(query);
+            setConversation(prev => [...prev, { actor: 'user', text: query }]);
             formAction(formData);
             formRef.current?.reset();
         }}

@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useActionState } from 'react';
 import { getContextualSuggestion, ContextualSuggestionState } from '@/app/actions';
 import { cn } from '@/lib/utils';
 import {
@@ -74,21 +74,13 @@ export function FloatingAiSuggestor() {
   const [pageTitle, setPageTitle] = useState('');
   const [pageContent, setPageContent] = useState('');
 
-  const [state, setState] = useState<ContextualSuggestionState>({ message: null, data: null, errors: {}, id: null });
-  const [isPending, setIsPending] = useState(false);
+  const [state, formAction, isPending] = useActionState<ContextualSuggestionState, FormData>(getContextualSuggestion, { message: null, data: null, errors: {}, id: null });
   const [conversation, setConversation] = useState<ConversationTurn[]>([]);
   const lastProcessedId = useRef<number | null>(null);
   
   const slug = pathname.split('/').pop();
   const currentService = services.find(s => s.slug === slug);
-
-  const handleFormAction = async (formData: FormData) => {
-    setIsPending(true);
-    const result = await getContextualSuggestion(state, formData);
-    setState(result);
-    setIsPending(false);
-  }
-
+  
   // Load conversation from localStorage on mount
   useEffect(() => {
     if (!isOpen) return;
@@ -133,28 +125,10 @@ export function FloatingAiSuggestor() {
         if (state.message === 'Success' && state.data) {
             const aiResponseData = state.data as ContextualAssistantOutput;
             const aiResponseText = aiResponseData.response || 'Sorry, I could not generate a response.';
-            
-            setConversation(prev => {
-                // Replace the pending AI placeholder with the actual response
-                const newConversation = [...prev];
-                const lastTurn = newConversation[newConversation.length - 1];
-                if (lastTurn?.actor === 'ai' && !lastTurn.text) {
-                    newConversation[newConversation.length - 1] = { actor: 'ai', text: aiResponseText, data: aiResponseData };
-                    return newConversation;
-                }
-                return [...prev, { actor: 'ai', text: aiResponseText, data: aiResponseData }];
-            });
+            setConversation(prev => [...prev, { actor: 'ai', text: aiResponseText, data: aiResponseData }]);
         } else if (state.message === 'Error') {
             const errorMessage = state.errors?.general?.[0] || 'An unknown error occurred.';
-            setConversation(prev => {
-                 const newConversation = [...prev];
-                const lastTurn = newConversation[newConversation.length - 1];
-                if (lastTurn?.actor === 'ai' && !lastTurn.text) {
-                    newConversation[newConversation.length - 1] = { actor: 'ai', text: `Error: ${errorMessage}` };
-                    return newConversation;
-                }
-                return [...prev, { actor: 'ai', text: `Error: ${errorMessage}` }];
-            });
+            setConversation(prev => [...prev, { actor: 'ai', text: `Error: ${errorMessage}` }]);
         }
     }
   }, [state]);
@@ -179,7 +153,7 @@ export function FloatingAiSuggestor() {
                       onNavigate={() => setIsOpen(false)}
                       conversation={conversation}
                       setConversation={setConversation}
-                      formAction={handleFormAction}
+                      formAction={formAction}
                       isPending={isPending}
                       formState={state}
                       variant='sheet'
