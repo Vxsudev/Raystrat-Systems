@@ -1,6 +1,7 @@
 // src/components/ui/ai-suggestor.tsx
 'use client';
 
+import * as React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { ContextualSuggestionState, getContextualSuggestion } from '@/app/actions';
 import { Input } from '@/components/ui/input';
@@ -119,7 +120,7 @@ export function AiSuggestor({
             <h2 className={cn("font-bold", variant === 'dialog' ? 'text-4xl' : 'text-3xl')}>
                 <span className="text-primary">Hello, {user?.displayName || 'there'}</span>
                 <br />
-                <span className={cn("text-muted-foreground", variant === 'dialog' ? '' : 'text-2xl')}>How can I help you?</span>
+                <span className={cn("text-muted-foreground", variant === 'dialog' ? 'text-3xl' : 'text-2xl')}>How can I help you?</span>
             </h2>
             
             <div className={cn("mt-8", variant === 'dialog' ? '' : 'mt-6')}>
