@@ -1,6 +1,7 @@
 
 {
   "apphosting": {
+    "source": ".",
     "backendId": "studio",
     "rootDir": "./",
     "ignore": [
