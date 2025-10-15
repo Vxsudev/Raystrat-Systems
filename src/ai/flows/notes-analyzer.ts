@@ -40,8 +40,8 @@ Do the following in order:
 1.  **Mirror the client’s phrasing:** open with a one–two sentence acknowledgment that reflects 2–3 exact phrases from their notes.
 2.  **Name one root cause:** describe the single most likely operational/process cause in business language. No lists.
 3.  **Quantify impact:** estimate the revenue/time loss in a single sentence using ranges if needed.
-4.  **Prescribe the fix:** give a one–two sentence solution that is the fastest, lowest-resistance path.
-5.  **Issue a 72-hour plan:** three command-style steps, each with owner label (client or us) and ETA in hours.
+4.  **Prescribe the fix:** give a one–two sentence solution that is the fastest, lowest-resistance path. **IMPORTANT:** This must be in simple, actionable language. No jargon like "implement AI-driven lead qualification." Instead, say "We will build a filter to separate your best leads from the rest."
+5.  **Issue a 72-hour plan:** three command-style steps, each with owner label (client or us) and ETA in hours. This plan MUST go under the "72h plan:" heading and be formatted as specified below.
 6.  **Request assets:** bullet three–five specific items needed to start today.
 7.  **Define success:** list one–three measurable KPIs.
 8.  **Set a deadline:** give a concrete calendar date in the client’s timezone.
@@ -75,7 +75,7 @@ Deadline:
 CTA:
 Fallback:
 
-**72h plan formatting:**
+**72h plan formatting (MUST be on separate lines):**
 [Command] — Owner: [client|us] — ETA: [hours]
 [Command] — Owner: [client|us] — ETA: [hours]
 [Command] — Owner: [client|us] — ETA: [hours]
