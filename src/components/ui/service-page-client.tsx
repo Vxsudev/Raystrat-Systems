@@ -1,3 +1,4 @@
+
 // src/components/ui/service-page-client.tsx
 'use client';
 
@@ -24,6 +25,7 @@ interface JustificationPopupProps {
 
 function JustificationPopup({ justification, onAnimate }: JustificationPopupProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 500); // Delay appearance
@@ -33,7 +35,13 @@ function JustificationPopup({ justification, onAnimate }: JustificationPopupProp
   const handleDismiss = () => {
     setIsVisible(false);
     onAnimate(justification);
+    // Set a timeout to remove the element from the DOM after the animation
+    setTimeout(() => setIsDismissed(true), 300); // Should match animation duration
   };
+
+  if (isDismissed) {
+    return null;
+  }
 
   return (
      <div className={cn(
@@ -73,11 +81,11 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
 
   // This function will be called by the popup to trigger the animation
   const handleAnimateToNotes = (textToAnimate: string) => {
-    // Append the justification to the existing note content
-    const fullText = (noteContent ? `${noteContent}\n\n` : '') + `Justification: ${textToAnimate}`;
-
+    // Combine the user's initial note with the AI justification.
+    const fullText = (initialNote ? `${initialNote}\n\n` : '') + `Justification: ${textToAnimate}`;
+    
     // A simple typewriter effect
-    let i = noteContent.length; // Start typing from the end of existing content
+    let i = (initialNote ? `${initialNote}\n\n` : '').length; // Start typing from the end of existing content
     const typingInterval = setInterval(() => {
       if (i < fullText.length) {
         setNoteContent(prev => fullText.substring(0, i + 1));
@@ -169,3 +177,4 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
     </div>
   );
 }
+
