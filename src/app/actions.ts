@@ -346,9 +346,10 @@ export async function saveAndSendNotes(
                 font-family: 'Space Grotesk', sans-serif;
                 color: #FFFFFF; 
                 font-size: 24px;
-                margin: 0 0 10px 0;
+                margin: 0 0 20px 0;
+                text-align: center;
             }
-            p { margin: 0 0 16px 0; }
+            p { margin: 0 0 16px 0; color: #EAEAEA; }
             .label { 
                 font-weight: bold; 
                 color: #999; 
@@ -373,7 +374,7 @@ export async function saveAndSendNotes(
                 border: 1px solid #363636; 
                 padding: 15px; 
                 border-radius: 8px; 
-                margin: 20px 0;
+                margin-top: 20px;
                 font-style: italic;
             }
             pre { 
@@ -381,18 +382,19 @@ export async function saveAndSendNotes(
                 font-family: inherit; 
                 font-size: 16px;
                 color: #EAEAEA;
+                margin:0;
             }
             .cta-button {
                 display: block;
                 width: fit-content;
                 background-color: #D4AF37;
-                color: #0B0C0E;
+                color: #0B0C0E !important;
                 padding: 12px 24px;
                 text-align: center;
                 text-decoration: none;
                 border-radius: 8px;
                 font-weight: bold;
-                margin-top: 24px;
+                margin: 24px auto 0 auto;
             }
             .footer {
                 text-align: center;
@@ -450,10 +452,8 @@ export async function saveAndSendNotes(
     const userEmailHtml = `
       <html><head>${emailStyles}</head><body>
       <div class="container">
-        <div class="header">
-          <h2 style="font-size: 28px; margin-bottom: 20px;">${emailSubject}</h2>
-        </div>
         <div class="content-box">
+          <h2 style="font-size: 28px; margin-bottom: 20px;">${emailSubject}</h2>
           <p>Hi ${name},</p>
           <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
           
@@ -919,6 +919,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 
 
