@@ -368,7 +368,7 @@ export async function saveAndSendNotes(
 
     const userEmailHtml = `
       <html><head>${emailStyles}</head><body><div class="container">
-          <h2>Your Analysis from Raystrat Systems</h2>
+          <h2>${emailSubject}</h2>
           <p>Hi ${name},</p>
           <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
           
@@ -830,6 +830,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 
 
