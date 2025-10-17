@@ -203,7 +203,10 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
         // 2. Send initial confirmation email via SendGrid
         const msg = {
             to: email,
-            from: process.env.SENDGRID_FROM_EMAIL,
+            from: {
+              email: 'team@raystratsystems.com',
+              name: 'Raystrat'
+            },
             subject: `Next Steps for ${agentName}`,
             html: `
                 <p>Hi ${name},</p>
@@ -398,17 +401,22 @@ export async function saveAndSendNotes(
       </div></body></html>
     `;
 
+    const fromConfig = {
+      email: 'team@raystratsystems.com',
+      name: 'Raystrat'
+    };
+
     // Define the two emails to send
     const emailToOwner = {
       to: process.env.SENDGRID_FROM_EMAIL,
-      from: process.env.SENDGRID_FROM_EMAIL,
+      from: fromConfig,
       subject: `Notes Lead: ${emailSubject}`,
       html: ownerEmailHtml,
     };
 
     const emailToUser = {
       to: email,
-      from: process.env.SENDGRID_FROM_EMAIL,
+      from: fromConfig,
       subject: emailSubject,
       html: userEmailHtml,
     };
@@ -799,7 +807,10 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     // 2. Send email via SendGrid
     const msg = {
       to: email,
-      from: process.env.SENDGRID_FROM_EMAIL,
+      from: {
+        email: 'team@raystratsystems.com',
+        name: 'Raystrat'
+      },
       subject: 'Your Raystrat Systems Playbook',
       html: `
         <p>Hi ${name},</p>
@@ -819,4 +830,5 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
