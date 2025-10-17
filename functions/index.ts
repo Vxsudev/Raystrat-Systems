@@ -7,7 +7,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 const sendgridApiKey = functions.config().sendgrid.api_key;
-const senderEmail = functions.config().sender.email;
+const senderEmail = functions.config().sender.email; // This is configured in Firebase env vars
 
 sgMail.setApiKey(sendgridApiKey);
 
@@ -57,7 +57,10 @@ export const sendPlaybookEmail = functions.firestore
 
     const msg = {
       to: recipientEmail,
-      from: senderEmail,
+      from: {
+        name: 'Raystrat',
+        email: 'team@raystratsystems.com'
+      },
       subject: "Your Playbook",
       text: "Thank you for requesting our playbook! Please find it attached.",
       html: "<p>Thank you for requesting our playbook! Please find it attached.</p>",
