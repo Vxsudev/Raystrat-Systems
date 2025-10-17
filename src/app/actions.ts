@@ -320,6 +320,91 @@ export async function saveAndSendNotes(
     
     const emailStyles = `
         <style>
+            body { 
+                background-color: #0B0C0E; 
+                color: #EAEAEA;
+                font-family: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Fira Sans','Droid Sans','Helvetica Neue',sans-serif;
+                font-size: 16px;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+            .container { 
+                max-width: 600px; 
+                margin: 0 auto; 
+                padding: 40px; 
+            }
+            .header { text-align: center; margin-bottom: 30px; }
+            .content-box { 
+                background-color: #1a1a1a; 
+                border: 1px solid #363636;
+                border-radius: 12px;
+                padding: 30px;
+            }
+            h2 { 
+                font-family: 'Space Grotesk', sans-serif;
+                color: #FFFFFF; 
+                font-size: 24px;
+                margin: 0 0 10px 0;
+            }
+            p { margin: 0 0 16px 0; }
+            .label { 
+                font-weight: bold; 
+                color: #999; 
+                display: block; 
+                margin-bottom: 4px;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .section { 
+                padding-bottom: 16px; 
+                margin-bottom: 16px; 
+                border-bottom: 1px solid #363636;
+            }
+            .section:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            .notes-box { 
+                background-color: #0B0C0E; 
+                border: 1px solid #363636; 
+                padding: 15px; 
+                border-radius: 8px; 
+                margin: 20px 0;
+                font-style: italic;
+            }
+            pre { 
+                white-space: pre-wrap; 
+                font-family: inherit; 
+                font-size: 16px;
+                color: #EAEAEA;
+            }
+            .cta-button {
+                display: block;
+                width: fit-content;
+                background-color: #D4AF37;
+                color: #0B0C0E;
+                padding: 12px 24px;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: bold;
+                margin-top: 24px;
+            }
+            .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #999;
+                margin-top: 30px;
+            }
+        </style>
+    `;
+
+    const ownerEmailHtml = `
+      <html><head><style>
             body { font-family: sans-serif; color: #333; }
             .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 5px; }
             h2, h3 { color: #111; }
@@ -330,11 +415,7 @@ export async function saveAndSendNotes(
             ul { padding-left: 20px; }
             li { margin-bottom: 5px; }
             pre { white-space: pre-wrap; font-family: sans-serif; font-size: 14px; }
-        </style>
-    `;
-
-    const ownerEmailHtml = `
-      <html><head>${emailStyles}</head><body><div class="container">
+        </style></head><body><div class="container">
           <h2>New Lead via Notes Taker</h2>
           <div class="section">
               <span class="label">From Page:</span>
@@ -367,37 +448,45 @@ export async function saveAndSendNotes(
     `;
 
     const userEmailHtml = `
-      <html><head>${emailStyles}</head><body><div class="container">
-          <h2>${emailSubject}</h2>
+      <html><head>${emailStyles}</head><body>
+      <div class="container">
+        <div class="header">
+          <h2 style="font-size: 28px; margin-bottom: 20px;">${emailSubject}</h2>
+        </div>
+        <div class="content-box">
           <p>Hi ${name},</p>
           <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
           
           <div class="notes-box">
-              <span class="label">Your Original Notes:</span>
+              <span class="label">Your Original Notes</span>
               <pre>${notes}</pre>
           </div>
 
           ${parsedAnalysis ? `
-            <h3>Our Initial Analysis</h3>
-            <div style="border-top: 1px solid #ddd; padding-top: 15px;">
-              <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
-                <span class="label">Pain:</span> 
-                <div class="content">${parsedAnalysis.pain || ''}</div>
+            <div style="margin-top: 30px;">
+              <div class="section">
+                <span class="label">Pain</span> 
+                <p>${parsedAnalysis.pain || ''}</p>
               </div>
-              <div class="section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px;">
-                <span class="label">Diagnosis:</span> 
-                <div class="content">${parsedAnalysis.diagnosis || ''}</div>
+              <div class="section">
+                <span class="label">Diagnosis</span> 
+                <p>${parsedAnalysis.diagnosis || ''}</p>
               </div>
-              <div class="section" style="border-bottom: 0; padding-bottom: 0; margin-bottom: 0;">
-                <span class="label">Suggestion:</span> 
-                <div class="content" style="margin-bottom: 0;">${parsedAnalysis.suggestion || ''}</div>
+              <div class="section">
+                <span class="label">Suggestion</span> 
+                <p>${parsedAnalysis.suggestion || ''}</p>
               </div>
             </div>
-            <p style="margin-top: 20px;"><strong>Next Step:</strong> ${parsedAnalysis.cta || 'Reply to this email to get started.'}</p>
+            <p style="margin-top: 20px;"><strong>Next Step:</strong> Our analysis suggests a clear path forward. To discuss implementation, please book a free audit with our team.</p>
+            <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit Now</a>
           ` : `
-            <p style="margin-top: 20px;">If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here: <a href="https://calendly.com/raystrat/15-min-audit">Book Your Free Audit Now</a></p>
+            <p style="margin-top: 20px;">If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here:</p>
+            <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit Now</a>
           `}
-          <p>Best,<br>The Raystrat Systems Team</p>
+        </div>
+        <div class="footer">
+            <p>Raystrat Systems</p>
+        </div>
       </div></body></html>
     `;
 
@@ -830,6 +919,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 
 
