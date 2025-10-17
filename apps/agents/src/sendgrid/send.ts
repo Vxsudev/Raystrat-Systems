@@ -42,7 +42,7 @@ export async function sendEmail(req: SendRequest): Promise<SendResult> {
   // Build base payload using Partial<MailDataRequired> to avoid version-specific types.
   const base: Partial<MailDataRequired> = {
     to: message.to,
-    from: { email: 'team@raystratsystems.com', name: 'Raystrat' },
+    from: { email: 'team@raystratsystems.com', name: 'Raystrat Systems' },
     subject: message.subject,
     headers: {
       ...(message.headers ?? {}),

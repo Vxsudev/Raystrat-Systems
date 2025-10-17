@@ -205,7 +205,7 @@ export async function favoriteAgentAction(prevState: FavoriteAgentState | null, 
             to: email,
             from: {
               email: 'team@raystratsystems.com',
-              name: 'Raystrat'
+              name: 'Raystrat Systems'
             },
             subject: `Next Steps for ${agentName}`,
             html: `
@@ -403,7 +403,7 @@ export async function saveAndSendNotes(
 
     const fromConfig = {
       email: 'team@raystratsystems.com',
-      name: 'Raystrat'
+      name: 'Raystrat Systems'
     };
 
     // Define the two emails to send
@@ -809,7 +809,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
       to: email,
       from: {
         email: 'team@raystratsystems.com',
-        name: 'Raystrat'
+        name: 'Raystrat Systems'
       },
       subject: 'Your Raystrat Systems Playbook',
       html: `
@@ -830,5 +830,6 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 

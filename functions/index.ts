@@ -58,7 +58,7 @@ export const sendPlaybookEmail = functions.firestore
     const msg = {
       to: recipientEmail,
       from: {
-        name: 'Raystrat',
+        name: 'Raystrat Systems',
         email: 'team@raystratsystems.com'
       },
       subject: "Your Playbook",
@@ -79,4 +79,5 @@ export const sendPlaybookEmail = functions.firestore
       return null;
     }
   });
+
 
