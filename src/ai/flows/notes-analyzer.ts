@@ -49,6 +49,7 @@ The user wrote these notes while on the "{{serviceName}}" service page. You MUST
     *   **Pain:** Acknowledge the user's stated problem in their own words.
     *   **Diagnosis:** Describe the single most likely root cause in simple, operational business language. Your diagnosis MUST be more elaborate and directly relate to the purpose of the {{serviceName}}.
     *   **Suggestion:** Propose a single, concrete next step to address the diagnosis. This suggestion MUST be more detailed and explicitly mention how the {{serviceName}} solves their problem. It MUST end with a concluding sentence about deploying the {{serviceName}} agent.
+    *   **SalesCopy:** Write a short, powerful paragraph (2-3 sentences) that acts as a sales pitch for the {{serviceName}}. It should summarize its core benefit and why it's the right solution for the diagnosed problem.
     *   **CTA:** Write a clear, one-sentence call to action that directs the user to book a free audit. This MUST include the link: https://calendly.com/raystrat/15-min-audit
 
 **TONE RULES:**
@@ -56,7 +57,7 @@ The user wrote these notes while on the "{{serviceName}}" service page. You MUST
 *   One pain, one diagnosis, one suggestion.
 *   Use simple, operational language. No marketing buzzwords or jargon.
 *   Write like a senior operator, not a coach.
-*   Keep the total response under 120 words.
+*   Keep the total response under 150 words.
 *   The 'Suggestion' must NOT contain jargon and must be immediately actionable in its description.
 
 **OUTPUT SECTIONS (plain text, each on its own line):**
@@ -64,6 +65,7 @@ Subject:
 Pain:
 Diagnosis:
 Suggestion:
+SalesCopy:
 CTA:
 
 **USER'S NOTES:**
@@ -84,4 +86,3 @@ const notesAnalyzerFlow = ai.defineFlow(
     return { response: output!.response };
   }
 );
-

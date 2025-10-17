@@ -255,7 +255,7 @@ function parseAIResponse(responseText: string): Record<string, string> {
     const sections: Record<string, string> = {};
     const lines = responseText.split('\n');
     
-    const sectionHeaders = ["Subject:", "Pain:", "Diagnosis:", "Suggestion:", "CTA:"];
+    const sectionHeaders = ["Subject:", "Pain:", "Diagnosis:", "Suggestion:", "SalesCopy:", "CTA:"];
     let currentSectionKey = '';
     
     for (const line of lines) {
@@ -347,7 +347,6 @@ export async function saveAndSendNotes(
                 color: #FFFFFF; 
                 font-size: 24px;
                 margin: 0 0 20px 0;
-                text-align: center;
             }
             p { margin: 0 0 16px 0; color: #EAEAEA; }
             .label { 
@@ -377,6 +376,18 @@ export async function saveAndSendNotes(
                 margin-top: 20px;
                 font-style: italic;
             }
+            .sales-copy-box {
+                background-color: hsl(var(--primary) / 0.1);
+                border-left: 4px solid hsl(var(--primary));
+                padding: 20px;
+                margin-top: 24px;
+                border-radius: 0 8px 8px 0;
+            }
+            .sales-copy-box p {
+                color: #EAEAEA;
+                margin: 0;
+                font-style: italic;
+            }
             pre { 
                 white-space: pre-wrap; 
                 font-family: inherit; 
@@ -387,8 +398,8 @@ export async function saveAndSendNotes(
             .cta-button {
                 display: block;
                 width: fit-content;
-                background-color: #D4AF37;
-                color: #0B0C0E !important;
+                background-color: hsl(var(--primary));
+                color: hsl(var(--primary-foreground)) !important;
                 padding: 12px 24px;
                 text-align: center;
                 text-decoration: none;
@@ -441,6 +452,7 @@ export async function saveAndSendNotes(
           <div class="section"><span class="label">Pain:</span> <div class="content">${parsedAnalysis.pain || ''}</div></div>
           <div class="section"><span class="label">Diagnosis:</span> <div class="content">${parsedAnalysis.diagnosis || ''}</div></div>
           <div class="section"><span class="label">Suggestion:</span> <div class="content">${parsedAnalysis.suggestion || ''}</div></div>
+          <div class="section"><span class="label">Sales Copy:</span> <div class="content">${parsedAnalysis.salescopy || ''}</div></div>
           <div class="section"><span class="label">CTA:</span> <div class="content">${parsedAnalysis.cta || ''}</div></div>
           ` : `
           <h2>No AI Analysis Generated</h2>
@@ -453,7 +465,7 @@ export async function saveAndSendNotes(
       <html><head>${emailStyles}</head><body>
       <div class="container">
         <div class="content-box">
-          <h2 style="font-size: 28px; margin-bottom: 20px;">${emailSubject}</h2>
+          <h2>${emailSubject}</h2>
           <p>Hi ${name},</p>
           <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
           
@@ -466,17 +478,22 @@ export async function saveAndSendNotes(
             <div style="margin-top: 30px;">
               <div class="section">
                 <span class="label">Pain</span> 
-                <p>${parsedAnalysis.pain || ''}</p>
+                <p style="color: #EAEAEA;">${parsedAnalysis.pain || ''}</p>
               </div>
               <div class="section">
                 <span class="label">Diagnosis</span> 
-                <p>${parsedAnalysis.diagnosis || ''}</p>
+                <p style="color: #EAEAEA;">${parsedAnalysis.diagnosis || ''}</p>
               </div>
               <div class="section">
                 <span class="label">Suggestion</span> 
-                <p>${parsedAnalysis.suggestion || ''}</p>
+                <p style="color: #EAEAEA;">${parsedAnalysis.suggestion || ''}</p>
               </div>
             </div>
+            ${parsedAnalysis.salescopy ? `
+            <div class="sales-copy-box">
+                <p>${parsedAnalysis.salescopy}</p>
+            </div>
+            ` : ''}
             <p style="margin-top: 20px;"><strong>Next Step:</strong> Our analysis suggests a clear path forward. To discuss implementation, please book a free audit with our team.</p>
             <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit Now</a>
           ` : `
@@ -919,6 +936,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 
 
