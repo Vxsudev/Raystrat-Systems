@@ -321,9 +321,9 @@ export async function saveAndSendNotes(
     const emailStyles = `
         <style>
             body { 
-                background-color: #0B0C0E; 
-                color: #EAEAEA;
-                font-family: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Fira Sans','Droid Sans','Helvetica Neue',sans-serif;
+                background-color: #ffffff; 
+                color: #111827;
+                font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Fira Sans','Droid Sans','Helvetica Neue',sans-serif;
                 font-size: 16px;
                 line-height: 1.6;
                 margin: 0;
@@ -335,33 +335,24 @@ export async function saveAndSendNotes(
                 margin: 0 auto; 
                 padding: 40px; 
             }
-            .header { text-align: center; margin-bottom: 30px; }
-            .content-box { 
-                background-color: #1a1a1a; 
-                border: 1px solid #363636;
-                border-radius: 12px;
-                padding: 30px;
-            }
             h2 { 
                 font-family: 'Space Grotesk', sans-serif;
-                color: #FFFFFF; 
+                color: #111827; 
                 font-size: 24px;
                 margin: 0 0 20px 0;
             }
-            p { margin: 0 0 16px 0; color: #EAEAEA; }
+            p { margin: 0 0 16px 0; color: #374151; }
             .label { 
                 font-weight: bold; 
-                color: #999; 
+                color: #4b5563; 
                 display: block; 
                 margin-bottom: 4px;
-                font-size: 12px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
+                font-size: 14px;
             }
             .section { 
                 padding-bottom: 16px; 
                 margin-bottom: 16px; 
-                border-bottom: 1px solid #363636;
+                border-bottom: 1px solid #e5e7eb;
             }
             .section:last-child {
                 border-bottom: none;
@@ -369,22 +360,21 @@ export async function saveAndSendNotes(
                 padding-bottom: 0;
             }
             .notes-box { 
-                background-color: #0B0C0E; 
-                border: 1px solid #363636; 
-                padding: 15px; 
+                background-color: #f9fafb; 
+                border: 1px solid #e5e7eb; 
+                padding: 20px; 
                 border-radius: 8px; 
                 margin-top: 20px;
-                font-style: italic;
             }
             .sales-copy-box {
-                background-color: hsl(var(--primary) / 0.1);
-                border-left: 4px solid hsl(var(--primary));
+                background-color: #fefce8;
+                border-left: 4px solid #facc15;
                 padding: 20px;
-                margin-top: 24px;
+                margin: 24px 0;
                 border-radius: 0 8px 8px 0;
             }
             .sales-copy-box p {
-                color: #EAEAEA;
+                color: #4b5563;
                 margin: 0;
                 font-style: italic;
             }
@@ -392,25 +382,24 @@ export async function saveAndSendNotes(
                 white-space: pre-wrap; 
                 font-family: inherit; 
                 font-size: 16px;
-                color: #EAEAEA;
+                color: #374151;
                 margin:0;
             }
             .cta-button {
-                display: block;
-                width: fit-content;
-                background-color: hsl(var(--primary));
-                color: hsl(var(--primary-foreground)) !important;
+                display: inline-block;
+                background-color: #000000;
+                color: #ffffff !important;
                 padding: 12px 24px;
                 text-align: center;
                 text-decoration: none;
                 border-radius: 8px;
                 font-weight: bold;
-                margin: 24px auto 0 auto;
+                margin-top: 16px;
             }
             .footer {
                 text-align: center;
                 font-size: 12px;
-                color: #999;
+                color: #9ca3af;
                 margin-top: 30px;
             }
         </style>
@@ -464,43 +453,41 @@ export async function saveAndSendNotes(
     const userEmailHtml = `
       <html><head>${emailStyles}</head><body>
       <div class="container">
-        <div class="content-box">
-          <h2>${emailSubject}</h2>
-          <p>Hi ${name},</p>
-          <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
-          
-          <div class="notes-box">
-              <span class="label">Your Original Notes</span>
-              <pre>${notes}</pre>
-          </div>
-
-          ${parsedAnalysis ? `
-            <div style="margin-top: 30px;">
-              <div class="section">
-                <span class="label">Pain</span> 
-                <p style="color: #EAEAEA;">${parsedAnalysis.pain || ''}</p>
-              </div>
-              <div class="section">
-                <span class="label">Diagnosis</span> 
-                <p style="color: #EAEAEA;">${parsedAnalysis.diagnosis || ''}</p>
-              </div>
-              <div class="section">
-                <span class="label">Suggestion</span> 
-                <p style="color: #EAEAEA;">${parsedAnalysis.suggestion || ''}</p>
-              </div>
-            </div>
-            ${parsedAnalysis.salescopy ? `
-            <div class="sales-copy-box">
-                <p>${parsedAnalysis.salescopy}</p>
-            </div>
-            ` : ''}
-            <p style="margin-top: 20px;"><strong>Next Step:</strong> Our analysis suggests a clear path forward. To discuss implementation, please book a free audit with our team.</p>
-            <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit Now</a>
-          ` : `
-            <p style="margin-top: 20px;">If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here:</p>
-            <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit Now</a>
-          `}
+        <h2>${emailSubject}</h2>
+        <p>Hi ${name},</p>
+        <p>Thank you for sharing your thoughts with us. Below is a copy of your notes and our AI's initial analysis based on what you wrote.</p>
+        
+        <div class="notes-box">
+            <span class="label">Your Original Notes</span>
+            <pre>${notes}</pre>
         </div>
+
+        ${parsedAnalysis ? `
+          <div style="margin-top: 30px;">
+            <div class="section">
+              <span class="label">Pain</span> 
+              <p>${parsedAnalysis.pain || ''}</p>
+            </div>
+            <div class="section">
+              <span class="label">Diagnosis</span> 
+              <p>${parsedAnalysis.diagnosis || ''}</p>
+            </div>
+            <div class="section">
+              <span class="label">Suggestion</span> 
+              <p>${parsedAnalysis.suggestion || ''}</p>
+            </div>
+          </div>
+          ${parsedAnalysis.salescopy ? `
+          <div class="sales-copy-box">
+              <p>${parsedAnalysis.salescopy}</p>
+          </div>
+          ` : ''}
+          <p style="margin-top: 20px;"><strong>Next Step:</strong> To discuss implementation, please book a free audit with our team.</p>
+          <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit</a>
+        ` : `
+          <p style="margin-top: 20px;">If you'd like to discuss how our agents can solve your specific bottlenecks, you can book a free 15-minute audit with our team here:</p>
+          <a href="https://calendly.com/raystrat/15-min-audit" class="cta-button">Book Your Free Audit</a>
+        `}
         <div class="footer">
             <p>Raystrat Systems</p>
         </div>
@@ -936,6 +923,7 @@ export async function playbookAction(prevState: PlaybookState, formData: FormDat
     return { message: 'An internal server error occurred.' };
   }
 }
+
 
 
 
