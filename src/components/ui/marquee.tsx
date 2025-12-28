@@ -1,16 +1,28 @@
 // src/components/ui/marquee.tsx
 'use client';
 
-import { marqueeStats } from '@/data/content';
 import React from 'react';
+
+import { marqueeStats } from '@/data/content';
 import { cn } from '@/lib/utils';
 
-export function Marquee() {
-  const track = [...marqueeStats, ...marqueeStats];
+type MarqueeProps = {
+  /**
+   * Items to render inside the marquee. Defaults to the predefined marquee stats.
+   */
+  items?: string[];
+  /**
+   * Additional class names for the marquee container.
+   */
+  className?: string;
+};
+
+export function Marquee({ items = marqueeStats, className }: MarqueeProps) {
+  const track = [...items, ...items];
 
   return (
     <div
-      className="relative w-full overflow-hidden py-2"
+      className={cn('relative w-full overflow-hidden py-2', className)}
       style={{
         backgroundColor: '#0b0b0b',
       }}
@@ -21,7 +33,7 @@ export function Marquee() {
       {/* Accessibility Fallback */}
       <div className="sr-only">
         <ul>
-          {marqueeStats.map((text, i) => (
+          {items.map((text, i) => (
             <li key={`sr-${i}`}>{text}</li>
           ))}
         </ul>
@@ -32,7 +44,7 @@ export function Marquee() {
           <div
             key={`item-${i}`}
             className="flex items-center"
-            aria-hidden={i >= marqueeStats.length}
+            aria-hidden={i >= items.length}
           >
             <span
               className={cn(
