@@ -241,3 +241,117 @@ The site now reads as operational systems company at every touchpoint. No AI-age
 - [ ] Delete `src/app/services/[slug]/page.tsx` after production redirect confirmation
 - [ ] Add `/systems` to sitemap if not already there (was added in Phase 1 per journal)
 - [ ] Long-term: `FavoriteAgentButton` component and form prop names (`agentName`, `agentSlug`) can be renamed to `systemName`/`systemSlug` in a dedicated refactor pass (low user impact, requires cascade across 3 files)
+
+---
+
+## 2026-05-21 — Visual System Phase A: Token Swap
+
+**Author:** Claude Sonnet 4.6 (subagent-driven execution)  
+**Spec authority:** `specs/phases/phase-visual-system.md` §29.1  
+**Capability:** RAYSTRAT_VISUAL_SYSTEM_PHASE_A_TOKEN_SWAP
+
+**What changed:**
+
+### Logo Sampling
+- `public/raystrat-logo.png` sampled (512×512 px) — 62 pure blue pixels identified
+- **Canonical Raystrat Blue:** HSL `214 98% 40%` | RGB(4, 89, 202) | Hex `#0459ca`
+- Character: mid-saturation corporate/financial-tech blue, NOT navy, NOT electric, light-canvas native
+- Logo is white-canvas native — confirms light-primary site architecture
+
+### Token Replacement — `src/app/globals.css`
+`:root` and `.light` (both updated from dark-canvas/gold to light-canvas/blue):
+
+| Token | Before | After |
+|-------|--------|-------|
+| `--background` | `0 0% 0%` (pure black) | `0 0% 99%` (near-white canvas) |
+| `--foreground` | `0 0% 100%` (white) | `220 15% 8%` (near-black) |
+| `--card` | `0 0% 10%` (dark gray) | `0 0% 100%` (white) |
+| `--card-foreground` | `0 0% 100%` | `220 15% 8%` |
+| `--popover` | `0 0% 0%` | `0 0% 100%` |
+| `--popover-foreground` | `0 0% 100%` | `220 15% 8%` |
+| `--primary` | `43 74% 49%` (GOLD) | `214 98% 40%` (Raystrat blue) |
+| `--primary-foreground` | `220 5.9% 6.1%` | `0 0% 100%` (white on blue) |
+| `--secondary` | `0 0% 21.2%` | `220 10% 96%` |
+| `--secondary-foreground` | `0 0% 100%` | `220 15% 8%` |
+| `--muted` | `0 0% 21.2%` | `220 10% 96%` |
+| `--muted-foreground` | `0 0% 63.9%` | `220 10% 45%` |
+| `--accent` | `0 0% 21.2%` | `220 10% 92%` |
+| `--accent-foreground` | `43 74% 49%` (GOLD) | `220 15% 8%` |
+| `--border` | `0 0% 21.2%` | `220 10% 88%` |
+| `--input` | `0 0% 14%` | `220 10% 88%` |
+| `--ring` | `43 74% 49%` (GOLD) | `214 98% 40%` (Raystrat blue) |
+| `--structure` | (absent) | `220 24% 12%` (NEW: dark anchors) |
+| `--structure-foreground` | (absent) | `0 0% 99%` (NEW: text on structure) |
+
+`.dark` (updated from pure-black/gold to navy/blue):
+- `--background`: `0 0% 0%` → `220 24% 5%` (dark navy instead of pure black)
+- `--primary`: `43 74% 49%` (gold) → `214 90% 58%` (lighter blue for dark bg legibility)
+- `--accent-foreground`: gold → `214 90% 68%`
+- `--ring`: gold → `214 90% 58%`
+- Added `--structure: 220 24% 8%`, `--structure-foreground: 0 0% 95%`
+
+### Layout — `src/app/layout.tsx`
+- Removed `className='dark'` from `<html>` — site no longer force-boots in dark mode
+- `ThemeProvider defaultTheme`: `"dark"` → `"light"` — canonical surface is now light
+
+### Page Wrapper — `src/app/page.tsx`
+- Removed `bg-dotted-pattern bg-fixed` from outer homepage wrapper div
+- Rationale: radial dotted lattice was a dark-canvas texture; incompatible with light background and adds visual noise on white
+
+### CalendlyButton — `src/components/ui/calendly-button.tsx`
+- `primary_color=d4af37` (gold) → `primary_color=0459ca` (Raystrat blue)
+- Calendly popup widget now uses brand-consistent blue accent
+
+### Artifacts
+- `ai/recon/raystrat-visual-system-phase-a-token-swap.md` — complete sampling log, before/after table, scope compliance confirmation
+- `scripts/verification/007-raystrat-visual-system-phase-a.sh` — 11 verification checks
+
+### Verification
+- `007-raystrat-visual-system-phase-a.sh` — 11/11 PASS
+- `006-raystrat-positioning-refinement-pass.sh` — 15/15 PASS (no regressions)
+- `005-raystrat-homepage-repositioning.sh` — 10/10 PASS (no regressions)
+- `004-invariants.sh` — 3/3 PASS (INV-001, INV-002, INV-003)
+
+**Dev server validation:**
+- Booted on port 3001 (3000 occupied)
+- `<html lang="en">` — no dark class in SSR output ✓
+- ThemeProvider inline script: `c.add('light')` on first load ✓
+- Compiled CSS: `--background: 0 0% 99%`, `--primary: 214 98% 40%`, `--structure: 220 24% 12%` ✓
+- No runtime errors on homepage load ✓
+
+**Architectural reasoning:**
+
+*Logo sampling first:* The sampling exercise confirmed the exact hue is 214–215°, saturation ~97–100%, lightness ~39–40%. This is darker than the interim spec estimate of `222 89% 55%`. The actual brand blue is more restrained — corporate-weight, not electric. Using the sampled value produces visual fidelity to the physical brand asset.
+
+*Light-canvas default (not system-preference):* `defaultTheme="light"` was chosen over `enableSystem` default because the logo and brand are white-canvas native. Letting system preference win could produce a dark site on devices where users happen to have dark mode on — breaking the brand architecture. Users who prefer dark can toggle via ThemeToggle.
+
+*Dark mode navy background (not pure black):* The `.dark` background was shifted from `0 0% 0%` (pure black) to `220 24% 5%` (very dark navy). This maintains the dark mode but makes it tonally consistent with the Raystrat blue primary — the navy hue creates a coherent color family rather than a neutral black field.
+
+*`--structure` token:* Provides an explicit CSS custom property for header, footer, and dark-band sections to reference without touching the `--background` canonical. Header and footer can use `bg-[hsl(var(--structure))]` without conflicting with the light canvas body. Phase B will wire this into component `className` attributes.
+
+*Dotted pattern removal:* The `bg-dotted-pattern` was a dark-canvas affordance (foreground opacity dots over black). On white, the dots would be near-black specks producing a dirty texture rather than the subtle grid effect. Removal is the correct call; if a light-mode texture pattern is needed in future, Phase C can introduce one.
+
+**Phase A scope boundary compliance:**
+Phase A was strictly token-level (CSS variables, one URL param, two boolean/string config values). The following were NOT touched: hero scale, card styles, hover states, animations/motion, FloatingAdvisor behavior, header structure, ThemeToggle position, any content/copy, systems routes, positioning language. Phase B (component wiring), C (section architecture), and D (motion/interaction) remain pending.
+
+**Pre-existing gate status (unchanged):**
+
+| Gate | Status | Reason |
+|------|--------|--------|
+| 001-typecheck.sh | PRE-EXISTING FAILURE | Same errors as prior passes; 0 new from Phase A |
+| 002-lint.sh | SKIP | No ESLint config (pre-existing) |
+| 003-build.sh | PRE-EXISTING FAILURE | buffer-equal-constant-time / API route export mismatches (pre-existing) |
+| 004-invariants.sh | PASS | 3/3 |
+| 005-homepage-repositioning.sh | PASS | 10/10 |
+| 006-refinement.sh | PASS | 15/15 |
+| 007-phase-a.sh | PASS | 11/11 |
+
+**Unresolved follow-ups:**
+
+- [ ] Phase B: Wire `--structure` token into Header and Footer component `className` (replace current `bg-background` or hard-coded dark classes)
+- [ ] Phase B: Wire `text-primary` → confirms blue renders correctly on card CTAs, button labels, and icon tints against white card surfaces
+- [ ] Phase C: Dark-band section (FailureThesis, Results) — verify bg-[hsl(var(--structure))] + foreground legibility
+- [ ] Phase D: Motion and interaction audit (unchanged from Phase A — no scope items here)
+- [ ] Pre-existing: Fix broken API routes (contextualAssistantFlow / notesAnalyzerFlow export mismatches)
+- [ ] Pre-existing: Fix buffer-equal-constant-time for production build
+- [ ] Pre-existing: TypeScript errors in actions.ts, page.tsx, getAuthenticatedUser.ts

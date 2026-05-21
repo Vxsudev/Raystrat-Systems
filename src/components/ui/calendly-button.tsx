@@ -12,7 +12,7 @@ declare global {
 }
 
 export function CalendlyButton({ children, ...props }: ButtonProps) {
-  const calendlyUrl = 'https://calendly.com/raystrat/15-min-audit?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d4af37';
+  const calendlyUrl = 'https://calendly.com/raystrat/15-min-audit?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=0459ca';
 
   useEffect(() => {
     const head = document.querySelector('head');
