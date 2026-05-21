@@ -26,6 +26,11 @@
     --ring: 214 98% 40%;
     --structure: 220 24% 12%;
     --structure-foreground: 0 0% 99%;
+
+    /* Status pill tokens (oklch) */
+    --pill-ok: oklch(0.62 0.13 145);
+    --pill-warn: oklch(0.72 0.16 60);
+    --pill-crit: oklch(0.60 0.20 25);
   }
 
   .light {
@@ -127,3 +132,86 @@
     @apply mx-auto w-full max-w-screen-xl px-4 md:px-6;
   }
 }
+
+/* ============================================================
+   System pulse — bespoke ring pulse for live indicators.
+   (Named distinctly from Tailwind's animate-pulse, which is
+   banned by the anti-theater constraints for this surface.)
+   ============================================================ */
+.system-pulse-dot {
+  box-shadow: 0 0 0 0 color-mix(in oklab, currentColor, transparent 40%);
+  animation: system-pulse-ring 1.8s ease-out infinite;
+}
+@keyframes system-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, hsl(142 71% 45%), transparent 40%);
+  }
+  100% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, hsl(142 71% 45%), transparent 100%);
+  }
+}
+
+/* Audit log entry shimmer-in */
+.audit-row-anim {
+  animation: audit-row-in 220ms ease both;
+}
+@keyframes audit-row-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   Visual modes (set on <body> by TweaksPanel)
+   ============================================================ */
+
+/* MODE: editorial — spacious, magazine */
+body.mode-editorial .hero-status-panel { display: none; }
+body.mode-editorial h1 {
+  font-size: clamp(48px, 8vw, 112px) !important;
+  letter-spacing: -0.045em;
+  font-weight: 400;
+}
+body.mode-editorial .hero-meta-row {
+  grid-template-columns: 1fr 1fr !important;
+}
+body.mode-editorial #systems .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+  grid-template-columns: 1fr !important;
+}
+body.mode-editorial #results .grid-cols-1.sm\:grid-cols-2,
+body.mode-editorial #evidence .grid-cols-1.sm\:grid-cols-2 {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+/* MODE: blueprint — engineering schematic */
+body.mode-blueprint {
+  background-image:
+    linear-gradient(to right, hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+body.mode-blueprint .rounded-md,
+body.mode-blueprint .rounded {
+  border-radius: 0 !important;
+}
+body.mode-blueprint .hero-status-panel,
+body.mode-blueprint #governance .bg-card,
+body.mode-blueprint #industries .bg-card,
+body.mode-blueprint .audit-cta-block > div,
+body.mode-blueprint .faq-item {
+  border-style: dashed !important;
+}
+body.mode-blueprint h1 {
+  font-family: ui-monospace, monospace !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* MODE: ledger — default (no overrides needed) */
+
+/* ── sys-pulse opacity animation (no scale/blur — anti-theater compliant) */
+@keyframes sys-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+body.mode-ledger {}

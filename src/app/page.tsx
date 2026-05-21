@@ -5,11 +5,14 @@ import { Header } from '@/components/header';
 import { Hero } from '@/components/sections/hero';
 import { FailureThesis } from '@/components/sections/failure-thesis';
 import { Services } from '@/components/sections/services';
+import { Governance } from '@/components/sections/governance';
 import { Industries } from '@/components/sections/industries';
 import { AgentAdvantage } from '@/components/sections/agent-advantage';
 import { Results } from '@/components/sections/results';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
+import { TweaksPanel } from '@/components/ui/tweaks-panel';
+import { Contact } from '@/components/sections/contact';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { ByteOfTheWeek } from '@/components/sections/byte-of-the-week';
 
@@ -60,15 +63,18 @@ export default async function Home() {
         <main className="flex-1">
           <Hero />
           <FailureThesis />
+          <Governance />
           <Services />
           <AgentAdvantage />
           <Industries />
           <Results />
           <ByteOfTheWeek />
           <Faq />
+          <Contact />
         </main>
         <Footer />
       </div>
+      <TweaksPanel />
     </div>
   );
 }

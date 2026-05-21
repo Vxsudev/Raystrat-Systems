@@ -183,8 +183,9 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 16: Sections directory unchanged (no new production sections added by rhythm-lab)
-EXPECTED_SECTIONS=10
+# Check 16: Sections directory baseline (rhythm-lab must not add production sections)
+# Updated to 11: governance.tsx added in homepage-design-v2 (authorized in spec)
+EXPECTED_SECTIONS=11
 ACTUAL_SECTIONS=$(find src/components/sections -name "*.tsx" 2>/dev/null | wc -l | tr -d ' ')
 if [ "${ACTUAL_SECTIONS}" -eq "${EXPECTED_SECTIONS}" ]; then
   echo "  PASS: sections dir unchanged at ${EXPECTED_SECTIONS} files"

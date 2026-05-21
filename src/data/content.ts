@@ -357,6 +357,114 @@ export const industries = [
     "Other"
 ];
 
+// ── Design system data ────────────────────────────────────────────────────────
+
+export const chokePoints: {
+  id: string;
+  ix: string;
+  name: string;
+  desc: string;
+  detail: string;
+  state: string;
+  x: number;
+  y: number;
+}[] = [
+  {
+    id: 'demand',
+    ix: '01',
+    name: 'Demand Acquisition',
+    desc: 'Continuously detect and qualify inbound interest.',
+    detail: 'Persistent signal monitoring across digital channels. Governed qualification gates. Audit trail from source to CRM entry.',
+    state: 'Governed',
+    x: 12,
+    y: 50,
+  },
+  {
+    id: 'pursuit',
+    ix: '02',
+    name: 'Pursuit',
+    desc: 'Disciplined, persistent follow-through on every live opportunity.',
+    detail: 'Structured contact cadences run across channels until outcome is reached. Every record reaches a defined terminal state.',
+    state: 'Governed',
+    x: 30,
+    y: 22,
+  },
+  {
+    id: 'frontline',
+    ix: '03',
+    name: 'Frontline Resolution',
+    desc: 'Resolve customer contact consistently, 24/7, without SLA gaps.',
+    detail: 'Common cases closed at intake. Structured escalation protocol routes exceptions with full context.',
+    state: 'Governed',
+    x: 50,
+    y: 50,
+  },
+  {
+    id: 'ops',
+    ix: '04',
+    name: 'Operations',
+    desc: 'Execute routine processes with full auditability.',
+    detail: 'Invoicing, notifications, task routing run on governed rails. Orchestrated handoffs with accountability at every stage.',
+    state: 'Governed',
+    x: 70,
+    y: 22,
+  },
+  {
+    id: 'command',
+    ix: '05',
+    name: 'Command Intelligence',
+    desc: 'Consolidate decision-critical data and surface it without delay.',
+    detail: 'Centralized KPI layer. Predictive signal detection. Governed reporting infrastructure — structured, versioned, auditable.',
+    state: 'Governed',
+    x: 88,
+    y: 50,
+  },
+];
+
+export const failureRegistry: {
+  id: string;
+  fn: string;
+  mode: string;
+  sev: 'crit' | 'high' | 'med';
+}[] = [
+  { id: 'FM-001', fn: 'Demand Acquisition', mode: 'In-market signal goes undetected — no system is watching the channel.', sev: 'crit' },
+  { id: 'FM-002', fn: 'Pursuit', mode: 'Lead reaches indeterminate state — neither booked, disqualified, nor escalated.', sev: 'crit' },
+  { id: 'FM-003', fn: 'Frontline Resolution', mode: 'Response time exceeds SLA during peak load or staff absence.', sev: 'high' },
+  { id: 'FM-004', fn: 'Operations', mode: 'Routine process fails to execute — depends on individual memory.', sev: 'high' },
+  { id: 'FM-005', fn: 'Command Intelligence', mode: 'Report assembled from stale, siloed, or manually filtered sources.', sev: 'med' },
+  { id: 'FM-006', fn: 'Pursuit', mode: 'Escalation routed without context — duplicate effort downstream.', sev: 'med' },
+];
+
+export const auditDeliverables: { id: string; ttl: string; desc: string }[] = [
+  { id: 'OUT-01', ttl: 'Operational Gap Map', desc: 'A precise analysis of which of your five functions are running on structural risk.' },
+  { id: 'OUT-02', ttl: 'Failure Mode Registry', desc: 'The specific ways each gap will manifest as the business scales.' },
+  { id: 'OUT-03', ttl: 'System Architecture Proposal', desc: 'A proposed governance system design, scoped to your operational profile.' },
+];
+
+export const auditSeed: { sys: string; ev: string; out: 'ok' | 'esc' | 'disq' }[] = [
+  { sys: 'DMND', ev: 'Signal scored above qualification threshold — record advanced to pursuit.', out: 'ok' },
+  { sys: 'PRSU', ev: 'Cadence step 3/6 executed via WhatsApp; awaiting response window.', out: 'ok' },
+  { sys: 'FRNT', ev: 'Tier-1 inquiry resolved at intake — no escalation required.', out: 'ok' },
+  { sys: 'OPS',  ev: 'Invoice INV-44219 dispatched; reminder scheduled T+7d.', out: 'ok' },
+  { sys: 'CMND', ev: 'Anomaly detected: 14d reply-rate trending −12% vs. baseline.', out: 'esc' },
+  { sys: 'DMND', ev: 'Record failed contactability gate — withheld from pipeline.', out: 'disq' },
+  { sys: 'PRSU', ev: 'Terminal state reached: BOOKED — pursuit closed.', out: 'ok' },
+  { sys: 'FRNT', ev: 'Escalation routed with full context to L2 specialist.', out: 'esc' },
+  { sys: 'OPS',  ev: 'Cross-function handoff acknowledged within SLA (00:00:42).', out: 'ok' },
+  { sys: 'CMND', ev: 'Daily KPI snapshot published — lineage verified end-to-end.', out: 'ok' },
+  { sys: 'PRSU', ev: 'Disqualification rule fired: out-of-segment; record archived.', out: 'disq' },
+  { sys: 'DMND', ev: 'New source enrolled — qualification gates inherited from policy.', out: 'ok' },
+  { sys: 'OPS',  ev: 'Retry path engaged after upstream provider 503; recovered.', out: 'ok' },
+  { sys: 'FRNT', ev: 'SLA breach prevented — case auto-routed before threshold.', out: 'ok' },
+];
+
+export const heroMeta: { k: string; v: string }[] = [
+  { k: 'Deployed Systems', v: '147' },
+  { k: 'Audit Trail Entries', v: '12.4M' },
+  { k: 'SLA Compliance', v: '99.94%' },
+  { k: 'Avg. Failure Detection', v: '<2.3 min' },
+];
+
     
 
     

@@ -2,25 +2,17 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, LogIn, UserPlus, User } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
-import { PlaybookForm } from './ui/playbook-form';
 import { CalendlyButton } from './ui/calendly-button';
-import { ThemeToggle } from './ui/theme-toggle';
+import { SystemPulse } from './ui/system-pulse';
 import { useAuth } from '@/contexts/auth-context';
 import { auth } from '@/lib/firebase/client';
 import {
@@ -35,42 +27,41 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 
 export function Header() {
-  const [scrolled, setScrolled] = React.useState(false);
   const { user } = useAuth();
   const pathname = usePathname();
   const isDashboard = pathname.startsWith('/dashboard');
 
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const isActive = (href: string) => {
+    if (href === '/#systems') {
+      return pathname.startsWith('/systems');
+    }
+    if (href.startsWith('/#')) {
+      return false;
+    }
+    return pathname === href || pathname.startsWith(href + '/');
+  };
 
   const navLinks = (
     <>
-      {navigationLinks.map((link) => (
-        <Link
-          key={link.name}
-          href={link.href}
-          className="text-lg font-medium transition-colors text-foreground/80 hover:text-foreground md:text-sm"
-        >
-          {link.name}
-        </Link>
-      ))}
+      {navigationLinks.map((link) => {
+        const active = isActive(link.href);
+        return (
+          <Link
+            key={link.name}
+            href={link.href}
+            aria-current={active ? 'page' : undefined}
+            className={cn(
+              'transition-colors md:text-sm text-lg',
+              active
+                ? 'font-semibold text-foreground underline underline-offset-4 decoration-primary decoration-2'
+                : 'font-medium text-foreground/80 hover:text-foreground'
+            )}
+          >
+            {link.name}
+          </Link>
+        );
+      })}
     </>
-  );
-
-  const authActions = (
-    <div className="flex items-center gap-2">
-        <Button asChild variant="ghost" size="icon">
-            <Link href="/login">
-                <User className="h-5 w-5" />
-                <span className="sr-only">Login</span>
-            </Link>
-        </Button>
-    </div>
   );
 
   const userMenu = user ? (
@@ -110,22 +101,23 @@ export function Header() {
   const logoHref = isDashboard ? '/dashboard' : '/';
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-50 w-full transition-all duration-300',
-        scrolled
-          ? 'border-b border-border/80 bg-background/80 backdrop-blur-sm'
-          : 'bg-transparent'
-      )}
-    >
+    <header className="sticky top-0 z-50 w-full bg-background border-b border-border">
       <div className="container flex items-center justify-between h-16">
         {/* Left side: Logo + Desktop Nav */}
         <div className="flex items-center flex-1 gap-8 md:flex-none">
-          <Link href={logoHref} className="flex items-center gap-3">
-            <span className="hidden text-xl font-bold md:inline font-headline">Raystrat Systems</span>
+          <Link href={logoHref} className="flex items-center gap-3" aria-label="Raystrat Systems home">
+            <Image
+              src="/raystrat-logo.png"
+              alt=""
+              width={32}
+              height={32}
+              priority
+              className="h-8 w-8"
+            />
+            <span className="hidden text-base font-semibold md:inline font-headline">Raystrat Systems</span>
           </Link>
           {!isDashboard && (
-            <nav className="items-center hidden gap-6 md:flex">
+            <nav className="items-center hidden gap-6 md:flex" aria-label="Primary">
               {navLinks}
             </nav>
           )}
@@ -133,18 +125,33 @@ export function Header() {
 
         {/* Centered logo for mobile */}
         <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:hidden">
-            <Link href={logoHref} className="flex items-center gap-3 text-xl font-bold font-headline">
-                Raystrat Systems
+            <Link href={logoHref} className="flex items-center gap-2" aria-label="Raystrat Systems home">
+                <Image
+                  src="/raystrat-logo.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                  priority
+                  className="h-7 w-7"
+                />
+                <span className="text-base font-semibold font-headline">Raystrat Systems</span>
             </Link>
         </div>
 
 
-        {/* Right side: Actions + Mobile Menu */}
-        <div className="flex items-center justify-end gap-2">
-          <div className="hidden md:flex">
-            {user ? userMenu : authActions}
-          </div>
-          <ThemeToggle />
+        {/* Right side: CTA + (auth state if applicable) + Mobile Menu */}
+        <div className="flex items-center justify-end gap-3">
+          {!isDashboard && <SystemPulse />}
+          {!isDashboard && (
+            <div className="hidden md:block">
+              <CalendlyButton size="sm">Book Operational Audit</CalendlyButton>
+            </div>
+          )}
+          {user && (
+            <div className="hidden md:flex">
+              {userMenu}
+            </div>
+          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -153,46 +160,22 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-              <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
+              <SheetTitle className="sr-only">Primary Navigation</SheetTitle>
               <div className="flex flex-col gap-8 p-6 pt-12">
-                {!isDashboard && navLinks}
-                 <div className="flex flex-col gap-4 pt-8 border-t border-border">
-                  {user ? (
-                    <>
-                       <Link href="/dashboard" className={cn(buttonVariants({ variant: 'default' }))}>Dashboard</Link>
-                       <Link href="/dashboard/settings" className={cn(buttonVariants({ variant: 'outline' }))}>Settings</Link>
-                       <Button variant="secondary" onClick={() => auth.signOut()}>Log out</Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button asChild variant="outline">
-                        <Link href="/login">Login</Link>
-                      </Button>
-                      <Button asChild>
-                        <Link href="/signup">Sign Up</Link>
-                      </Button>
-                    </>
-                  )}
-                </div>
                 {!isDashboard && (
-                  <div className="flex flex-col gap-4 pt-8 border-t border-border">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">
-                          Download Playbook
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Download the Playbook</DialogTitle>
-                          <DialogDescription>
-                            Enter your details below to get immediate access to the playbook.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <PlaybookForm />
-                      </DialogContent>
-                    </Dialog>
-                    <CalendlyButton />
+                  <nav className="flex flex-col gap-6" aria-label="Primary">
+                    {navLinks}
+                  </nav>
+                )}
+                {!isDashboard && (
+                  <div className="flex flex-col gap-4 pt-6 border-t border-border">
+                    <CalendlyButton size="lg">Book Operational Audit</CalendlyButton>
+                  </div>
+                )}
+                {user && (
+                  <div className="flex flex-col gap-3 pt-6 border-t border-border">
+                    <Link href="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>Dashboard</Link>
+                    <Button variant="ghost" onClick={() => auth.signOut()}>Log out</Button>
                   </div>
                 )}
               </div>

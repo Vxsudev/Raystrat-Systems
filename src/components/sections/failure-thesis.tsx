@@ -1,81 +1,105 @@
+'use client';
+
+// Choke point canon: Demand Acquisition | Pursuit | Frontline Resolution | Operations | Command Intelligence
+import { useState } from 'react';
+import { chokePoints, failureRegistry } from '@/data/content';
+import { ChokeDiagram } from '@/components/ui/choke-diagram';
+
+function sevBadge(sev: 'crit' | 'high' | 'med') {
+  if (sev === 'crit')
+    return 'font-mono text-[10px] px-2 py-0.5 rounded border border-red-800 bg-red-950 text-red-400 uppercase tracking-widest';
+  if (sev === 'high')
+    return 'font-mono text-[10px] px-2 py-0.5 rounded border border-amber-800 bg-amber-950 text-amber-400 uppercase tracking-widest';
+  return 'font-mono text-[10px] px-2 py-0.5 rounded border border-slate-600 bg-slate-900 text-slate-400 uppercase tracking-widest';
+}
+
+function sevLabel(sev: 'crit' | 'high' | 'med') {
+  if (sev === 'crit') return 'Critical';
+  if (sev === 'high') return 'High';
+  return 'Medium';
+}
 
 export function FailureThesis() {
-  const chokePoints = [
-    {
-      name: "Demand Acquisition",
-      description:
-        "The system that should continuously detect and qualify inbound interest.",
-    },
-    {
-      name: "Pursuit",
-      description:
-        "The system that should maintain disciplined, persistent follow-through on every live opportunity.",
-    },
-    {
-      name: "Frontline Resolution",
-      description:
-        "The system that should resolve customer contact consistently, 24/7, without SLA gaps.",
-    },
-    {
-      name: "Operations",
-      description:
-        "The system that should execute routine processes — invoicing, routing, coordination — with full auditability.",
-    },
-    {
-      name: "Command Intelligence",
-      description:
-        "The system that should consolidate decision-critical data and surface it without delay.",
-    },
-  ];
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   return (
-    <section className="py-16 md:py-24 bg-secondary">
+    <section
+      id="failure-thesis"
+      className="py-16 md:py-24 bg-[hsl(220_24%_12%)]"
+    >
       <div className="container">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-10">
-            The Problem
-          </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            {/* Left column */}
-            <div>
-              <h2 className="text-2xl font-bold font-headline mb-6">
-                The Five Choke Points
-              </h2>
-              <ol className="space-y-5">
-                {chokePoints.map((point, index) => (
-                  <li key={index} className="text-foreground/80">
-                    <span className="font-semibold text-foreground">
-                      {point.name}
-                    </span>{" "}
-                    — {point.description}
-                  </li>
-                ))}
-              </ol>
-            </div>
+        {/* Header */}
+        <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-4">
+          The Problem
+        </p>
+        <h2 className="text-3xl font-bold tracking-tighter font-headline md:text-4xl text-white mb-12">
+          Five Choke Points
+        </h2>
 
-            {/* Right column */}
-            <div>
-              <h2 className="text-2xl font-bold font-headline mb-6">
-                The Structural Failure
-              </h2>
-              <div className="text-lg text-foreground/80 leading-relaxed space-y-4">
-                <p>
-                  Most businesses run these five functions on human discipline.
-                  That means they run — until someone is sick, overloaded,
-                  distracted, or gone.
-                </p>
-                <p>
-                  The failure is not a performance issue. It is a structural
-                  one. Functions that depend on memory, attention, and good
-                  intentions will fail systematically as the business grows.
-                </p>
-                <p>
-                  Raystrat installs governed operational systems that remove the
-                  dependency. The functions run because the system governs them
-                  — not because someone remembered.
-                </p>
-              </div>
+        {/* Two-column: choke point list + diagram */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left: clickable choke point list */}
+          <div className="space-y-1">
+            {chokePoints.map((cp) => {
+              const isActive = activeId === cp.id;
+              return (
+                <button
+                  key={cp.id}
+                  type="button"
+                  onClick={() => setActiveId(isActive ? null : cp.id)}
+                  className={
+                    'w-full text-left px-4 py-3 rounded-md border transition-colors duration-150 ' +
+                    (isActive
+                      ? 'border-primary/50 bg-primary/10'
+                      : 'border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]')
+                  }
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="font-mono text-[10px] text-primary mt-0.5 shrink-0">
+                      {cp.ix}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-white text-sm">
+                        {cp.name}
+                      </p>
+                      <p className="text-white/60 text-xs mt-0.5">{cp.desc}</p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right: diagram with shared activeId */}
+          <div>
+            <ChokeDiagram activeId={activeId} onSelect={setActiveId} />
+          </div>
+        </div>
+
+        {/* Failure Mode Registry table */}
+        <div className="mt-16">
+          <p className="font-mono text-[10px] text-white/40 tracking-widest uppercase mb-4">
+            Failure Mode Registry
+          </p>
+          <div className="border border-white/10 rounded-md overflow-hidden">
+            {/* Table header */}
+            <div className="grid grid-cols-[80px_180px_1fr_100px] gap-4 px-5 py-3 bg-white/[0.04] border-b border-white/10 font-mono text-[10px] tracking-widest uppercase text-white/40">
+              <span>FM-ID</span>
+              <span>Function</span>
+              <span>Failure Mode</span>
+              <span>Severity</span>
             </div>
+            {failureRegistry.map((r) => (
+              <div
+                key={r.id}
+                className="grid grid-cols-[80px_180px_1fr_100px] gap-4 py-3 px-5 border-b border-white/10 last:border-0 items-start"
+              >
+                <span className="font-mono text-xs text-white/50">{r.id}</span>
+                <span className="text-sm text-white/70 font-medium">{r.fn}</span>
+                <span className="text-sm text-white/70">{r.mode}</span>
+                <span className={sevBadge(r.sev)}>{sevLabel(r.sev)}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
