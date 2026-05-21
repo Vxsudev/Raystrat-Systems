@@ -49,7 +49,7 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
               onClick={onClick}
             >
               <Sparkles className="h-7 w-7" />
-              <span className="sr-only">AI Assistant</span>
+              <span className="sr-only">Operational Advisor</span>
             </Button>
         </TooltipTrigger>
         <TooltipContent
@@ -152,7 +152,7 @@ export function FloatingAiSuggestor() {
               <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                       <Sparkles className="w-6 h-6 text-primary" />
-                      Agent Assist
+                      Operational Advisor
                   </SheetTitle>
                    <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm" onClick={handleNewConversation}>

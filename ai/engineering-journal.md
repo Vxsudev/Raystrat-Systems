@@ -155,3 +155,89 @@ This repo contains a production Next.js site with two deployment surfaces (marke
 - [ ] Add ESLint config (`eslint.config.mjs`) to activate the `002-lint.sh` gate
 - [ ] Consider extracting Raystrat-Systems into its own git repo (isolates submodule registration, simplifies git history)
 - [ ] Decide submodule pinning policy (track `main` vs. pin to commit SHA for stability)
+
+---
+
+## 2026-05-21 — Positioning Refinement Pass
+
+**Author:** Claude Sonnet 4.6 (subagent-driven execution)
+**Spec authority:** Directive RAYSTRAT_POSITIONING_REFINEMENT_PASS
+**Capability:** RAYSTRAT_POSITIONING_REFINEMENT_PASS
+
+**What changed:**
+
+### Floating CTA Alignment (TARGET 1)
+- `src/components/ui/service-suggester.tsx` — Floating trigger: "Suggest an Agent" → "Diagnose a Breakdown". Dialog title: "AI-Powered Agent Suggester" → "Operational System Finder". Dialog description: updated to systems-aligned framing. All routing, interaction behavior, and 30-second auto-open logic preserved.
+- `src/components/ui/floating-ai-suggestor.tsx` — SheetTitle: "Agent Assist" → "Operational Advisor". sr-only text: "AI Assistant" → "Operational Advisor". All localStorage conversation behavior, Sheet structure, and AI coupling preserved.
+
+### Agent Language Leakage Removal (TARGET 3)
+- `src/components/ui/favorite-agent-button.tsx` — Button: "Favorite This Agent" → "Save This System". Dialog title: "Favorite:" → "Save:". Dialog description: updated to consultation/system framing. Internal prop names (`agentName`, `agentSlug`) left unchanged — no user exposure.
+- `src/components/ui/notes-taker.tsx` — Textarea placeholder and description copy updated to operational/systems vocabulary. Component behavior unchanged.
+- `src/components/sections/agent-advantage.tsx` — Section `id="agent-advantage"` → `id="governance"`. Export name `AgentAdvantage` preserved (page.tsx imports it by that name). Section content unchanged.
+- `src/app/layout.tsx` (runtime validation fix, same session) — Metadata title/OG/Twitter updated from "AI Automations Wing" to "Operational Systems Engineering". Description updated to systems framing.
+
+### Vertical Section Refactor (TARGET 2)
+- `src/components/sections/industries.tsx` — All 12 feature bullets across Fintech, Legal, Healthcare rewritten from "agents" framing to governed workflow/infrastructure framing. Card structure, icons, section id, descriptions, and header copy preserved.
+  - Fintech: governed credit decisioning, fraud escalation workflows, compliant KYC onboarding infrastructure, continuity-assured customer operations
+  - Legal: case analysis infrastructure, governed document summarization, e-discovery with chain-of-custody controls, client intake with SLA enforcement
+  - Healthcare: clinical documentation workflows, scheduling infrastructure with escalation logic, patient intake with triage routing and audit trail, patient follow-up and continuity management
+
+### /systems Index Route (TARGET 4)
+- `src/app/systems/page.tsx` — NEW. Pure server component. Metadata: "Operational Systems | Raystrat Systems". Structure: tight header block (no hero), 3-column systems grid pulling from `services` array in `@/data/content`, audit CTA at bottom (CalendlyButton). Cards link to `/systems/[slug]`, render icon, title, subhead, and 3 bullets each. Header and Footer included explicitly (same pattern as homepage).
+
+### Recon Artifact
+- `ai/recon/raystrat-positioning-refinement-pass.md` — Complete pre-implementation surface map: all agent-language locations, floating CTA ownership, vertical section dependency graph, systems route architecture, AI assistant coupling surfaces, risk assessment.
+
+### Verification
+- `scripts/verification/006-raystrat-positioning-refinement-pass.sh` — 15 checks. All 15 pass.
+- `scripts/verification/005-raystrat-homepage-repositioning.sh` — 10/10 pass (no regressions).
+- `scripts/verification/004-invariants.sh` — 3/3 pass (INV-001, INV-002, INV-003).
+
+**Reasoning:**
+
+*CTA language:* "Diagnose a Breakdown" was chosen over "Map My Operations" or "Suggest a System" because it aligns with the primary positioning thesis ("operational breakdown is preventable"). A founder who lands on the site in breakdown mode recognizes this framing immediately. "Operational System Finder" for the dialog title is functional and enterprise-credible without being jargon-inflated.
+
+*"Operational Advisor" for the assistant:* The assistant on system pages is a contextual advisor, not a feature selector. "Advisor" implies expertise and consultation — consistent with the audit-first engagement model.
+
+*"Save This System" for favorite-agent-button:* "Save" is action-neutral and enterprise-appropriate. "This System" anchors the language. The internal prop names (agentName, agentSlug) were intentionally left unchanged — they're variable names, not visible copy, and renaming them would require cascade changes across actions.ts, favorite-agent-form.tsx, and service-page-client.tsx with no user benefit.
+
+*Industries section rewrite:* The critical insight is that the section header and card descriptions were already correct — only the feature bullets remained in agent-catalog cognition. The replacement direction follows the directive's "governed workflows / operational infrastructure" framing and maintains the same density and readability.
+
+*Section id "governance":* Changing `id="agent-advantage"` to `id="governance"` is low-risk (not linked in nav) but meaningful — if the section id is ever referenced in tracking, analytics, or future anchor links, it now matches the content.
+
+*Header/Footer in /systems/page.tsx:* ServicePageClient renders its own Header/Footer internally, so /systems/[slug] pages have navigation. The new /systems/page.tsx is a plain server component and required explicit Header/Footer imports to match the homepage pattern.
+
+**Pre-existing gate status (unchanged from Phase 1):**
+
+| Gate | Status | Reason |
+|------|--------|--------|
+| 001-typecheck.sh | PRE-EXISTING FAILURE | Same 17 errors as before; 0 new errors from this pass |
+| 002-lint.sh | SKIP | No ESLint config (pre-existing) |
+| 003-build.sh | PRE-EXISTING FAILURE | `buffer-equal-constant-time` Node.js v25 crash during static generation (webpack alias bypassed by externals); API route export name mismatches (`contextualAssistantFlow`, `notesAnalyzerFlow`) |
+| 004-invariants.sh | PASS | 3/3 |
+| 005-homepage-repositioning.sh | PASS | 10/10 |
+| 006-refinement.sh | PASS | 15/15 |
+
+**Smoke test result:**
+Enterprise founder landing on the site now encounters:
+1. Hero: "Operational Breakdown / Is Preventable" — structural failure framing ✅
+2. FailureThesis: 5 choke points named, structural diagnosis given ✅
+3. Systems section: 6 operational systems, no "agent" language ✅
+4. Governance layer: "Governance by Design" with 6 governance properties ✅
+5. Industries: "Governed Systems for High-Accountability Environments" with workflow-framing bullets ✅
+6. Results: Operational Audit CTA — audit-first engagement model ✅
+7. Floating trigger: "Diagnose a Breakdown" — consistent with positioning ✅
+8. Assistant: "Operational Advisor" — consistent with governed execution identity ✅
+9. /systems: clean catalog, infrastructural feel, audit CTA at bottom ✅
+
+The site now reads as operational systems company at every touchpoint. No AI-agency framing survives on any visible surface in the marketing domain.
+
+**Unresolved follow-ups:**
+
+- [ ] Fix pre-existing broken API routes: export `contextualAssistantFlow` from `contextual-assistant.ts` (currently exported as `getContextualAssistantResponse`), export `notesAnalyzerFlow` from `notes-analyzer.ts` (currently exported as `analyzeNotes`)
+- [ ] Fix `buffer-equal-constant-time` for production build (webpack alias does not intercept externals; needs `package.json` overrides or npm patch approach)
+- [ ] Fix pre-existing TypeScript errors in `src/app/actions.ts`, `src/app/page.tsx`, `src/lib/auth/getAuthenticatedUser.ts`, API routes
+- [ ] Add ESLint config to activate `002-lint.sh` gate
+- [ ] Delete `src/app/services/[slug]/page.tsx` after production redirect confirmation
+- [ ] Add `/systems` to sitemap if not already there (was added in Phase 1 per journal)
+- [ ] Long-term: `FavoriteAgentButton` component and form prop names (`agentName`, `agentSlug`) can be renamed to `systemName`/`systemSlug` in a dedicated refactor pass (low user impact, requires cascade across 3 files)

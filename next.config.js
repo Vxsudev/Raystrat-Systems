@@ -1,6 +1,14 @@
+const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack(config) {
+    // buffer-equal-constant-time v1.0.0 references SlowBuffer which was removed
+    // in Node.js v22+. This alias redirects to a compatible polyfill.
+    config.resolve.alias['buffer-equal-constant-time'] =
+      path.resolve(__dirname, 'patches/buffer-equal-constant-time.js');
+    return config;
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

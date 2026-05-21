@@ -100,7 +100,7 @@ export function NotesTaker({ serviceName, initialNote = '', onNoteChange }: Note
       <div className="space-y-3">
         <h3 className="text-xl font-bold font-headline">Your Private Notes</h3>
         <Textarea
-          placeholder="Your notes should be specific to your business for maximum personalisation from our agents. Shoot!"
+          placeholder="Note your operational priorities, constraints, and questions. Be specific for the best system match."
           value={notes}
           onChange={handleNoteChange}
           className="min-h-[120px] text-base"
@@ -120,7 +120,7 @@ export function NotesTaker({ serviceName, initialNote = '', onNoteChange }: Note
             notesAreEmpty ? 'opacity-100' : 'opacity-0'
           )}
         >
-          Jot down your questions, ideas and requirements as you read. Save the note to see our operations and follow-up agents in action!
+          Capture your operational questions and requirements. Save to receive a tailored system recommendation.
         </p>
       </div>
 

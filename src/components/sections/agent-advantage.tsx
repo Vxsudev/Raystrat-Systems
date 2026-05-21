@@ -31,7 +31,7 @@ const governanceProperties = [
 
 export function AgentAdvantage() {
     return (
-        <section id="agent-advantage" className="py-16 md:py-24 bg-card/50">
+        <section id="governance" className="py-16 md:py-24 bg-card/50">
             <div className="container">
                 <div className="max-w-3xl mx-auto mb-12 text-center">
                     <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">

@@ -25,11 +25,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://raystratsystems.com
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Raystrat Systems — AI Automations Wing',
-  description: 'Five boring automations that print cashflow while you build.',
+  title: 'Raystrat Systems — Operational Systems Engineering',
+  description: 'We build governed operational systems that eliminate breakdown in demand acquisition, pursuit, support, operations, and intelligence.',
   openGraph: {
-    title: 'Raystrat Systems — AI Automations Wing',
-    description: 'We automate ROI — not noise. Five boring automations that print cashflow while you build.',
+    title: 'Raystrat Systems — Operational Systems Engineering',
+    description: 'Operational breakdown is preventable. We build the governed execution systems that close the structural gaps causing it.',
     url: siteUrl,
     siteName: 'Raystrat Systems',
     images: [
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Raystrat Systems — AI Automations Wing',
-    description: 'We automate ROI — not noise. Five boring automations that print cashflow while you build.',
+    title: 'Raystrat Systems — Operational Systems Engineering',
+    description: 'Operational breakdown is preventable. We build the governed execution systems that close the structural gaps causing it.',
     images: [`${siteUrl}/og-image.png`],
   },
   robots: {

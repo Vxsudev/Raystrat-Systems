@@ -31,14 +31,14 @@ export function FavoriteAgentButton({ agentName, agentSlug }: FavoriteAgentButto
           size="lg"
           className="w-full"
         >
-          <Heart className="mr-2" /> Favorite This Agent
+          <Heart className="mr-2" /> Save This System
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-headline text-2xl">Favorite: {agentName}</DialogTitle>
+          <DialogTitle className="font-headline text-2xl">Save: {agentName}</DialogTitle>
           <DialogDescription>
-            Enter your details below, and we'll email you a direct link to book a demo for this agent.
+            Enter your details below, and we'll email you a direct link to book a consultation for this system.
           </DialogDescription>
         </DialogHeader>
         <FavoriteAgentForm 
