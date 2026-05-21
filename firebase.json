@@ -1,0 +1,59 @@
+{
+  "apphosting": {
+    "source": ".",
+    "backendId": "studio",
+    "rootDir": "./",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
+    ],
+    "env": [
+      {
+        "variable": "GEMINI_API_KEY",
+        "secret": "GEMINI_API_KEY"
+      },
+      {
+        "variable": "SENDGRID_API_KEY",
+        "secret": "SENDGRID_API_KEY"
+      },
+      {
+        "variable": "SENDGRID_FROM_EMAIL",
+        "secret": "SENDGRID_FROM_EMAIL"
+      },
+      {
+        "variable": "FIREBASE_PROJECT_ID",
+        "secret": "FIREBASE_PROJECT_ID"
+      },
+      {
+        "variable": "FIREBASE_CLIENT_EMAIL",
+        "secret": "FIREBASE_CLIENT_EMAIL"
+      },
+      {
+        "variable": "FIREBASE_PRIVATE_KEY",
+        "secret": "FIREBASE_PRIVATE_KEY"
+      },
+      {
+        "variable": "NEXT_PUBLIC_SITE_URL",
+        "secret": "NEXT_PUBLIC_SITE_URL"
+      },
+      {
+        "variable": "N8N_MAKE_API_KEY",
+        "secret": "N8N_MAKE_API_KEY"
+      },
+      {
+        "variable": "AGENT_API_BASE_URL",
+        "secret": "FOLLOW-UP_AGENT_SECRET_URL"
+      }
+    ],
+    "alwaysDeployFromSource": true
+  },
+  "auth": {
+    "authorizedDomains": [
+      "localhost",
+      "app.raystratsystems.com"
+    ]
+  }
+}

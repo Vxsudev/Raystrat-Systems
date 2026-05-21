@@ -1,0 +1,68 @@
+// src/components/ui/byte-card.tsx
+import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
+import { ArrowRight, Calendar, Clock, Check } from 'lucide-react';
+import { format } from 'date-fns';
+
+interface Takeaway {
+  title: string;
+  description: string;
+}
+
+interface Byte {
+  slug: string;
+  title: string;
+  summary: string;
+  keyTakeaways: Takeaway[];
+  publishedOn: string;
+  readTime: number;
+}
+
+interface ByteCardProps {
+  byte: Byte;
+  index: number;
+}
+
+export function ByteCard({ byte, index }: ByteCardProps) {
+  return (
+    <Link href={`/bytes/${byte.slug}`} className="block group h-full">
+      <Card className="flex flex-col h-full p-6 transition-all duration-300 rounded-2xl bg-card hover:border-primary hover:shadow-2xl hover:shadow-primary/20">
+        <CardHeader className="p-0">
+          <p className="mb-2 text-sm font-semibold tracking-widest uppercase text-primary font-headline">
+            Byte-{String(index + 1).padStart(2, '0')}
+          </p>
+          <CardTitle className="mb-3 text-2xl font-bold font-headline group-hover:text-primary transition-colors">
+            {byte.title}
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="flex-1 p-0">
+            <ul className="space-y-3 my-4">
+                {byte.keyTakeaways.slice(0, 5).map((takeaway, index) => (
+                    <li key={index} className="flex items-start">
+                        <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
+                        <span className="text-foreground/80 font-semibold">{takeaway.title}</span>
+                    </li>
+                ))}
+            </ul>
+        </CardContent>
+
+        <div className="pt-4 mt-auto">
+            <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                 <div className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4" />
+                    <span>{byte.readTime} min read</span>
+                </div>
+                 <div className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" />
+                    <span>{format(new Date(byte.publishedOn), 'MMM d, yyyy')}</span>
+                </div>
+            </div>
+          <div className="font-semibold text-primary group-hover:underline flex items-center">
+            Read Now <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+          </div>
+        </div>
+      </Card>
+    </Link>
+  );
+}

@@ -1,0 +1,18 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gcloud', 'alpha', 'apphosting', 'build-create', '--project-id', '${_PROJECT_ID}', '--build-id', '${_BUILD_ID}']
+  id: fetch
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '-t'
+  - '$_IMAGE'
+  - '.'
+  - '-f'
+  - 'Dockerfile'
+images:
+- '$_IMAGE'
+substitutions:
+  _IMAGE: ''
+  _PROJECT_ID: ''
+  _BUILD_ID: ''
