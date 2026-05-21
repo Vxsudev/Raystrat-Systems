@@ -1,5 +1,7 @@
 // src/components/sections/results.tsx
 import { CalendlyButton } from "@/components/ui/calendly-button";
+import { FailureModeRegistryPreview } from '@/components/diagrams/failure-mode-registry-preview';
+import { DeploymentLifecycleDiagram } from '@/components/diagrams/deployment-lifecycle-diagram';
 
 const auditDeliverables = [
   {
@@ -55,6 +57,10 @@ export function Results() {
           <p className="mt-4 text-sm text-muted-foreground">
             The audit is the first engagement. Not a demo. Not a trial.
           </p>
+        </div>
+        <FailureModeRegistryPreview />
+        <div className="mt-16">
+          <DeploymentLifecycleDiagram />
         </div>
       </div>
     </section>

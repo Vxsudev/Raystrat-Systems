@@ -72,8 +72,8 @@ export function Industries() {
             >
               <CardHeader>
                 <div className="flex items-center gap-4">
-                   <div className="p-3 rounded-md bg-primary/10">
-                    <industry.icon className="w-6 h-6 text-primary" />
+                   <div className="p-2.5 rounded-md bg-primary/10">
+                    <industry.icon className="w-5 h-5 text-primary" />
                    </div>
                   <CardTitle className="text-xl font-bold font-headline">{industry.title}</CardTitle>
                 </div>

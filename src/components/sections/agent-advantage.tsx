@@ -1,6 +1,8 @@
 // src/components/sections/agent-advantage.tsx
 import { ArrowRight } from 'lucide-react';
 import React from 'react';
+import { GovernanceLayerDiagram } from '@/components/diagrams/governance-layer-diagram';
+import { AuditTrailEntryPreview } from '@/components/diagrams/audit-trail-entry-preview';
 
 const governanceProperties = [
     {
@@ -57,6 +59,12 @@ export function AgentAdvantage() {
                             </div>
                         ))}
                     </div>
+                </div>
+                <div className="mt-16">
+                    <GovernanceLayerDiagram />
+                </div>
+                <div className="mt-16">
+                    <AuditTrailEntryPreview />
                 </div>
             </div>
         </section>

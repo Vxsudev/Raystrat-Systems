@@ -47,7 +47,7 @@ export default function SystemsPage() {
               href={`/systems/${service.slug}`}
               className="block group"
             >
-              <Card className="flex flex-col h-full bg-card/50 border-2 border-transparent transition-colors duration-200 group-hover:border-primary">
+              <Card className="flex flex-col h-full border border-transparent transition-colors duration-150 group-hover:border-primary">
                 <CardHeader className="flex flex-row items-center gap-4 pb-3">
                   <div className="p-2.5 rounded-md bg-primary/10 shrink-0">
                     <service.icon
@@ -84,7 +84,7 @@ export default function SystemsPage() {
 
       {/* Audit CTA — bottom, minimal */}
       <div className="container">
-        <div className="border border-border rounded-lg px-6 py-8 md:px-10 md:py-10 max-w-2xl">
+        <div className="border border-border rounded-md px-6 py-8 md:px-10 md:py-10 max-w-2xl">
           <p className="text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-2">
             Not sure where to start?
           </p>

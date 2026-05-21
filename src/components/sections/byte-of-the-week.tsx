@@ -3,7 +3,6 @@ import { bytes } from '@/data/content';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { AnimatedGridBackground } from '../ui/animated-grid-background';
 
 export function ByteOfTheWeek() {
   // The most recent byte is the first one in the array.
@@ -15,7 +14,7 @@ export function ByteOfTheWeek() {
   }
 
   return (
-    <section id="byte-of-the-week" className="py-16 md:py-24 bg-card/50">
+    <section id="byte-of-the-week" className="py-16 md:py-24 bg-secondary">
       <div className="container">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div>
@@ -41,13 +40,12 @@ export function ByteOfTheWeek() {
                 </Button>
             </div>
           </div>
-          <div className="p-8 bg-card rounded-2xl border flex items-center justify-center aspect-square relative overflow-hidden max-w-sm mx-auto w-full">
-             <AnimatedGridBackground />
-             <div className="text-center relative z-10">
-                 <span className="text-6xl font-bold font-headline text-primary">
-                    B{String(byteIndex + 1).padStart(2, '0')}
-                 </span>
-                 <p className="text-xl font-semibold mt-2">Latest Insight</p>
+          <div className="p-8 bg-card rounded-md border flex items-center justify-center aspect-square max-w-sm mx-auto w-full">
+             <div className="text-center">
+                 <p className="font-mono text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+                    Byte-{String(byteIndex + 1).padStart(2, '0')}
+                 </p>
+                 <p className="text-xl font-semibold font-headline">Latest Insight</p>
              </div>
           </div>
         </div>

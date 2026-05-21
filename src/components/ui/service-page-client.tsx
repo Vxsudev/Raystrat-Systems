@@ -16,6 +16,7 @@ import { NotesTaker } from '@/components/ui/notes-taker';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
+import { FrontlineSupportArchitectureDiagram } from '@/components/diagrams/frontline-support-architecture-diagram';
 
 
 interface JustificationPopupProps {
@@ -45,8 +46,8 @@ function JustificationPopup({ justification, onAnimate }: JustificationPopupProp
 
   return (
      <div className={cn(
-        "fixed bottom-20 right-6 z-50 w-full max-w-sm rounded-lg border border-primary bg-card text-card-foreground shadow-2xl transition-all duration-300",
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        "fixed bottom-20 right-6 z-50 w-full max-w-sm rounded-md border border-border bg-card text-card-foreground transition-all duration-300",
+        isVisible ? 'opacity-100' : 'opacity-0'
      )}>
       <div className="p-4">
         <div className="flex items-start justify-between">
@@ -126,15 +127,15 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
                         {service.title}
                      </h1>
                    </div>
-                  <p className="mt-4 text-xl italic text-foreground/80">{service.subhead}</p>
+                  <p className="mt-4 text-xl text-foreground/80">{service.subhead}</p>
                 </header>
-                <div 
-                  className="prose prose-invert prose-lg max-w-none mx-auto text-foreground/80"
+                <div
+                  className="prose prose-lg max-w-none mx-auto text-foreground/80"
                   dangerouslySetInnerHTML={{ __html: service.pageContent }}
                 />
               </div>
               <aside className="lg:col-span-2">
-                <div className="sticky p-6 rounded-lg top-24 bg-card border border-border">
+                <div className="sticky p-6 rounded-md top-24 bg-card border border-border">
                     <h3 className="text-2xl font-bold font-headline">Core Features</h3>
                      <ul className="mt-4 space-y-3">
                         {service.bullets.map((bullet, index) => (
@@ -159,9 +160,14 @@ export function ServicePageClient({ slug, nextServiceSlug }: ServicePageClientPr
                 </div>
               </aside>
             </div>
+            {service.slug === 'frontline-support' && (
+              <div className="mt-16">
+                <FrontlineSupportArchitectureDiagram />
+              </div>
+            )}
             {nextService && (
                 <div className="mt-24 text-center">
-                    <Link 
+                    <Link
                         href={`/systems/${nextService.slug}`}
                         className="inline-flex items-center text-lg font-semibold transition-colors text-foreground/80 hover:text-primary group"
                     >
