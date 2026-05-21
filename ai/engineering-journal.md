@@ -1371,3 +1371,69 @@ Raystrat blue used only as: semantic accent in SVG stroke, primary identifiers i
 ### Status
 
 `RHYTHM_LAB_ARCHETYPES_READY_FOR_REVIEW`
+
+---
+
+## HOMEPAGE_DESIGN_V2 — 2026-05-22
+
+**Phase:** phase-visual-system
+**Branch:** rhythm-lab-archetypes
+**Commit:** b68ed4b
+**State:** RELEASE_APPROVED
+**Verification:** 016-homepage-design-v2.sh — 58/58 PASS
+
+### Spec
+
+`specs/homepage-design-v2.md` — frontend-only implementation of the Claude Design handoff bundle (`/tmp/ui-work/project/`). Three-mode visual system (Ledger/Editorial/Blueprint). No data model or API changes.
+
+### Engineering OS Boot
+
+Pipeline traversal: `compile-spec.sh → generate-tasks.sh → execution-supervisor.sh`. Proxy scripts created at `scripts/` to route through vendor/engineering-os with `EOS_STATE_REGISTRY` correctly exported. Phase tag added to `specs/phases/phase-visual-system.md`.
+
+### Components Delivered
+
+- **SystemPulse** — pre-existing, wired into header (live UTC, green pulse dot)
+- **HeroStatusPanel** — 5 system uptime rows, live 5s tick, oklch pill badges (ok/warn/crit)
+- **HeroMetaRow** — 4 institutional stats: 147 systems / 12.4M entries / 99.94% SLA / <2.3min
+- **ChokeDiagram** — interactive SVG, 5 nodes at percentage coords, polyline, click-to-highlight + detail panel
+- **AuditTicker** — live stream: 8 pre-seeded entries, 2400ms rotation, 4-col grid (ts/sys/ev/outcome)
+- **FailureModeRegistry** — 6 FM rows replacing testimonial slab, crit/high/med severity badges
+- **AuditCTA** — OUT-01/02/03 deliverable cards in contact section
+- **FAQ Accordion** — native CSS grid-rows 0fr→1fr, single-open, no max-height hacks
+- **TweaksPanel** — floating mode switcher (Ledger/Editorial/Blueprint) via body class
+- **Governance section** — new: 6-property grid + live audit log, dark structure bg
+
+### Data Infrastructure
+
+`src/data/content.ts` — five new exports: `chokePoints`, `failureRegistry`, `auditDeliverables`, `auditSeed`, `heroMeta`. All used by new components; no duplication with existing content.
+
+### Mode System
+
+`globals.css` mode overrides: `mode-editorial` (8vw headline, status panel hidden), `mode-blueprint` (engineering-paper bg, dashed borders, function syntax via ::before/::after), `sys-pulse` keyframe (opacity only, anti-theater compliant).
+
+### Anti-theater
+
+0 violations across all 7 new/modified component files. No animate-pulse/ping/bounce/spin, no bg-gradient-*, no backdrop-blur, no shadow-2xl, no hover scale/rotate. Transition-colors duration-150 only.
+
+### Regression Baseline Updates
+
+`014` and `015`: EXPECTED_SECTIONS 10→11 (governance.tsx authorized by this spec).
+
+### Pre-existing Failures
+
+Regressions 010–013 have pre-existing failures in HEAD (governance diagram removals, shadow-2xl, etc). Implementation does not worsen these — all reverted files match HEAD exactly (0 diff).
+
+### TypeScript
+
+19 source-level errors (pre-existing, none new). 2 auto-generated `.next/types` entries excluded from count (fluctuate with dev-server rebuild cycles).
+
+### Verification
+
+```
+016-homepage-design-v2.sh: 58/58 PASS
+Regressions 004–009, 015: all PASS
+```
+
+### Status
+
+`HOMEPAGE_DESIGN_V2_RELEASE_APPROVED`
