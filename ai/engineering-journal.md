@@ -355,3 +355,116 @@ Phase A was strictly token-level (CSS variables, one URL param, two boolean/stri
 - [ ] Pre-existing: Fix broken API routes (contextualAssistantFlow / notesAnalyzerFlow export mismatches)
 - [ ] Pre-existing: Fix buffer-equal-constant-time for production build
 - [ ] Pre-existing: TypeScript errors in actions.ts, page.tsx, getAuthenticatedUser.ts
+
+---
+
+## 2026-05-21 — Visual System Phase B: Component Doctrine
+
+**Author:** Claude Sonnet 4.6 (subagent-driven execution)  
+**Spec authority:** `specs/phases/phase-visual-system.md` §13–§18  
+**Capability:** RAYSTRAT_VISUAL_SYSTEM_PHASE_B_COMPONENT_DOCTRINE
+
+**What changed:**
+
+### Card Primitive — `src/components/ui/card.tsx`
+- `rounded-lg` → `rounded-md` (6px): eliminates startup-SaaS soft radius globally
+- Removed `shadow-sm`: site uses borders for structural separation, not shadow depth
+- Global impact: all card instances (services, industries, systems index, audit deliverables) inherit fix
+
+### Hero Rhythm — `src/components/sections/hero.tsx`
+- Removed `min-h-[calc(100vh-4rem)] flex items-center justify-center` — hero no longer occupies full viewport
+- Added `py-20 md:py-28` — content-determined height; FailureThesis now begins to peek at viewport bottom
+- Headline scale: `text-6xl sm:text-7xl md:text-8xl` → `text-5xl md:text-6xl` (Display tier per §9.2; 60px max)
+- Added `leading-tight tracking-tighter` to headline for proper display-tier treatment
+- Added eyebrow: `OPERATIONAL SYSTEMS ENGINEERING` in `text-xs font-semibold tracking-widest uppercase text-muted-foreground`
+- CTA: replaced ghost/custom override (`variant="ghost" bg-background text-primary border py-4 px-10 text-xl`) with canonical `variant="default" size="lg"` — hero CTA now visually identical to Results CTA
+- Container: removed `max-w-9xl` — no spec basis; uses default centered container
+
+### Services Cards — `src/components/sections/services.tsx`
+- Removed `group-hover:scale-110 group-hover:-rotate-6` from icon — forbidden motion per §18.3
+- Removed `group-hover:shadow-lg group-hover:shadow-primary/20` — forbidden shadow lift per §14.3
+- `border-2 border-transparent` → `border border-transparent` — 1px border per §14.2
+- `transition-all duration-300` → `transition-colors duration-150` — canonical motion timing
+- Removed duplicate italic CardDescription from CardContent — §9.6 italic removed; §14.4 one subhead per card
+- Reduced icon container: `p-3 w-6 h-6` → `p-2.5 w-5 h-5` — proportionally tighter
+- Added "View System →" trailing link affordance per §14.4
+
+### Section Backgrounds
+- `failure-thesis.tsx`: `bg-card/50` → `bg-secondary` — solid tint per §12.2 (opacity artifacts removed)
+- `agent-advantage.tsx`: `bg-card/50` → `bg-secondary` — same
+- `industries.tsx`: section `bg-card/50` → `bg-secondary`; cards `bg-card/50` → `bg-card` (solid white cards on tinted section)
+
+### AgentAdvantage Container — `src/components/sections/agent-advantage.tsx`
+- `rounded-2xl` → `rounded-md` — §14.2 eliminates rounded-2xl
+- `bg-background/50` → `bg-background` — solid (opacity artifact removed)
+- Icon markers: `rounded-full` → `rounded-sm` — §14.5 icon containers use square, not circle
+
+### Results Section — `src/components/sections/results.tsx`
+- `py-20 md:py-32` → `py-16 md:py-24 lg:py-32` — canonical section spacing
+- H2: `text-4xl sm:text-5xl md:text-6xl` → `text-3xl md:text-4xl` — Title 1 per §9.2; less drama, more authority
+- `bg-card text-card-foreground` → `bg-secondary` — consistent with other tinted sections
+- Audit deliverable card: `bg-background/50` → `bg-background`; `rounded-lg` → `rounded-md` (via primitive)
+
+### Green Ping Removal — Header, Footer, ServiceSuggester
+- `src/components/header.tsx`: removed `animate-ping + bg-green-500` status dot from logo lockup per §6.6
+- `src/components/footer.tsx`: removed `animate-ping + bg-green-500` status dot; corrected wordmark to `text-foreground` (was `/80`)
+- `src/components/ui/service-suggester.tsx`: removed ping from FloatingTrigger; removed ping from DialogTitle; removed 30s auto-open `setTimeout` per §17.4; fixed trigger: `shadow-2xl` → `shadow-sm`, `backdrop-blur-sm` removed, `border-primary/30` → `border-border`
+
+### Floating Advisor Refinement — `src/components/ui/floating-ai-suggestor.tsx`
+- Removed `animate-pulse` from trigger button per §17.3 + §18.3
+- Removed `hover:animate-none` (no longer needed)
+- Icon: `Sparkles` → `MessageSquare` in both trigger and SheetTitle per §17.2 (NOT AI cliché icons)
+- Button style: `variant="default" bg-primary rounded-full shadow-2xl` → `variant="outline" bg-background border-border rounded-full shadow-sm` — restrained per §17.2
+- Tooltip: removed 1.5s auto-appear timer per §17.5; tooltip now appears on hover only; removed `isTooltipOpen` controlled state; simplified tooltip styling
+
+### Artifacts
+- `ai/recon/raystrat-visual-system-phase-b.md` — 10-section recon: doctrine map, radius inventory, hover inventory, motion inventory, spacing inventory, hero rhythm analysis, surface depth analysis, implementation sequencing, regression risks, out-of-scope
+- `scripts/verification/008-raystrat-visual-system-phase-b.sh` — 15 verification checks
+
+### Verification Results
+- `008-raystrat-visual-system-phase-b.sh` — 15/15 PASS
+- `007-raystrat-visual-system-phase-a.sh` — 11/11 PASS (no regressions)
+- `006-raystrat-positioning-refinement-pass.sh` — 15/15 PASS (no regressions)
+- `005-raystrat-homepage-repositioning.sh` — 10/10 PASS (no regressions)
+- `004-invariants.sh` — 3/3 PASS (INV-001, INV-002, INV-003)
+
+**Architectural reasoning:**
+
+*Hero scale reduction:* The `text-8xl` (96px) headline registered as product-launch energy, not operational authority. `text-6xl` (60px) is the enterprise register — it commands attention without performing disruption. The eyebrow `OPERATIONAL SYSTEMS ENGINEERING` above the H1 establishes the category before the diagnostic thesis lands.
+
+*Hero not full-viewport:* The old `min-h-[calc(100vh-4rem)]` layout made the FailureThesis invisible until the buyer actively scrolled. Buyers who didn't scroll missed the structural argument entirely. Content-determined height with `py-20 md:py-28` places the first scroll such that FailureThesis begins to peek — the "structured argument below" signal compounds trust in the first 50ms.
+
+*Card doctrine — no shadow:* Shadow-lifting on hover is a SaaS pattern that signals interactivity through depth illusion. The site's model is flat enterprise surfaces — structural separation comes from border color shift on hover, not from the card appearing to float above the page. This is the "honest borders" doctrine.
+
+*Italic removal:* The duplicate italic subhead in services cards was a template remnant — the same text appeared twice (CardDescription in header, italic copy in CardContent). This was removed per §9.6 (italic removed from production use) and §14.4 (one subhead per card).
+
+*Green pings:* Status dots with `animate-ping` signal real-time operational state that does not exist. Removing them removes false trust signals and eliminates one of the few remaining AI-agency visual clichés on the marketing surface.
+
+*Floating advisor — icon change:* `Sparkles` is the canonical AI-product icon. On an operational systems site, it registers as "this is an AI chatbot feature." `MessageSquare` registers as "this is a communication tool." Behavioral cognition changes with the icon even when the function is identical.
+
+*Auto-open removal:* The 30s auto-open on ServiceSuggester overrode user intent and created interruption-style engagement — the opposite of the audit-first, trust-building model. Removing it does not remove the function; it removes the imposition. Users who want to use the advisor can click the trigger.
+
+*Section tints:* Replacing `bg-card/50` (50% opacity card over background) with `bg-secondary` (solid `220 10% 96%`) eliminates a rendering artifact of the dark-canvas era. On light canvas, the opacity blend produced near-invisible differentiation. Solid `bg-secondary` creates the intended alternating rhythm between sections.
+
+**Pre-existing gate status (unchanged):**
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| 001-typecheck.sh | PRE-EXISTING FAILURE | Same errors as prior passes; 0 new from Phase B |
+| 002-lint.sh | SKIP | No ESLint config |
+| 003-build.sh | PRE-EXISTING FAILURE | buffer-equal-constant-time; API route mismatches |
+| 004-invariants.sh | PASS | 3/3 |
+| 005-homepage-repositioning.sh | PASS | 10/10 |
+| 006-refinement.sh | PASS | 15/15 |
+| 007-phase-a.sh | PASS | 11/11 |
+| 008-phase-b.sh | PASS | 15/15 |
+
+**Unresolved follow-ups (Phase C targets):**
+
+- [ ] Phase C: Header always-opaque (remove scroll-dependent transparent state)
+- [ ] Phase C: Logo mark PNG in header (replace text-only wordmark with actual raystrat-logo.png mark)
+- [ ] Phase C: NavLink active state (underline/weight indicator for current section)
+- [ ] Phase C: ThemeToggle relocation from header to footer
+- [ ] Phase C: AnimatedGridBackground in ByteOfTheWeek — replace with static mark
+- [ ] Phase C: Footer structural dark surface (apply `--structure` tokens)
+- [ ] Phase C: Mobile header — remove ping from mobile-only wordmark path if any remain

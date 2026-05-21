@@ -122,10 +122,6 @@ export function Header() {
         {/* Left side: Logo + Desktop Nav */}
         <div className="flex items-center flex-1 gap-8 md:flex-none">
           <Link href={logoHref} className="flex items-center gap-3">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </span>
             <span className="hidden text-xl font-bold md:inline font-headline">Raystrat Systems</span>
           </Link>
           {!isDashboard && (

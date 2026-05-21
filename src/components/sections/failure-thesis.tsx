@@ -29,7 +29,7 @@ export function FailureThesis() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-card/50">
+    <section className="py-16 md:py-24 bg-secondary">
       <div className="container">
         <div className="max-w-5xl mx-auto">
           <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-10">

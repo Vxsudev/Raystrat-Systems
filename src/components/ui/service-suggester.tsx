@@ -40,14 +40,10 @@ function FloatingTrigger({ onClick }: { onClick: () => void }) {
     <Button
       variant="outline"
       id="service-suggester-trigger"
-      className="fixed bottom-6 right-6 h-14 rounded-full shadow-2xl z-40 bg-background/80 backdrop-blur-sm border-primary/30 group hover:border-primary"
+      className="fixed bottom-6 right-6 h-12 rounded-full shadow-sm z-40 bg-background border-border hover:border-primary transition-colors duration-150"
       onClick={onClick}
     >
-        <span className="relative flex h-3 w-3 mr-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-        </span>
-      <span className="ml-2 font-semibold hidden sm:inline">Diagnose a Breakdown</span>
+      <span className="font-medium text-sm px-1 hidden sm:inline">Diagnose a Breakdown</span>
     </Button>
   );
 }
@@ -62,16 +58,6 @@ export function ServiceSuggester() {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    const hasSeenPopup = sessionStorage.getItem('hasSeenSuggesterPopup');
-    if (!hasSeenPopup) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        sessionStorage.setItem('hasSeenSuggesterPopup', 'true');
-      }, 30000); // 30-second delay
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -123,11 +109,7 @@ export function ServiceSuggester() {
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent id="service-suggester-container" className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl font-headline">
-               <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
+            <DialogTitle className="text-xl font-headline">
               Operational System Finder
             </DialogTitle>
             <DialogDescription>

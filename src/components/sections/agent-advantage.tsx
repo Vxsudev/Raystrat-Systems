@@ -31,7 +31,7 @@ const governanceProperties = [
 
 export function AgentAdvantage() {
     return (
-        <section id="governance" className="py-16 md:py-24 bg-card/50">
+        <section id="governance" className="py-16 md:py-24 bg-secondary">
             <div className="container">
                 <div className="max-w-3xl mx-auto mb-12 text-center">
                     <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
@@ -41,12 +41,12 @@ export function AgentAdvantage() {
                         Every system Raystrat deploys includes an operational governance layer — not as an add-on, but as a structural requirement.
                     </p>
                 </div>
-                <div className="max-w-5xl mx-auto p-8 border rounded-2xl bg-background/50">
+                <div className="max-w-5xl mx-auto p-8 border rounded-md bg-background">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                         {governanceProperties.map((property, index) => (
                             <div key={index} className="flex flex-col">
                                 <div className="flex items-center mb-2">
-                                    <div className="flex items-center justify-center w-6 h-6 mr-3 rounded-full bg-primary/10 text-primary">
+                                    <div className="flex items-center justify-center w-6 h-6 mr-3 rounded-sm bg-primary/10 text-primary">
                                         <ArrowRight className="w-4 h-4" />
                                     </div>
                                     <h3 className="text-lg font-bold font-headline">{property.title}</h3>

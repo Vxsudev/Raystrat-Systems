@@ -19,48 +19,34 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { services, ContextualAssistantOutput } from '@/data/content';
 import { AiSuggestor, ConversationTurn } from './ai-suggestor';
 
 // This is Component B: The Contextual AI Assistant for Service Pages
 
 function FloatingTrigger({ onClick }: { onClick: () => void }) {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsTooltipOpen(true);
-      const closeTimer = setTimeout(() => setIsTooltipOpen(false), 4000);
-      return () => clearTimeout(closeTimer);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <TooltipProvider delayDuration={200}>
-      <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+    <TooltipProvider delayDuration={400}>
+      <Tooltip>
         <TooltipTrigger asChild>
            <Button
-              variant="default"
+              variant="outline"
               size="icon"
               id="contextual-ai-trigger"
-              className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40 animate-pulse bg-primary hover:bg-primary/90 hover:animate-none"
+              className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-sm z-40 bg-background border-border hover:border-primary transition-colors duration-150"
               onClick={onClick}
             >
-              <Sparkles className="h-7 w-7" />
+              <MessageSquare className="h-5 w-5 text-foreground" />
               <span className="sr-only">Operational Advisor</span>
             </Button>
         </TooltipTrigger>
         <TooltipContent
           side="top"
           align="center"
-          className={cn(
-            'bg-card border-primary text-foreground shadow-lg',
-            'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in data-[state=delayed-open]:zoom-in-95'
-          )}
+          className="bg-card border-border text-foreground shadow-sm"
         >
-          <p className="font-semibold">Have questions? Ask me anything.</p>
+          <p className="font-medium text-sm">Operational Advisor</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -151,7 +137,7 @@ export function FloatingAiSuggestor() {
           <SheetContent id="contextual-ai-container" className="w-full sm:max-w-sm flex flex-col p-0">
               <SheetHeader className="p-4 border-b flex flex-row items-center justify-between space-y-0">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
-                      <Sparkles className="w-6 h-6 text-primary" />
+                      <MessageSquare className="w-5 h-5 text-primary" />
                       Operational Advisor
                   </SheetTitle>
                    <div className="flex items-center gap-2">

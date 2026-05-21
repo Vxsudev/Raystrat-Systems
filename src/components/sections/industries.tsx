@@ -54,7 +54,7 @@ const industryData: {
 
 export function Industries() {
   return (
-    <section id="industries" className="bg-card/50">
+    <section id="industries" className="bg-secondary">
       <div className="container">
         <div className="max-w-2xl mx-auto mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tighter font-headline sm:text-4xl md:text-5xl">
@@ -68,7 +68,7 @@ export function Industries() {
           {industryData.map((industry) => (
             <Card
               key={industry.title}
-              className="flex flex-col bg-card/50"
+              className="flex flex-col bg-card"
             >
               <CardHeader>
                 <div className="flex items-center gap-4">

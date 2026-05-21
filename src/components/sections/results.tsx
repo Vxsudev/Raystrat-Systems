@@ -21,14 +21,14 @@ const auditDeliverables = [
 
 export function Results() {
   return (
-    <section id="results" className="py-20 md:py-32 bg-card text-card-foreground">
+    <section id="results" className="py-16 md:py-24 lg:py-32 bg-secondary">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-6">
             The First Move
           </p>
 
-          <h2 className="text-4xl font-bold tracking-tighter font-headline sm:text-5xl md:text-6xl">
+          <h2 className="text-3xl font-bold tracking-tighter font-headline md:text-4xl">
             Book an Operational Audit
           </h2>
 
@@ -40,7 +40,7 @@ export function Results() {
             {auditDeliverables.map((item) => (
               <div
                 key={item.title}
-                className="text-left p-4 rounded-lg border border-border bg-background/50"
+                className="text-left p-4 rounded-md border border-border bg-background"
               >
                 <p className="font-bold font-headline text-base mb-2">{item.title}</p>
                 <p className="text-sm text-foreground/80">{item.description}</p>

@@ -19,26 +19,28 @@ export function Services() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
           <Link key={service.slug} href={`/systems/${service.slug}`} className="block group">
-            <Card className="flex flex-col h-full transition-all duration-300 border-2 border-transparent group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/20">
+            <Card className="flex flex-col h-full transition-colors duration-150 border border-transparent group-hover:border-primary">
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="p-3 rounded-md bg-primary/10">
-                  <service.icon className={cn("w-6 h-6 group-hover:scale-110 group-hover:-rotate-6", service.iconClassName || "text-primary")} />
+                <div className="p-2.5 rounded-md bg-primary/10 shrink-0">
+                  <service.icon className={cn("w-5 h-5", service.iconClassName || "text-primary")} />
                 </div>
                 <div className="flex flex-col">
-                  <CardTitle className="text-lg font-semibold font-headline">{service.title}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground mt-1">{service.subhead}</CardDescription>
+                  <CardTitle className="text-base font-semibold font-headline leading-snug">{service.title}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground mt-0.5">{service.subhead}</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
-                <CardDescription className="mb-4 text-base italic text-foreground/90">{service.subhead}</CardDescription>
                 <ul className="space-y-3">
                   {service.bullets.map((bullet, index) => (
                     <li key={index} className="flex items-start">
-                      <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-1" />
-                      <span className="text-foreground/80">{bullet}</span>
+                      <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm text-foreground/80">{bullet}</span>
                     </li>
                   ))}
                 </ul>
+                <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
+                  View System →
+                </span>
               </CardContent>
             </Card>
           </Link>
