@@ -1437,3 +1437,48 @@ Regressions 004–009, 015: all PASS
 ### Status
 
 `HOMEPAGE_DESIGN_V2_RELEASE_APPROVED`
+
+---
+
+## 2026-05-22 — Diagram Regression Recovery + D1.5 Restoration
+
+**Author:** Claude Sonnet 4.6  
+**Trigger:** User-reported regression — SVG architecture diagrams absent from homepage and /systems/frontline-support after prior session revert
+
+**Root Cause:**
+
+The prior session reverted `agent-advantage.tsx`, `results.tsx`, and `service-page-client.tsx` to HEAD as part of removing subagent scope creep. Those files had D1/D2 diagram mounts and D1.5 style corrections as uncommitted working-tree changes — neither committed to git. The revert silently discarded them. The diagram component files (5 .tsx in `src/components/diagrams/`) existed as untracked files and were not lost, but their mount points were.
+
+**What changed:**
+
+### Diagram Mounts Restored
+- `agent-advantage.tsx`: import + render `GovernanceLayerDiagram`, `AuditTrailEntryPreview`
+- `results.tsx`: import + render `FailureModeRegistryPreview`, `DeploymentLifecycleDiagram`
+- `service-page-client.tsx`: import + conditional render `FrontlineSupportArchitectureDiagram` behind `service.slug === 'frontline-support'` guard
+
+### Diagram Components Committed (Previously Untracked)
+All 5 files in `src/components/diagrams/` now committed for the first time:
+- `governance-layer-diagram.tsx`
+- `audit-trail-entry-preview.tsx`
+- `failure-mode-registry-preview.tsx`
+- `deployment-lifecycle-diagram.tsx`
+- `frontline-support-architecture-diagram.tsx`
+
+### D1.5 Regressions Restored
+- `service-page-client.tsx`: `text-xl italic` → `text-xl`; `prose-invert` removed; `shadow-2xl`/`border-primary`/`translate-y-10` removed from JustificationPopup; `rounded-lg` → `rounded-md` on sidebar
+- `systems/page.tsx`: `border-2` → `border`; `bg-card/50` removed; `duration-200` → `duration-150`; `rounded-lg` → `rounded-md` on audit CTA block
+- `byte-of-the-week.tsx`: `AnimatedGridBackground` import + usage removed; `bg-card/50` → `bg-secondary`; `rounded-2xl` → `rounded-md`; `text-6xl` decorative panel replaced with plain editorial label
+- `animated-grid-background.tsx`: deleted (dead code, 0 remaining references)
+- `industries.tsx`: `p-3` → `p-2.5`, `w-6 h-6` → `w-5 h-5` on icon containers
+
+**Verification:**
+
+```
+010-phase-d-governance-proof-foundation:          27/27 PASS
+011-d1-5-institutional-cognition-stabilization:   30/30 PASS
+012-d2-auditability-and-deployment-foundation:    35/35 PASS
+013-d2-5-evidence-cognition-simplification:       22/22 PASS
+016-homepage-design-v2:                           58/58 PASS
+```
+
+**Status:** `DIAGRAM_REGRESSION_RESOLVED`
