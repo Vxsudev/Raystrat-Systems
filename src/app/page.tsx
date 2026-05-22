@@ -7,8 +7,8 @@ import { FailureThesis } from '@/components/sections/failure-thesis';
 import { Services } from '@/components/sections/services';
 import { Governance } from '@/components/sections/governance';
 import { Industries } from '@/components/sections/industries';
-import { AgentAdvantage } from '@/components/sections/agent-advantage';
 import { Results } from '@/components/sections/results';
+import { FailureModeRegistry } from '@/components/sections/failure-mode-registry';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
 import { TweaksPanel } from '@/components/ui/tweaks-panel';
@@ -63,14 +63,14 @@ export default async function Home() {
         <main className="flex-1">
           <Hero />
           <FailureThesis />
-          <Governance />
           <Services />
-          <AgentAdvantage />
+          <Governance />
           <Industries />
           <Results />
+          <FailureModeRegistry />
+          <Contact />
           <ByteOfTheWeek />
           <Faq />
-          <Contact />
         </main>
         <Footer />
       </div>

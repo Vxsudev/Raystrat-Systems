@@ -3,7 +3,9 @@ import type { LucideIcon } from 'lucide-react';
 import { BarChart, IndianRupee, Search, Sparkles, TrendingUp, Cpu, Workflow, Database, MessageSquareShare, ShieldQuestion } from 'lucide-react';
 
 export const navigationLinks = [
-  { name: 'Systems', href: '/#systems' },
+  { name: 'Systems', href: '/systems' },
+  { name: 'Governance', href: '/#governance' },
+  { name: 'Evidence', href: '/#results' },
   { name: 'Bytes', href: '/bytes' },
 ];
 

@@ -169,7 +169,7 @@ export function Header() {
                 )}
                 {!isDashboard && (
                   <div className="flex flex-col gap-4 pt-6 border-t border-border">
-                    <CalendlyButton size="lg">Book Operational Audit</CalendlyButton>
+                    <CalendlyButton size="lg">Book Audit</CalendlyButton>
                   </div>
                 )}
                 {user && (

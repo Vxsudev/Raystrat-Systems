@@ -1,73 +1,48 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { CalendlyButton } from '@/components/ui/calendly-button';
 import { heroMeta } from '@/data/content';
 
-type Status = 'ok' | 'warn' | 'crit';
+type Status = 'GOVERNED' | 'WATCH';
 
-const STATUS_ROWS: { code: string; label: string; status: Status }[] = [
-  { code: 'DMND', label: 'Demand Acquisition', status: 'ok' },
-  { code: 'PRSU', label: 'Pursuit', status: 'ok' },
-  { code: 'FRNT', label: 'Frontline Res.', status: 'warn' },
-  { code: 'OPS', label: 'Operations', status: 'ok' },
-  { code: 'CMND', label: 'Command Intel.', status: 'ok' },
+const STATUS_ROWS: { ix: string; name: string; uptime: string; status: Status }[] = [
+  { ix: '01', name: 'Demand Acquisition', uptime: '720h 00m', status: 'GOVERNED' },
+  { ix: '02', name: 'Pursuit', uptime: '733h 11m', status: 'GOVERNED' },
+  { ix: '03', name: 'Frontline Resolution', uptime: '746h 22m', status: 'GOVERNED' },
+  { ix: '04', name: 'Operations', uptime: '759h 33m', status: 'WATCH' },
+  { ix: '05', name: 'Command Intelligence', uptime: '772h 44m', status: 'GOVERNED' },
 ];
 
 function pillClass(s: Status) {
-  if (s === 'ok') return 'font-mono text-[10px] px-2 py-0.5 rounded border border-green-800 bg-green-950 text-green-400';
-  if (s === 'warn') return 'font-mono text-[10px] px-2 py-0.5 rounded border border-amber-800 bg-amber-950 text-amber-400';
-  return 'font-mono text-[10px] px-2 py-0.5 rounded border border-red-800 bg-red-950 text-red-400';
-}
-
-function pillLabel(s: Status) {
-  if (s === 'ok') return 'ok';
-  if (s === 'warn') return 'warn';
-  return 'crit';
+  if (s === 'GOVERNED') {
+    return 'bg-green-950 text-green-400 border border-green-800 text-xs px-2 py-0.5 rounded-md font-mono';
+  }
+  return 'bg-amber-950 text-amber-400 border border-amber-800 text-xs px-2 py-0.5 rounded-md font-mono';
 }
 
 function HeroStatusPanel() {
-  const initialUptimes = useMemo(
-    () =>
-      STATUS_ROWS.map((_, i) => {
-        const base = [99.94, 99.87, 99.71, 99.99, 99.91];
-        return base[i];
-      }),
-    []
-  );
-
-  const [uptimes, setUptimes] = useState<number[]>(initialUptimes);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setUptimes((u) =>
-        u.map((v) => parseFloat((v + (Math.random() - 0.5) * 0.02).toFixed(2)))
-      );
-    }, 5000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div className="hero-status-panel border border-border rounded-md p-4 bg-card">
-      <p className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground mb-3">
-        SYSTEM STATUS
-      </p>
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 mb-4 font-mono text-xs">
+        <span className="text-muted-foreground tracking-widest">● ● ●</span>
+        <span className="text-muted-foreground uppercase tracking-widest text-center">
+          DEPLOYED.SYSTEMS · PROD
+        </span>
+        <span className="text-muted-foreground">V4.2.1</span>
+      </div>
       <div>
-        {STATUS_ROWS.map((row, i) => (
+        {STATUS_ROWS.map((row) => (
           <div
-            key={row.code}
-            className="grid grid-cols-[40px_1fr_auto_auto] gap-2 items-center py-2 border-b border-border last:border-0"
+            key={row.ix}
+            className="grid grid-cols-[24px_1fr_auto_auto] gap-x-4 items-center py-2 border-b border-border last:border-0"
           >
-            <span className="font-mono text-[10px] text-muted-foreground/70">
-              {row.code}
+            <span className="font-mono text-muted-foreground text-xs">{row.ix}</span>
+            <span className="text-sm text-foreground">{row.name}</span>
+            <span className="font-mono text-muted-foreground text-xs tabular-nums">
+              {row.uptime}
             </span>
-            <span className="text-sm font-medium text-foreground">
-              {row.label}
-            </span>
-            <span className="font-mono text-xs text-muted-foreground tabular-nums">
-              {uptimes[i].toFixed(2)}%
-            </span>
-            <span className={pillClass(row.status)}>{pillLabel(row.status)}</span>
+            <span className={pillClass(row.status)}>{row.status}</span>
           </div>
         ))}
       </div>
@@ -101,7 +76,6 @@ export function Hero() {
     >
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-12 items-start">
-          {/* Left column */}
           <div>
             <div className="flex items-center gap-3 mb-6">
               <span className="block w-7 h-px bg-primary" />
@@ -121,18 +95,17 @@ export function Hero() {
               human memory instead of governed infrastructure.
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <CalendlyButton size="lg">Book Operational Audit</CalendlyButton>
-              <a
-                href="#systems"
+              <CalendlyButton size="lg">Book Operational Audit →</CalendlyButton>
+              <Link
+                href="/systems"
                 className="inline-flex items-center px-5 py-3.5 rounded text-sm font-medium border border-border bg-transparent text-foreground hover:bg-muted hover:border-foreground/45 transition-colors duration-150"
               >
                 View Systems
-              </a>
+              </Link>
             </div>
             <HeroMetaRow />
           </div>
 
-          {/* Right column — hidden on mobile */}
           <div className="hidden md:block">
             <HeroStatusPanel />
           </div>

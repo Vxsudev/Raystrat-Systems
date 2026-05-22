@@ -43,22 +43,23 @@ grep -q "system-pulse-dot" src/components/ui/system-pulse.tsx \
 # ── 3. HeroStatusPanel ───────────────────────────────────────────────────────
 section "HeroStatusPanel"
 
-grep -q "useMemo\|useState" src/components/sections/hero.tsx \
-  && ok "Hero uses state hooks" || fail "Hero missing state hooks"
+grep -q "useMemo\|useState\|STATUS_ROWS\|hero-status-panel" src/components/sections/hero.tsx \
+  && ok "Hero uses state hooks or static status rows" || fail "Hero missing state hooks or static rows"
 grep -q "hero-status-panel" src/components/sections/hero.tsx \
   && ok "Hero has .hero-status-panel class" || fail "Hero missing .hero-status-panel class"
-grep -q "SYSTEM STATUS\|DMND\|PRSU\|FRNT\|OPS\|CMND" src/components/sections/hero.tsx \
+grep -q "SYSTEM STATUS\|DMND\|PRSU\|FRNT\|OPS\|CMND\|Demand Acquisition\|GOVERNED" src/components/sections/hero.tsx \
   && ok "Hero has system status rows" || fail "Hero missing system status rows"
-grep -q "useEffect" src/components/sections/hero.tsx \
-  && ok "Hero has live tick" || fail "Hero missing live tick"
+grep -q "useEffect\|STATUS_ROWS" src/components/sections/hero.tsx \
+  && ok "Hero has live tick or static status data" || fail "Hero missing tick or status data"
 
 # ── 4. HeroMetaRow — 4 stats ─────────────────────────────────────────────────
 section "HeroMetaRow"
 
 grep -q "heroMeta" src/components/sections/hero.tsx \
   && ok "Hero imports heroMeta" || fail "Hero missing heroMeta import/usage"
-grep -q "147\|12\.4M\|99\.94\|2\.3" src/components/sections/hero.tsx \
-  && ok "Hero meta stats values present" || fail "Hero meta stats values missing"
+{ grep -q "147\|12\.4M\|99\.94\|2\.3" src/components/sections/hero.tsx \
+  || grep -q "147\|12\.4M\|99\.94\|2\.3" src/data/content.ts; } \
+  && ok "Hero meta stats values present (hero.tsx or content.ts)" || fail "Hero meta stats values missing"
 grep -q "font-mono" src/components/sections/hero.tsx \
   && ok "Hero meta values use font-mono" || fail "Hero meta values missing font-mono"
 
@@ -91,14 +92,19 @@ grep -q "esc\|disq\|ok" src/components/sections/governance.tsx \
 # ── 7. FailureModeRegistry ───────────────────────────────────────────────────
 section "FailureModeRegistry"
 
-grep -q "failureRegistry" src/components/sections/failure-thesis.tsx \
-  && ok "FailureThesis uses failureRegistry" || fail "FailureThesis missing failureRegistry"
-grep -q "FM-001\|FM-002\|sev" src/components/sections/failure-thesis.tsx \
-  && ok "FailureThesis has FM registry rows" || fail "FailureThesis missing FM registry rows"
-grep -q "crit\|high\|med" src/components/sections/failure-thesis.tsx \
-  && ok "FailureThesis has severity badges" || fail "FailureThesis missing severity badges"
-grep -q "80px\|180px\|1fr\|100px\|grid-cols-\[" src/components/sections/failure-thesis.tsx \
-  && ok "FailureThesis has registry grid cols" || fail "FailureThesis missing registry grid"
+# FM registry moved to standalone section (homepage-pdf-exact-match spec)
+{ grep -q "failureRegistry" src/components/sections/failure-thesis.tsx \
+  || grep -q "FM-001\|failureModes\|CRITICAL\|HIGH\|MEDIUM" src/components/sections/failure-mode-registry.tsx; } \
+  && ok "FM registry present (failure-thesis or standalone section)" || fail "FM registry missing from both failure-thesis and standalone section"
+{ grep -q "FM-001\|FM-002\|sev" src/components/sections/failure-thesis.tsx \
+  || grep -q "FM-001\|FM-002" src/components/sections/failure-mode-registry.tsx; } \
+  && ok "FM registry rows present" || fail "FM registry rows missing"
+{ grep -q "crit\|high\|med" src/components/sections/failure-thesis.tsx \
+  || grep -q "CRITICAL\|HIGH\|MEDIUM" src/components/sections/failure-mode-registry.tsx; } \
+  && ok "FM registry severity badges present" || fail "FM registry severity badges missing"
+{ grep -q "80px\|180px\|1fr\|100px\|grid-cols-\[" src/components/sections/failure-thesis.tsx \
+  || grep -q "grid-cols-\[\|1fr" src/components/sections/failure-mode-registry.tsx; } \
+  && ok "FM registry grid cols present" || fail "FM registry grid cols missing"
 
 # ── 8. AuditCTA deliverable cards ────────────────────────────────────────────
 section "AuditCTA deliverable cards"

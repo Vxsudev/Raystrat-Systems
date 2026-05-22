@@ -1,28 +1,34 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { services } from '@/data/content';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { services } from '@/data/content';
 
-const institutionalLinks = [
+const engageLinks = [
   { name: 'Operational Audit', href: '/audit' },
-  { name: 'Principal', href: '/principal' },
+  { name: 'Bytes', href: '/bytes' },
+  { name: 'Governance', href: '/#governance' },
+  { name: 'Industries', href: '/#industries' },
+];
+
+const legalLinks = [
   { name: 'Documentation', href: '/documentation' },
+  { name: 'Privacy', href: '#' },
+  { name: 'Terms', href: '#' },
+  { name: 'Trust', href: '#' },
+  { name: 'Principal', href: '/principal' },
   { name: 'Continuity', href: '/continuity' },
 ];
 
 export function Footer() {
-  const year = new Date().getFullYear();
-
   return (
     <footer
       className="bg-[hsl(var(--structure))] text-[hsl(var(--structure-foreground))]"
       aria-label="Site footer"
     >
       <div className="container py-12 md:py-16">
-        {/* Top zone — logo + operational doctrine sentence */}
         <div className="flex flex-col gap-6 pb-10 border-b border-white/10 md:flex-row md:items-start md:justify-between md:gap-12">
-          <div className="flex items-start gap-4 max-w-md">
+          <div className="flex items-start gap-4 max-w-xl">
             <Image
               src="/raystrat-logo.png"
               alt=""
@@ -33,15 +39,14 @@ export function Footer() {
             <div>
               <p className="text-lg font-semibold font-headline">Raystrat Systems</p>
               <p className="mt-2 text-sm leading-relaxed text-[hsl(var(--structure-foreground))]/70">
-                Operational Systems Engineering for businesses that depend on governed execution.
+                Governed operational infrastructure for businesses where audit
+                accountability, SLA compliance, and continuity are not optional.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Middle zone — site index columns */}
         <div className="grid grid-cols-1 gap-10 py-10 sm:grid-cols-2 md:grid-cols-3 md:gap-12">
-          {/* Systems column */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[hsl(var(--structure-foreground))]/60 mb-4">
               Systems
@@ -60,30 +65,30 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Bytes column */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[hsl(var(--structure-foreground))]/60 mb-4">
-              Bytes
+              Engage
             </p>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/bytes"
-                  className="text-sm text-[hsl(var(--structure-foreground))]/80 transition-colors hover:text-[hsl(var(--structure-foreground))]"
-                >
-                  All Bytes
-                </Link>
-              </li>
+              {engageLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-[hsl(var(--structure-foreground))]/80 transition-colors hover:text-[hsl(var(--structure-foreground))]"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Institutional column */}
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[hsl(var(--structure-foreground))]/60 mb-4">
-              Institutional
+              Legal
             </p>
             <ul className="space-y-3">
-              {institutionalLinks.map((link) => (
+              {legalLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -96,14 +101,19 @@ export function Footer() {
             </ul>
           </div>
         </div>
+      </div>
 
-        {/* Bottom zone — copyright + utility row */}
-        <div className="flex flex-col gap-4 pt-8 border-t border-white/10 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs text-[hsl(var(--structure-foreground))]/60">
-            © {year} Raystrat Systems
+      <div className="bg-[hsl(var(--structure))] text-[hsl(var(--structure-foreground))]/60 border-t border-white/10">
+        <div className="container py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between font-mono text-xs">
+          <p>
+            © Raystrat Systems · Operational Systems Engineering · v4.2.1 · BUILD-2026.05.21
           </p>
-          <div className="flex items-center gap-4">
+          <div className="inline-flex items-center gap-4">
             <ThemeToggle />
+            <p className="inline-flex items-center gap-2">
+              <span className="text-green-500">●</span>
+              STATUS · ALL SYSTEMS NOMINAL
+            </p>
           </div>
         </div>
       </div>
