@@ -2264,3 +2264,23 @@ conditions.
 
 PRODUCTION-LIVE at https://raystratsystems.com and
 https://studio--raystrat-systems.us-central1.hosted.app
+
+---
+
+## 2026-05-28 · LEGAL_SURFACE_FORMATTING_REFINEMENT_V1
+
+**Trigger:** Production screenshots showed /privacy and /terms with excessive whitespace, blog-style section headings, and generally sparse/placeholder-like presentation.
+
+**Changes (visual-only, no legal content changes):**
+- `py-16 md:py-24 lg:py-28` → `py-10 md:py-14` on outer section of both pages
+- Wrapped eyebrow + H1 + effective-date in `pb-6 border-b border-foreground/10` header block
+- Effective-date line compacted: `Effective {DATE} · Raystrat Systems` in xs mono text-foreground/50
+- Section component: `mt-10` → `mt-6 pt-5 border-t border-foreground/[0.06]`
+- Section headings: `text-lg font-headline font-semibold tracking-tight text-foreground` → `text-xs font-semibold tracking-widest uppercase text-foreground/50`
+- Intro paragraph: `mt-6 text-base` → `mt-5 text-[15px]`
+
+**Verification:** Gates 023 (57/57 PASS), 022 (35/35 PASS), `npm run build` clean.
+
+**Deploy:** `firebase deploy --only apphosting` → rollout complete. All four routes return 200. Formatting classes confirmed in production HTML.
+
+**Commit:** 58cb1a9
