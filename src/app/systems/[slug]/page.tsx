@@ -1,4 +1,5 @@
 
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { services } from '@/data/content';
@@ -36,7 +37,13 @@ export default function ServicePage({ params }: ServicePageProps) {
 
   // We only pass serializable data to the client component.
   // The client component will look up the full service object using the slug.
-  return <ServicePageClient slug={service.slug} nextServiceSlug={nextService?.slug} />;
+  // ServicePageClient reads useSearchParams(); a Suspense boundary is required
+  // for static export (CSR bailout). Boundary added here, not via auth provider.
+  return (
+    <Suspense fallback={null}>
+      <ServicePageClient slug={service.slug} nextServiceSlug={nextService?.slug} />
+    </Suspense>
+  );
 }
 
 // This function tells Next.js which slugs to pre-render at build time.

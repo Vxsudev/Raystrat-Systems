@@ -4,7 +4,6 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { AuthProvider } from '@/contexts/auth-context';
 import { FloatingAiSuggestor } from '@/components/ui/floating-ai-suggestor';
 import { ThemeProvider } from '@/components/theme-provider';
 import { FloatingNoteTaker } from '@/components/ui/floating-note-taker';
@@ -100,13 +99,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <AuthProvider>
-            <GenkitInitializer />
-            <AppContent>
-              {children}
-            </AppContent>
-            <Toaster />
-          </AuthProvider>
+          {/* AuthProvider is intentionally NOT mounted globally. The Firebase
+              client auth listener it bootstraps must run only inside authenticated
+              surfaces (dashboard) — never on public/documentary routes, which would
+              otherwise initialize the Firebase client SDK at hydration and crash
+              with auth/invalid-api-key. AuthProvider is mounted in
+              src/app/dashboard/layout.tsx. */}
+          <GenkitInitializer />
+          <AppContent>
+            {children}
+          </AppContent>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
