@@ -74,7 +74,7 @@ export default async function Home() {
         </main>
         <Footer />
       </div>
-      <TweaksPanel />
+      {process.env.NODE_ENV !== 'production' && <TweaksPanel />}
     </div>
   );
 }

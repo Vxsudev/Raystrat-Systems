@@ -26,42 +26,41 @@ section "Component files"
 [ -f "src/components/sections/contact.tsx" ]        && ok "contact.tsx exists"        || fail "contact.tsx missing"
 [ -f "src/components/sections/faq.tsx" ]            && ok "faq.tsx exists"            || fail "faq.tsx missing"
 [ -f "src/components/ui/tweaks-panel.tsx" ]         && ok "tweaks-panel.tsx exists"   || fail "tweaks-panel.tsx missing"
-[ -f "src/components/ui/system-pulse.tsx" ]         && ok "system-pulse.tsx exists"   || fail "system-pulse.tsx missing"
+# Note: SystemPulse, HeroStatusPanel, HeroMetaRow removed by detheatricalization pass (spec 018).
+# Assertions are inverted to enforce absence of fictional runtime semantics.
 
-# ── 2. SystemPulse — live UTC clock ──────────────────────────────────────────
-section "SystemPulse"
+# ── 2. SystemPulse — REMOVED by detheatricalization ──────────────────────────
+section "SystemPulse removal (post-detheatricalization)"
 
-grep -q "useEffect" src/components/ui/system-pulse.tsx \
-  && ok "SystemPulse uses useEffect" || fail "SystemPulse missing useEffect"
-grep -q "UTC" src/components/ui/system-pulse.tsx \
-  && ok "SystemPulse renders UTC label" || fail "SystemPulse missing UTC"
-grep -q "setInterval" src/components/ui/system-pulse.tsx \
-  && ok "SystemPulse has setInterval tick" || fail "SystemPulse missing setInterval"
-grep -q "system-pulse-dot" src/components/ui/system-pulse.tsx \
-  && ok "SystemPulse has pulse dot class" || fail "SystemPulse missing pulse dot class"
+[ ! -f "src/components/ui/system-pulse.tsx" ] \
+  && ok "system-pulse.tsx removed (live clock theater eliminated)" \
+  || fail "system-pulse.tsx still present — should be deleted per spec 018"
+! grep -q "SystemPulse" src/components/header.tsx 2>/dev/null \
+  && ok "header.tsx no longer references SystemPulse" \
+  || fail "header.tsx still references SystemPulse"
 
-# ── 3. HeroStatusPanel ───────────────────────────────────────────────────────
-section "HeroStatusPanel"
+# ── 3. HeroStatusPanel — REPLACED by HeroSurfaceReference ────────────────────
+section "HeroStatusPanel → HeroSurfaceReference"
 
-grep -q "useMemo\|useState\|STATUS_ROWS\|hero-status-panel" src/components/sections/hero.tsx \
-  && ok "Hero uses state hooks or static status rows" || fail "Hero missing state hooks or static rows"
-grep -q "hero-status-panel" src/components/sections/hero.tsx \
-  && ok "Hero has .hero-status-panel class" || fail "Hero missing .hero-status-panel class"
-grep -q "SYSTEM STATUS\|DMND\|PRSU\|FRNT\|OPS\|CMND\|Demand Acquisition\|GOVERNED" src/components/sections/hero.tsx \
-  && ok "Hero has system status rows" || fail "Hero missing system status rows"
-grep -q "useEffect\|STATUS_ROWS" src/components/sections/hero.tsx \
-  && ok "Hero has live tick or static status data" || fail "Hero missing tick or status data"
+! grep -q "HeroStatusPanel\|STATUS_ROWS\|hero-status-panel\|DEPLOYED\.SYSTEMS" src/components/sections/hero.tsx \
+  && ok "Hero no longer renders fake-runtime status panel" \
+  || fail "Hero still contains runtime-theater status panel"
+grep -q "HeroSurfaceReference\|Operational Surfaces" src/components/sections/hero.tsx \
+  && ok "Hero renders schematic surface reference replacement" \
+  || fail "Hero missing HeroSurfaceReference replacement"
+grep -q "grid-cols-\[1.15fr_1fr\]" src/components/sections/hero.tsx \
+  && ok "Hero preserves asymmetric two-column layout" \
+  || fail "Hero asymmetric layout regression"
 
-# ── 4. HeroMetaRow — 4 stats ─────────────────────────────────────────────────
-section "HeroMetaRow"
+# ── 4. HeroMetaRow — REMOVED ─────────────────────────────────────────────────
+section "HeroMetaRow removal"
 
-grep -q "heroMeta" src/components/sections/hero.tsx \
-  && ok "Hero imports heroMeta" || fail "Hero missing heroMeta import/usage"
-{ grep -q "147\|12\.4M\|99\.94\|2\.3" src/components/sections/hero.tsx \
-  || grep -q "147\|12\.4M\|99\.94\|2\.3" src/data/content.ts; } \
-  && ok "Hero meta stats values present (hero.tsx or content.ts)" || fail "Hero meta stats values missing"
-grep -q "font-mono" src/components/sections/hero.tsx \
-  && ok "Hero meta values use font-mono" || fail "Hero meta values missing font-mono"
+! grep -q "heroMeta\|HeroMetaRow" src/components/sections/hero.tsx \
+  && ok "Hero no longer renders fictional scale metrics" \
+  || fail "Hero still references heroMeta / HeroMetaRow"
+! grep -q "heroMeta" src/data/content.ts \
+  && ok "content.ts no longer exports fictional heroMeta" \
+  || fail "content.ts still exports heroMeta"
 
 # ── 5. ChokeDiagram SVG ──────────────────────────────────────────────────────
 section "ChokeDiagram"
@@ -77,17 +76,21 @@ grep -q "chokePoints" src/components/ui/choke-diagram.tsx \
 grep -q "onSelect\|onClick" src/components/ui/choke-diagram.tsx \
   && ok "ChokeDiagram has click interaction" || fail "ChokeDiagram missing click interaction"
 
-# ── 6. AuditTicker ───────────────────────────────────────────────────────────
-section "AuditTicker"
+# ── 6. Audit Trail — STATIC SCHEMATIC (post-detheatricalization) ─────────────
+section "Audit Trail panel (static schematic)"
 
-grep -q "setInterval\|2400" src/components/sections/governance.tsx \
-  && ok "AuditTicker has 2400ms interval" || fail "AuditTicker missing 2400ms interval"
+! grep -q "setInterval" src/components/sections/governance.tsx \
+  && ok "governance.tsx has no setInterval (live-feed theater removed)" \
+  || fail "governance.tsx still contains setInterval"
 grep -q "auditSeed" src/components/sections/governance.tsx \
-  && ok "AuditTicker uses auditSeed data" || fail "AuditTicker missing auditSeed"
-grep -q "110px\|90px\|grid-cols-\[110" src/components/sections/governance.tsx \
-  && ok "AuditTicker has 4-col grid" || fail "AuditTicker missing 4-col grid"
-grep -q "esc\|disq\|ok" src/components/sections/governance.tsx \
-  && ok "AuditTicker has outcome pill states" || fail "AuditTicker missing outcome pill states"
+  && ok "governance.tsx still uses auditSeed as schematic exhibit" \
+  || fail "governance.tsx missing auditSeed"
+grep -q "SCHEMATIC" src/components/sections/governance.tsx \
+  && ok "governance.tsx labels panel as SCHEMATIC" \
+  || fail "governance.tsx missing SCHEMATIC label"
+grep -q "Audit Trail — Entry Format" src/components/sections/governance.tsx \
+  && ok "governance.tsx header replaced (no fictional filepath)" \
+  || fail "governance.tsx header not updated"
 
 # ── 7. FailureModeRegistry ───────────────────────────────────────────────────
 section "FailureModeRegistry"
@@ -148,8 +151,9 @@ grep -q "mode-editorial" src/app/globals.css \
   && ok "globals.css has mode-editorial override" || fail "globals.css missing mode-editorial"
 grep -q "mode-blueprint" src/app/globals.css \
   && ok "globals.css has mode-blueprint override" || fail "globals.css missing mode-blueprint"
-grep -q "sys-pulse\|system-pulse" src/app/globals.css \
-  && ok "globals.css has sys-pulse keyframe" || fail "globals.css missing sys-pulse keyframe"
+! grep -q "sys-pulse\|system-pulse" src/app/globals.css \
+  && ok "globals.css sys-pulse/system-pulse keyframes removed (anti-theater)" \
+  || fail "globals.css still defines sys-pulse / system-pulse keyframes"
 
 # ── 12. page.tsx wiring ──────────────────────────────────────────────────────
 section "page.tsx wiring"

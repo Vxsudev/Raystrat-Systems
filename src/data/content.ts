@@ -460,20 +460,6 @@ export const auditSeed: { sys: string; ev: string; out: 'ok' | 'esc' | 'disq' }[
   { sys: 'FRNT', ev: 'SLA breach prevented — case auto-routed before threshold.', out: 'ok' },
 ];
 
-export const heroMeta: { k: string; v: string }[] = [
-  { k: 'Deployed Systems', v: '147' },
-  { k: 'Audit Trail Entries', v: '12.4M' },
-  { k: 'SLA Compliance', v: '99.94%' },
-  { k: 'Avg. Failure Detection', v: '<2.3 min' },
-];
-
-    
-
-    
-
-
-
-
 
 
 

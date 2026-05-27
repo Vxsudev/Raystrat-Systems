@@ -106,15 +106,9 @@ export function Footer() {
       <div className="bg-[hsl(var(--structure))] text-[hsl(var(--structure-foreground))]/60 border-t border-white/10">
         <div className="container py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between font-mono text-xs">
           <p>
-            © Raystrat Systems · Operational Systems Engineering · v4.2.1 · BUILD-2026.05.21
+            © {new Date().getFullYear()} Raystrat Systems · Operational Systems Engineering
           </p>
-          <div className="inline-flex items-center gap-4">
-            <ThemeToggle />
-            <p className="inline-flex items-center gap-2">
-              <span className="text-green-500">●</span>
-              STATUS · ALL SYSTEMS NOMINAL
-            </p>
-          </div>
+          <ThemeToggle />
         </div>
       </div>
     </footer>

@@ -17,12 +17,16 @@ export function Results() {
           Operational Evidence
         </p>
         <h2 className="text-3xl font-bold tracking-tighter font-headline md:text-4xl mb-4 max-w-3xl">
-          Measured against deployment baseline.
+          Operational ranges across deployments.
         </h2>
-        <p className="text-foreground/80 max-w-2xl mb-12">
-          Ranges reflect deployments across regulated and non-regulated
-          environments. Every metric is logged continuously against defined SLA
-          targets.
+        <p className="text-foreground/80 max-w-2xl mb-8">
+          Each engagement defines SLA targets at deployment. Ranges shown are
+          operational examples across past engagements; engagement-specific
+          values are produced at the operational audit.
+        </p>
+
+        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
+          Illustrative ranges · not runtime telemetry
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 border border-border rounded-md bg-background overflow-hidden">

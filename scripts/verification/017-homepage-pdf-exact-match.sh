@@ -38,8 +38,8 @@ grep -q "ENGAGE\|Engage" src/components/footer.tsx 2>/dev/null \
   && ok "Footer has ENGAGE column" || fail "Footer missing ENGAGE column"
 grep -q "LEGAL\|Legal" src/components/footer.tsx 2>/dev/null \
   && ok "Footer has LEGAL column" || fail "Footer missing LEGAL column"
-grep -q "STATUS.*ALL SYSTEMS NOMINAL\|ALL SYSTEMS NOMINAL" src/components/footer.tsx 2>/dev/null \
-  && ok "Footer bottom bar has STATUS · ALL SYSTEMS NOMINAL" || fail "Footer missing STATUS bar"
+! grep -q "STATUS.*ALL SYSTEMS NOMINAL\|ALL SYSTEMS NOMINAL" src/components/footer.tsx 2>/dev/null \
+  && ok "Footer status bar removed (anti-theater per spec 018)" || fail "Footer still contains STATUS · ALL SYSTEMS NOMINAL"
 grep -q "Operational Systems Engineering" src/components/footer.tsx 2>/dev/null \
   && ok "Footer contains Operational Systems Engineering" || fail "Footer missing Operational Systems Engineering"
 grep -q "Principal" src/components/footer.tsx 2>/dev/null \
@@ -52,22 +52,22 @@ grep -q "/audit" src/components/footer.tsx 2>/dev/null \
 # ── 3. Hero section ──────────────────────────────────────────────────────────
 section "Hero"
 
-grep -q "DEPLOYED.SYSTEMS.*PROD\|DEPLOYED\.SYSTEMS" src/components/sections/hero.tsx 2>/dev/null \
-  && ok "Hero status panel header: DEPLOYED.SYSTEMS · PROD" || fail "Hero missing DEPLOYED.SYSTEMS header"
-grep -q "GOVERNED" src/components/sections/hero.tsx 2>/dev/null \
-  && ok "Hero status rows have GOVERNED pill" || fail "Hero missing GOVERNED pill"
-grep -q "WATCH" src/components/sections/hero.tsx 2>/dev/null \
-  && ok "Hero status rows have WATCH pill" || fail "Hero missing WATCH pill"
-grep -q "720h\|733h\|746h" src/components/sections/hero.tsx 2>/dev/null \
-  && ok "Hero status rows have hours-format uptime" || fail "Hero missing hours-format uptime"
+! grep -q "DEPLOYED.SYSTEMS.*PROD\|DEPLOYED\.SYSTEMS" src/components/sections/hero.tsx 2>/dev/null \
+  && ok "Hero status panel chrome removed (anti-theater per spec 018)" || fail "Hero still contains DEPLOYED.SYSTEMS chrome"
+! grep -q "720h\|733h\|746h" src/components/sections/hero.tsx 2>/dev/null \
+  && ok "Hero no longer carries fictional uptime hours" || fail "Hero still carries fictional uptime values"
+grep -q "HeroSurfaceReference\|Operational Surfaces" src/components/sections/hero.tsx 2>/dev/null \
+  && ok "Hero renders HeroSurfaceReference schematic" || fail "Hero missing HeroSurfaceReference replacement"
+grep -q "grid-cols-\[1.15fr_1fr\]" src/components/sections/hero.tsx 2>/dev/null \
+  && ok "Hero asymmetric two-column layout preserved" || fail "Hero asymmetric layout regression"
 
 # ── 4. FailureThesis ─────────────────────────────────────────────────────────
 section "FailureThesis"
 
 grep -q "THE PROBLEM\|The Problem\|THE_PROBLEM" src/components/sections/failure-thesis.tsx 2>/dev/null \
   && ok "FailureThesis has THE PROBLEM eyebrow" || fail "FailureThesis missing THE PROBLEM eyebrow"
-grep -q "GOVERNED\|⏵" src/components/sections/failure-thesis.tsx 2>/dev/null \
-  && ok "FailureThesis rows have GOVERNED pill" || fail "FailureThesis missing GOVERNED pill"
+! grep -q "⏵ GOVERNED\|⏵" src/components/sections/failure-thesis.tsx 2>/dev/null \
+  && ok "FailureThesis no longer contains GOVERNED status pill (diagnostic register restored)" || fail "FailureThesis still contains GOVERNED pill"
 grep -q "SCHEMATIC.V1\|SCHEMATIC" src/components/sections/failure-thesis.tsx 2>/dev/null \
   && ok "FailureThesis has SCHEMATIC footer label" || fail "FailureThesis missing SCHEMATIC label"
 grep -q "ChokeDiagram" src/components/sections/failure-thesis.tsx 2>/dev/null \
@@ -92,8 +92,10 @@ grep -q "GOVERNANCE LAYER\|Governance Layer\|governance-layer\|governance" src/c
   && ok "Governance has GOVERNANCE LAYER eyebrow" || fail "Governance missing GOVERNANCE LAYER eyebrow"
 grep -qE "/ 06|01 / 06|01/06|padStart.*06|06.*padStart" src/components/sections/governance.tsx 2>/dev/null \
   && ok "Governance properties have 01/06 label format" || fail "Governance missing 01/06 label format"
-grep -q "setInterval\|2400" src/components/sections/governance.tsx 2>/dev/null \
-  && ok "Governance audit ticker has interval" || fail "Governance missing audit ticker interval"
+! grep -q "setInterval" src/components/sections/governance.tsx 2>/dev/null \
+  && ok "Governance audit panel converted to static schematic (anti-theater per spec 018)" || fail "Governance still contains setInterval rotation"
+grep -q "SCHEMATIC" src/components/sections/governance.tsx 2>/dev/null \
+  && ok "Governance audit panel labeled SCHEMATIC" || fail "Governance missing SCHEMATIC label"
 
 # ── 7. Industries ────────────────────────────────────────────────────────────
 section "Industries"

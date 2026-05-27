@@ -1482,3 +1482,167 @@ All 5 files in `src/components/diagrams/` now committed for the first time:
 ```
 
 **Status:** `DIAGRAM_REGRESSION_RESOLVED`
+
+---
+
+## 2026-05-22 — Rhythm-Lab De-theatricalization Pass
+
+**Capability:** `RHYTHM_LAB_DETHEATRICALIZATION_PASS`
+**Branch:** `feature/rhythm-lab-detheatricalization`
+**Spec authority:** `specs/rhythm-lab-detheatricalization.md`
+**Recon authority:** `ai/recon/rhythm-lab-detheatricalization-recon.md`
+**Author:** Claude Opus 4.7 (1M context)
+**Mode:** RECON → IMPLEMENTATION → VERIFICATION (Engineering OS pipeline: compile-spec → generate-tasks → execution)
+
+### Mission
+
+Preserve the rhythm system, asymmetric layouts, documentary register, and schematic diagrams delivered by `HOMEPAGE_DESIGN_V2` (b68ed4b) and `HOMEPAGE_PDF_EXACT_MATCH` (7c32173). Remove the fictional-runtime / fake-enterprise-platform semantic layer that the same passes inadvertently introduced and that posed a procurement-trust risk.
+
+Target register: **architectural editorial.** Forbidden register: **fictional enterprise platform with running telemetry.**
+
+### Recon Findings (10 categories)
+
+| # | Category | Risk |
+|---|---|---|
+| C1 | Fake-live runtime semantics (`LIVE`, `tail -f`, `/var/log/raystrat/audit.stream`, `system-pulse-dot`, `setInterval` rotation) | HIGH |
+| C2 | Fictional deployment scale metrics (`147 / 12.4M / 99.94% / <2.3min`) | HIGH (procurement-critical) |
+| C3 | Versioning theater (`V4.2.1`, `v4.2.1 · BUILD-2026.05.21`) | MEDIUM |
+| C4 | Fake operational status (`DEPLOYED.SYSTEMS · PROD` chrome, GOVERNED/WATCH pills, fake uptime hours) | HIGH |
+| C5 | Severity-color badges (red/amber/slate dashboard chrome) | MEDIUM |
+| C6 | Production-leaking dev-tool (`TweaksPanel` floating mode switcher) | MEDIUM |
+| C7 | Choke-point `⏵ GOVERNED` pills (contradicts diagnostic argument) | MEDIUM |
+| C8 | Audit-seed rotation (`setInterval(…, 2400ms)` simulated live feed) | MEDIUM |
+| C9 | Live-tense framing prose ("Measured against deployment baseline") | LOW |
+| C10 | Color-coded outcome labels in audit panel | MEDIUM |
+
+### Implementation — eight tracks
+
+**Track 1 — SystemPulse purge.** Removed `<SystemPulse />` from header; deleted `src/components/ui/system-pulse.tsx`; removed `.system-pulse-dot` rule and `@keyframes system-pulse-ring` from `globals.css`. The 1-second-tick live UTC clock and its green pulse ring are gone.
+
+**Track 2 — Footer cleanup.** Removed `STATUS · ALL SYSTEMS NOMINAL` green-dot row from the utility bar. Replaced `© Raystrat Systems · Operational Systems Engineering · v4.2.1 · BUILD-2026.05.21` with `© {new Date().getFullYear()} Raystrat Systems · Operational Systems Engineering`. ThemeToggle remains in the utility row.
+
+**Track 3 — Hero replacement.** Deleted `HeroStatusPanel` (DEPLOYED.SYSTEMS·PROD chrome, V4.2.1 stamp, 5 system rows with fictional uptime, GOVERNED/WATCH colored pills) and `HeroMetaRow` (147 / 12.4M / 99.94% / <2.3min) from `hero.tsx`. Authored replacement component `HeroSurfaceReference` that renders the asymmetric right column as a SCHEMATIC reference to the five operational surfaces (index + name + concise governance property + disclosure label `Schematic reference · not runtime telemetry`). Removed `heroMeta` export from `content.ts`. Hero asymmetric `grid-cols-[1.15fr_1fr]` layout preserved.
+
+**Track 4 — Governance audit panel: live-feed → static schematic.** Removed `'use client'` directive, `useState`/`useEffect`/`useRef` imports, the `2400ms setInterval` rotation, the `Entry` type, all `new Date(...)` calls. Replaced `/var/log/raystrat/audit.stream` panel header with `Audit Trail — Entry Format`; removed `tail -f` chrome; replaced animated green `LIVE` pill with monochrome `SCHEMATIC` tag (`border border-white/20`). Six static rows from `auditSeed` with synthetic illustrative timestamps (`00:00:00`/`00:00:04`/`00:00:09`/`00:00:13`/`00:00:18`/`00:00:22`). Outcome labels (`RESOLVED`/`ESCALATED`/`DISQUALIFIED`) rendered in monochrome differentiated by weight only (no `text-green-400`/`text-amber-400`). Added schematic-disclosure footer label. Deleted `.audit-row-anim` class and `@keyframes audit-row-in` from `globals.css`. Component is now a server component.
+
+**Track 5 — Monochrome severity treatment.** In `failure-mode-registry.tsx`, replaced `pillClass()` helper with `severityClass()`. CRITICAL / HIGH / MEDIUM badges now render as `font-mono text-xs uppercase tracking-widest` with weight differentiation only — no red/amber/slate backgrounds, no colored borders. Added trailing `Schematic — illustrative registry · engagement-specific modes defined at audit` disclosure.
+
+**Track 6 — TweaksPanel production gate.** In `src/app/page.tsx`, replaced unconditional `<TweaksPanel />` render with `{process.env.NODE_ENV !== 'production' && <TweaksPanel />}`. The CSS mode overrides remain in `globals.css` (harmless without an active body class). Design surface preserved for development; not exposed to procurement readers.
+
+**Track 7 — FailureThesis pill removal.** Removed `<span>⏵ GOVERNED</span>` from each choke-point row in `failure-thesis.tsx`. Grid template changed from `grid-cols-[32px_1fr_auto]` to `grid-cols-[32px_1fr]`. The section now reads as diagnostic (where execution breaks without governance) rather than self-contradicting (where it claims all five surfaces are already governed).
+
+**Track 8 — Results re-frame.** H2: `Measured against deployment baseline.` → `Operational ranges across deployments.` Lede: `Every metric is logged continuously against defined SLA targets.` → `Each engagement defines SLA targets at deployment. Ranges shown are operational examples across past engagements; engagement-specific values are produced at the operational audit.` Added explicit `Illustrative ranges · not runtime telemetry` disclosure label above the metric tile grid. The four metric tiles (`2–5×`, `+10–25%`, `30–60`, `~56`) remain as ranges — their framing is now correct.
+
+### Verification
+
+`scripts/verification/018-rhythm-lab-detheatricalization.sh` (new, 60 checks)
+- A. Forbidden fictional-runtime semantics absent (11 checks)
+- B. Removed components/data (9 checks)
+- C. Governance audit panel detheatricalized (5 checks)
+- D. Dashboard cosplay color treatments absent in sections (6 checks)
+- E. Footer cleanliness (4 checks)
+- F. Header cleanliness (2 checks)
+- G. TweaksPanel production gate (1 check)
+- H. Preservation invariants — section arc, diagrams, asymmetric layout, schematic labels, tokens, rhythm-lab route (22 checks)
+
+### Regression-Script Doctrine Reconciliation
+
+Scripts `015-rhythm-lab-archetypes.sh`, `016-homepage-design-v2.sh`, and `017-homepage-pdf-exact-match.sh` previously encoded the runtime-theater contract (asserting `SystemPulse` exists, `HeroStatusPanel` exists, `setInterval` ticker exists, `STATUS · ALL SYSTEMS NOMINAL` exists, `⏵ GOVERNED` pill exists). Per Engineering OS precedent established by D2.5 cognition simplification (where script 012 was updated when D2.5 intentionally removed internal notation), these scripts were updated surgically to **invert** the assertions for patterns the new doctrine forbids:
+
+| Script | Pattern | Before | After |
+|---|---|---|---|
+| 015 | branch identity | requires `rhythm-lab-archetypes` exactly | accepts rhythm-lab branch family (`rhythm-lab-archetypes` ∪ `feature/rhythm-lab-detheatricalization` ∪ `main`) |
+| 016 | `system-pulse.tsx` | must exist | must NOT exist (anti-theater) |
+| 016 | `HeroStatusPanel` / `STATUS_ROWS` / `hero-status-panel` | must be present | must be absent |
+| 016 | `HeroMetaRow` / `heroMeta` | must be present | must be absent |
+| 016 | `setInterval` in governance.tsx | must be present | must be absent (anti-theater) |
+| 016 | `sys-pulse` / `system-pulse` keyframes in globals.css | must be present | must be absent |
+| 017 | `STATUS · ALL SYSTEMS NOMINAL` in footer | must be present | must be absent |
+| 017 | `DEPLOYED.SYSTEMS` / `720h` uptime in hero | must be present | must be absent |
+| 017 | `⏵ GOVERNED` pill in failure-thesis | must be present | must be absent |
+| 017 | `setInterval` in governance | must be present | must be absent (plus `SCHEMATIC` label present) |
+
+These are not new assertions — they are the same structural checks, redirected to enforce the new doctrine. The preserved checks (ChokeDiagram, FAQ accordion, TweaksPanel modes existing as a component, page-wiring, AuditCTA deliverables, section arc) continue to assert what the directive said to preserve.
+
+### Verification Counts
+
+| Script | Pass | Fail |
+|---|---|---|
+| 004-invariants | 3 | 0 |
+| 005-positioning | 10 | 0 |
+| 006-refinement | 15 | 0 |
+| 007-phase-a | 11 | 0 |
+| 008-phase-b | 15 | 0 |
+| 009-phase-c | 34 | 0 |
+| 010-phase-d | 27 | 0 |
+| 011-d1-5 | 30 | 0 |
+| 012-d2 | 35 | 0 |
+| 013-d2-5 | 22 | 0 |
+| 014-phase-e | 40 | 0 |
+| 015-rhythm-lab | 34 | 0 |
+| 016-design-v2 (updated) | 53 | 0 |
+| 017-pdf-exact-match (updated) | 59 | 0 |
+| **018-detheatricalization** | **60** | **0** |
+| **TOTAL** | **448** | **0** |
+
+### TypeScript
+
+`npm run typecheck`: pre-existing baseline errors only (functions/index.ts firebase-functions import, actions.ts assignment types, getAuthenticatedUser.ts cookies() Promise unwrap, marquee.tsx legacy import, contextualAssistantFlow/notesAnalyzerFlow export mismatches, .next/types/validator.ts Next 15 PageProps async-params). **Zero of these errors reference any file touched by this pass** (header.tsx, footer.tsx, hero.tsx, governance.tsx, failure-thesis.tsx, failure-mode-registry.tsx, results.tsx, content.ts, page.tsx, globals.css). Pass introduces 0 new TypeScript errors.
+
+### Procurement-Trust Rationale
+
+The fictional-runtime semantic layer was the single most expensive cognitive cost on the marketing surface. An enterprise architect inspecting `DEPLOYED.SYSTEMS · PROD · V4.2.1` with 5 fake-uptime rows reaches one of two conclusions: either (a) "these numbers are implausible for this firm — they are theater," which collapses institutional trust, or (b) "these numbers are real but unverifiable," which triggers procurement-process friction — RFP additions, evidence requests, third-party attestation requirements that this engagement model does not yet support. Both conclusions move the deal backward.
+
+Removing the theater does not weaken the surface — it strengthens it. The architectural-editorial register communicates "we understand operational governance deeply" without ever claiming runtime state we cannot evidence. The SCHEMATIC label is the new institutional contract: every artifact is presented as a schematic of how Raystrat engagements operate, never as a live readout of a non-existent platform. This is the form an enterprise systems monograph takes.
+
+### Institutional Positioning Logic
+
+The directive's distinction is the load-bearing one for the rest of the marketing build-out:
+
+| Architectural editorial | Fictional enterprise platform |
+|---|---|
+| Schematic exhibits with disclosure labels | Pretend-live status panels |
+| Operational range framing | Fabricated point-estimate telemetry |
+| Diagrammatic exposition of structure | Fake observability-tool chrome |
+| Governance-property statements | Vanity uptime / SLA / "all nominal" claims |
+| Engagement-deliverable references (OUT-01/02/03) | Pretend release versioning (V4.2.1) |
+| Audit-trail entry FORMAT | Live audit log STREAM |
+
+Every replacement in this pass moves from the right column to the left. The site remains operationally serious, but no surface lies about runtime state.
+
+### Out of Scope (intentionally deferred)
+
+- Bytes editorial copy: `transformation` / `unlock` language remains in editorial copy per Phase C §11.5 (Bytes register exemption)
+- `pricing` data in `content.ts`: contains `transformative efficiency` but is unrendered (deferred per Trust/Evidence DRAFT §42.8)
+- The `/rhythm-lab` exploratory route itself: already in the correct register; left untouched (the directive named "rhythm-lab" surfaces but the theater was in the production surfaces that absorbed the rhythm work + the subsequent design-v2 + pdf-exact-match passes)
+- New marketing surfaces, new diagrams, new trust artifacts, new routes
+- TypeScript baseline fix-up (pre-existing, separate engagement)
+
+### Files Changed
+
+```
+deleted:    src/components/ui/system-pulse.tsx
+modified:   src/components/header.tsx
+modified:   src/components/footer.tsx
+modified:   src/components/sections/hero.tsx
+modified:   src/components/sections/governance.tsx
+modified:   src/components/sections/failure-mode-registry.tsx
+modified:   src/components/sections/failure-thesis.tsx
+modified:   src/components/sections/results.tsx
+modified:   src/app/page.tsx
+modified:   src/app/globals.css
+modified:   src/data/content.ts
+added:      ai/recon/rhythm-lab-detheatricalization-recon.md
+added:      specs/rhythm-lab-detheatricalization.md
+added:      tasks/rhythm-lab-detheatricalization-001.md
+added:      scripts/verification/018-rhythm-lab-detheatricalization.sh
+modified:   scripts/verification/015-rhythm-lab-archetypes.sh
+modified:   scripts/verification/016-homepage-design-v2.sh
+modified:   scripts/verification/017-homepage-pdf-exact-match.sh
+modified:   ai/state_registry.json (compile-spec advanced state)
+```
+
+### Status
+
+`RHYTHM_LAB_DETHEATRICALIZATION_READY_FOR_REVIEW`
+

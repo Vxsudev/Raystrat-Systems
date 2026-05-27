@@ -6,5 +6,9 @@
   "homepage-pdf-exact-match": {
     "state": "EXECUTION_ACTIVE",
     "updated_at": "2026-05-22T07:53:02Z"
+  },
+  "rhythm-lab-detheatricalization": {
+    "state": "TASK_GRAPH_LOCKED",
+    "updated_at": "2026-05-22T09:25:59Z"
   }
 }

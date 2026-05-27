@@ -12,7 +12,6 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { navigationLinks } from '@/data/content';
 import { CalendlyButton } from './ui/calendly-button';
-import { SystemPulse } from './ui/system-pulse';
 import { useAuth } from '@/contexts/auth-context';
 import { auth } from '@/lib/firebase/client';
 import {
@@ -141,7 +140,6 @@ export function Header() {
 
         {/* Right side: CTA + (auth state if applicable) + Mobile Menu */}
         <div className="flex items-center justify-end gap-3">
-          {!isDashboard && <SystemPulse />}
           {!isDashboard && (
             <div className="hidden md:block">
               <CalendlyButton size="sm">Book Operational Audit</CalendlyButton>

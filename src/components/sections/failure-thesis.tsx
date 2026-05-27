@@ -32,7 +32,7 @@ export function FailureThesis() {
                 type="button"
                 onClick={() => setActiveId(isActive ? null : cp.id)}
                 className={
-                  'w-full text-left grid grid-cols-[32px_1fr_auto] gap-x-4 py-4 border-b border-border cursor-pointer transition-colors duration-150 ' +
+                  'w-full text-left grid grid-cols-[32px_1fr] gap-x-4 py-4 border-b border-border cursor-pointer transition-colors duration-150 ' +
                   (isActive ? 'bg-primary/5' : 'hover:bg-muted/40')
                 }
               >
@@ -43,9 +43,6 @@ export function FailureThesis() {
                   <p className="font-bold text-foreground">{cp.name}</p>
                   <p className="text-sm text-muted-foreground mt-1">{cp.desc}</p>
                 </div>
-                <span className="border border-primary/40 text-primary text-xs px-2 py-0.5 rounded-md font-mono self-center">
-                  ⏵ GOVERNED
-                </span>
               </button>
             );
           })}

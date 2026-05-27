@@ -9,12 +9,12 @@ const failureModes: { id: string; function: string; severity: Severity }[] = [
   { id: 'FM-006', function: 'Pursuit', severity: 'MEDIUM' },
 ];
 
-function pillClass(s: Severity) {
-  const base = 'text-xs px-2 py-0.5 rounded-md font-mono inline-block';
-  if (s === 'CRITICAL') return `${base} bg-red-950 text-red-400 border border-red-800`;
-  if (s === 'HIGH') return `${base} bg-amber-950 text-amber-400 border border-amber-800`;
-  return `${base} bg-slate-800 text-slate-300 border border-slate-600`;
-}
+const severityClass = (s: Severity) => {
+  const base = 'font-mono text-xs uppercase tracking-widest';
+  if (s === 'CRITICAL') return `${base} text-foreground font-semibold`;
+  if (s === 'HIGH') return `${base} text-foreground`;
+  return `${base} text-muted-foreground`;
+};
 
 export function FailureModeRegistry() {
   return (
@@ -40,12 +40,14 @@ export function FailureModeRegistry() {
             >
               <span className="font-mono text-sm text-foreground">{fm.id}</span>
               <span className="text-sm text-foreground/80">{fm.function}</span>
-              <span>
-                <span className={pillClass(fm.severity)}>{fm.severity}</span>
-              </span>
+              <span className={severityClass(fm.severity)}>{fm.severity}</span>
             </div>
           ))}
         </div>
+
+        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-4">
+          Schematic — illustrative registry · engagement-specific modes defined at audit
+        </p>
       </div>
     </section>
   );

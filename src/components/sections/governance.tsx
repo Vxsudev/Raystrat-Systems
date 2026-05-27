@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
 import { auditSeed } from '@/data/content';
 
 const governanceProps = [
@@ -36,51 +33,29 @@ const governanceProps = [
   },
 ];
 
-type Entry = {
-  key: string;
-  ts: string;
-  sys: string;
-  ev: string;
-  out: 'ok' | 'esc' | 'disq';
+const SCHEMATIC_TIMESTAMPS = [
+  '00:00:00',
+  '00:00:04',
+  '00:00:09',
+  '00:00:13',
+  '00:00:18',
+  '00:00:22',
+];
+
+const outcomeLabel = (out: 'ok' | 'esc' | 'disq') => {
+  if (out === 'ok') return 'RESOLVED';
+  if (out === 'esc') return 'ESCALATED';
+  return 'DISQUALIFIED';
+};
+
+const outcomeClass = (out: 'ok' | 'esc' | 'disq') => {
+  if (out === 'ok') return 'text-white/90 font-semibold';
+  if (out === 'esc') return 'text-white/70';
+  return 'text-white/50';
 };
 
 export function Governance() {
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const seedRef = useRef(0);
-
-  useEffect(() => {
-    const now = Date.now();
-    const initial: Entry[] = [];
-    for (let i = 0; i < 8; i++) {
-      const seed = auditSeed[(i + 3) % auditSeed.length];
-      const date = new Date(now - (8 - i) * 4200);
-      initial.push({
-        key: `seed-${i}-${date.getTime()}`,
-        ts: date.toISOString().slice(11, 19),
-        sys: seed.sys,
-        ev: seed.ev,
-        out: seed.out,
-      });
-    }
-    setEntries(initial);
-    seedRef.current = 8;
-
-    const id = setInterval(() => {
-      const seed = auditSeed[seedRef.current % auditSeed.length];
-      seedRef.current++;
-      const date = new Date();
-      const entry: Entry = {
-        key: `live-${seedRef.current}-${date.getTime()}`,
-        ts: date.toISOString().slice(11, 19),
-        sys: seed.sys,
-        ev: seed.ev,
-        out: seed.out,
-      };
-      setEntries((prev) => [...prev.slice(-7), entry]);
-    }, 2400);
-
-    return () => clearInterval(id);
-  }, []);
+  const exhibit = auditSeed.slice(0, SCHEMATIC_TIMESTAMPS.length);
 
   return (
     <section id="governance">
@@ -123,44 +98,37 @@ export function Governance() {
         <div className="container">
           <div className="text-white/95 rounded-md overflow-hidden font-mono text-[12.5px] border border-white/10">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 bg-white/[0.025] text-[11px] tracking-[0.14em] uppercase text-white/60">
-              <span>/var/log/raystrat/audit.stream</span>
-              <div className="flex items-center gap-3.5">
-                <span className="text-white/40">tail -f</span>
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-green-700 bg-green-950 text-green-400">
-                  <span className="system-pulse-dot bg-green-400 rounded-full w-1.5 h-1.5" />
-                  LIVE
-                </span>
-              </div>
+              <span>Audit Trail — Entry Format</span>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-white/20 text-white/60">
+                SCHEMATIC
+              </span>
             </div>
-            <div className="audit-log-body py-2 max-h-[320px] overflow-hidden relative">
-              {entries.map((e) => (
+            <div className="py-2">
+              {exhibit.map((e, i) => (
                 <div
-                  key={e.key}
-                  className="audit-row-anim grid grid-cols-[110px_90px_1fr_90px] items-center gap-4 px-5 py-1.5 text-white/80 border-t border-dashed border-white/10 first:border-t-0"
+                  key={`exhibit-${i}`}
+                  className="grid grid-cols-[110px_90px_1fr_120px] items-center gap-4 px-5 py-1.5 text-white/80 border-t border-dashed border-white/10 first:border-t-0"
                 >
-                  <span className="text-white/45 text-[11px]">{e.ts}</span>
-                  <span className="text-[10px] tracking-[0.12em] uppercase text-primary-foreground/90 [color:color-mix(in_oklab,hsl(214_98%_60%),white_20%)]">
+                  <span className="text-white/45 text-[11px] tabular-nums">
+                    {SCHEMATIC_TIMESTAMPS[i]}
+                  </span>
+                  <span className="text-[10px] tracking-[0.12em] uppercase text-white/70">
                     {e.sys}
                   </span>
                   <span className="text-white/90 truncate">{e.ev}</span>
                   <span
                     className={
                       'text-[10px] tracking-[0.12em] uppercase text-right ' +
-                      (e.out === 'ok'
-                        ? 'text-green-400'
-                        : e.out === 'esc'
-                        ? 'text-amber-400'
-                        : 'text-white/50')
+                      outcomeClass(e.out)
                     }
                   >
-                    {e.out === 'ok'
-                      ? 'RESOLVED'
-                      : e.out === 'esc'
-                      ? 'ESCALATED'
-                      : 'DISQUALIFIED'}
+                    {outcomeLabel(e.out)}
                   </span>
                 </div>
               ))}
+            </div>
+            <div className="border-t border-white/10 px-5 py-2.5 text-[10px] uppercase tracking-widest text-white/40">
+              Schematic representation — engagement-specific audit-trail entries are produced continuously at runtime under the governance layer.
             </div>
           </div>
         </div>

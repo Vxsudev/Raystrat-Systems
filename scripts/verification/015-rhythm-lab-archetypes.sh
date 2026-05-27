@@ -25,15 +25,18 @@ LAB_FILE="src/app/rhythm-lab/page.tsx"
 # BRANCH DISCIPLINE
 # ============================================================
 
-# Check 1: Currently on rhythm-lab-archetypes branch
+# Check 1: Currently on rhythm-lab branch family (archetypes / detheatricalization descendant / main)
 CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
-if [ "${CURRENT_BRANCH}" = "rhythm-lab-archetypes" ]; then
-  echo "  PASS: on branch rhythm-lab-archetypes"
-  PASS=$((PASS + 1))
-else
-  echo "  FAIL: expected branch rhythm-lab-archetypes, got ${CURRENT_BRANCH}"
-  FAIL=$((FAIL + 1))
-fi
+case "${CURRENT_BRANCH}" in
+  rhythm-lab-archetypes|feature/rhythm-lab-detheatricalization|main)
+    echo "  PASS: on rhythm-lab branch family (${CURRENT_BRANCH})"
+    PASS=$((PASS + 1))
+    ;;
+  *)
+    echo "  FAIL: expected rhythm-lab branch family, got ${CURRENT_BRANCH}"
+    FAIL=$((FAIL + 1))
+    ;;
+esac
 
 # ============================================================
 # ROUTE PRESENCE
