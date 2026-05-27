@@ -2055,3 +2055,94 @@ genkit export-mismatch failure).
 
 `HIDE_DEFERRED_LEGAL_TRUST_SURFACES_READY_FOR_REVIEW`
 
+
+---
+
+### 2026-05-28
+
+### Feature
+
+legal-foundation-surfaces
+
+### Phase
+
+phase-legal-foundation
+
+### Spec
+
+specs/legal-foundation-surfaces.md
+
+### Capability
+
+`LEGAL_FOUNDATION_SURFACES_V1` — branch `feature/legal-foundation-surfaces`. Publish
+production-ready Privacy + Terms surfaces and reintroduce footer legal navigation (Privacy +
+Terms only) with restrained institutional presentation. Partial resurfacing of the surfaces
+hidden by `HIDE_DEFERRED_LEGAL_TRUST_SURFACES`.
+
+### What shipped
+
+- `src/app/privacy/page.tsx` — Privacy Notice. Effective date; company identification
+  (Raystrat Systems, operating from India); information collected; contact-form handling;
+  cookies/analytics (with the explicit "no banner because no tracking stack" rationale);
+  third-party processors (Firebase/Google Cloud, Google Genkit/GenAI, SendGrid); AI processing
+  disclosure; data retention; operational security statement; user choices; international
+  processing; updates clause; contact. Documentary template reused from `principal/page.tsx`.
+- `src/app/terms/page.tsx` — Terms of Use. Scope of services (operational systems, automation
+  workflows, reporting infrastructure, integrations, implementation); client responsibilities
+  (review outputs + maintain internal controls); third-party dependency disclaimer; AI output
+  disclaimer (no sole AI decision authority); no-guaranteed-outcomes (no revenue/uptime/
+  certification guarantees); IP boundaries; modification/termination; limitation of liability;
+  **governing law = India**; contact.
+- `src/components/footer.tsx` — `legalNav` (Privacy + Terms) rendered as low-noise inline links
+  in the bottom utility bar near the brand/copyright. No restored "Legal" column; grid stays
+  2-col; old `legalLinks` array not reintroduced.
+- `src/app/sitemap.ts` — `/privacy` + `/terms` registered (low priority).
+- `ai/deferred/cookie-consent-banner.md` — banner deferral recorded with triggering conditions.
+- `ai/deferred/deferred-public-trust-surfaces.md` — Privacy + Terms marked RESURFACED; the four
+  others (Documentation, Trust, Principal, Continuity) remain deferred.
+
+### Why a minimal legal posture (not compliance theater)
+
+The directive was a *serious operational vendor* tone, not VC-SaaS marketing and not a
+legal-document generator. The pages define operational boundaries in plain language and avoid
+fabricated certifications, GDPR cosplay, fake DPO language, "military-grade" security, and any
+uptime/outcome/zero-risk guarantees. Words like "certification" and "guarantee" appear only in
+*disclaiming* sentences — so the verification gate bans affirmative-overclaim phrases, not the
+bare words.
+
+### Why the cookie popup was intentionally deferred
+
+No advertising, retargeting, or invasive analytics stack exists; the only client storage is
+first-party functional (theme preference). A consent banner would imply tracking that is not
+present — premature compliance theater. Instead: a plain cookie-disclosure section inside the
+Privacy notice, plus `ai/deferred/cookie-consent-banner.md` documenting the trigger conditions
+(ads, retargeting, advanced analytics, EU-specific compliance expansion) that would justify one.
+
+### Operational boundaries vs compliance theater
+
+The distinction enforced throughout: state what the firm actually does and does not do
+(operational systems, client-retained control, third-party dependencies, AI as assistive) —
+never imply accreditation, fiduciary duty, regulatory certification, or guaranteed uptime/
+outcomes. Trust/compliance surfaces that cannot yet be backed remain deferred.
+
+### Verification
+
+- `scripts/verification/023-legal-foundation-surfaces.sh` (new) — **57/57 PASS**: routes exist +
+  export metadata + render Header/Footer; footer links Privacy/Terms and does not link the four
+  deferred surfaces; required Privacy + Terms content present; governing law = India; cookie
+  disclosure embedded with no banner mounted and no `/cookies` route; no banned compliance
+  language; sitemap entries present.
+- `scripts/verification/022-hide-deferred-legal-trust-surfaces.sh` (reconciled) — **35/35 PASS**:
+  footer-absence now scoped to the four still-deferred surfaces (checked by route href, not bare
+  word, so footer comments may name them); Privacy + Terms asserted published.
+- Full numeric suite 002–023 green. Sole exception: `015-rhythm-lab-archetypes.sh` fails only its
+  branch-family guard ("expected rhythm-lab branch") — unrelated to this capability; its footer
+  checks pass.
+- `001-typecheck.sh` (raw `tsc`) trips on pre-existing errors in untouched files
+  (functions/index.ts, actions.ts, dashboard, marquee, etc.); the new files are type-clean.
+  `next build` (003) passes (`typescript.ignoreBuildErrors`). `/privacy` and `/terms` prerender
+  as static; runtime checks return **200** for `/`, `/privacy`, `/terms`.
+
+### Status
+
+`LEGAL_FOUNDATION_SURFACES_V1` → RELEASE_APPROVED

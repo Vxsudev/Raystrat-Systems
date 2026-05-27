@@ -11,7 +11,12 @@ cd "${REPO_ROOT}"
 FTR="src/components/footer.tsx"
 HDR="src/components/header.tsx"
 DEF="ai/deferred/deferred-public-trust-surfaces.md"
+# All six original surfaces (the deferred registry must still name all of them).
 SURFACES=(Documentation Privacy Terms Trust Principal Continuity)
+# Reconciled 2026-05-28 (LEGAL_FOUNDATION_SURFACES_V1): Privacy + Terms were
+# resurfaced with authored routes + footer links. Only these four remain hidden
+# from the public footer/header.
+DEFERRED=(Documentation Trust Principal Continuity)
 
 PASS=0
 FAIL=0
@@ -22,28 +27,45 @@ section() { echo ""; echo "── $1 ──"; }
 echo "022-hide-deferred-legal-trust-surfaces: Deferred Surface Hiding Verification"
 echo ""
 
-# ── A. Footer does not expose the six surfaces ───────────────────────────────
-section "A. Footer free of deferred surfaces"
-for s in "${SURFACES[@]}"; do
-  if grep -q "$s" "$FTR" 2>/dev/null; then
-    fail "footer still references '$s'"
+# ── A. Footer does not link the still-deferred surfaces ──────────────────────
+# Check for actual link hrefs, not bare words: the footer comment may name the
+# deferred surfaces (to document the deferral) without linking them.
+section "A. Footer free of still-deferred surfaces"
+for path in /documentation /trust /principal /continuity; do
+  if grep -qE "href=[\"']${path}[\"']|href:[[:space:]]*['\"]${path}['\"]" "$FTR" 2>/dev/null; then
+    fail "footer still links deferred surface '$path'"
   else
-    ok "footer no longer references '$s'"
+    ok "footer no longer links deferred surface '$path'"
   fi
 done
 
-# ── B. Header/nav does not expose the six surfaces ───────────────────────────
-section "B. Header/nav free of deferred surfaces"
-for s in "${SURFACES[@]}"; do
-  if grep -q "$s" "$HDR" 2>/dev/null; then
-    fail "header still references '$s'"
+# ── A2. Privacy + Terms are now published (resurfaced) ───────────────────────
+section "A2. Privacy + Terms resurfaced"
+for r in privacy terms; do
+  if [ -f "src/app/$r/page.tsx" ]; then
+    ok "resurfaced route exists: src/app/$r/page.tsx"
   else
-    ok "header no longer references '$s'"
+    fail "resurfaced route missing: src/app/$r/page.tsx"
+  fi
+  if grep -qE "href=[\"']/$r[\"']|href:[[:space:]]*['\"]/$r['\"]" "$FTR" 2>/dev/null; then
+    ok "footer links /$r"
+  else
+    fail "footer does not link /$r"
   fi
 done
-# navigationLinks (data source for nav) must not carry them either
-for s in "${SURFACES[@]}"; do
-  if grep -qE "name: '$s'|href: '/(documentation|principal|continuity|privacy|terms|trust)'" src/data/content.ts 2>/dev/null; then
+
+# ── B. Header/nav does not expose the still-deferred surfaces ────────────────
+section "B. Header/nav free of still-deferred surfaces"
+for s in "${DEFERRED[@]}"; do
+  if grep -q "$s" "$HDR" 2>/dev/null; then
+    fail "header still references deferred surface '$s'"
+  else
+    ok "header no longer references deferred surface '$s'"
+  fi
+done
+# navigationLinks (data source for nav) must not carry the deferred surfaces either
+for s in "${DEFERRED[@]}"; do
+  if grep -qE "name: '$s'|href: '/(documentation|principal|continuity|trust)'" src/data/content.ts 2>/dev/null; then
     fail "navigationLinks references deferred surface '$s'"
   else
     ok "navigationLinks free of '$s'"
