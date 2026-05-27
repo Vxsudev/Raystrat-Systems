@@ -12,8 +12,8 @@ const EFFECTIVE_DATE = '28 May 2026';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-10">
-      <h2 className="text-lg font-headline font-semibold tracking-tight text-foreground">
+    <section className="mt-6 pt-5 border-t border-foreground/[0.06]">
+      <h2 className="text-xs font-semibold tracking-widest uppercase text-foreground/50">
         {title}
       </h2>
       <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-foreground/80">
@@ -28,19 +28,21 @@ export default function PrivacyPage() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1">
-        <section className="py-16 md:py-24 lg:py-28">
+        <section className="py-10 md:py-14">
           <div className="container">
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">
-                Privacy
-              </p>
-              <h1 className="text-3xl font-headline font-bold tracking-tighter md:text-4xl">
-                Privacy Notice
-              </h1>
-              <p className="mt-4 font-mono text-xs text-foreground/60">
-                Effective {EFFECTIVE_DATE}
-              </p>
-              <p className="mt-6 text-base leading-relaxed text-foreground/80">
+              <div className="pb-6 border-b border-foreground/10">
+                <p className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">
+                  Privacy
+                </p>
+                <h1 className="text-3xl font-headline font-bold tracking-tighter md:text-4xl">
+                  Privacy Notice
+                </h1>
+                <p className="mt-3 font-mono text-xs text-foreground/50">
+                  Effective {EFFECTIVE_DATE} · Raystrat Systems
+                </p>
+              </div>
+              <p className="mt-5 text-[15px] leading-relaxed text-foreground/80">
                 This notice describes what information Raystrat Systems collects through this
                 website, how we use it, and the third-party providers we rely on to operate.
                 It is written in plain terms. It is not a substitute for the specific data
