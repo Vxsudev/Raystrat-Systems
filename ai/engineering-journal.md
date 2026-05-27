@@ -1840,3 +1840,68 @@ Full suite **004–020 green**. TypeScript: pre-existing baseline only (zero her
 
 `HERO_REPOSITION_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-22 — Above-the-Fold Authority Pass
+
+**Capability:** `ABOVE_THE_FOLD_AUTHORITY_PASS`
+**Branch:** `feature/above-fold-authority-pass`
+**Spec authority:** `specs/above-fold-authority.md`
+**Author:** Claude Opus 4.6
+**Mode:** RECON → IMPLEMENTATION → VERIFICATION. Browser inspection mandatory.
+
+### Why the prior fold failed
+
+The repositioned hero had correct copy but weak visual authority — a large empty right column with three lines of abstract supporting prose ("Demand and follow-through that run without manual chasing" / "Support and operations that don't depend on individual memory" / "Reporting that stays current without spreadsheet assembly"). It read as a blank AI-generated landing page: too much dead whitespace, no grounded structure, and it never concretely showed *what Raystrat installs*.
+
+### What changed (above-the-fold only)
+
+**`src/components/sections/hero.tsx`:**
+- **Hard-deleted** the three abstract right-column prose lines (deleted, not rewritten or relocated).
+- **Added a concrete Operating Functions panel** — contained `border border-border rounded-md` panel with a `bg-secondary` header bar ("Operating functions Raystrat builds for") and four keyline-divided rows (exact copy):
+  - Sales — lead capture, qualification, follow-up, pipeline movement
+  - Support — intake, routing, escalation, resolution tracking
+  - Operations — task routing, reminders, approvals, handoffs
+  - Reporting — dashboards, summaries, weekly operating visibility
+- **Reduced dead whitespace:** padding `py-24/32/40` → `py-14/20/24`; headline scale `clamp(38,5.4vw,64px)` → `clamp(36,4.8vw,58px)`.
+- **Stronger structure / width choreography:** grid `[1.4fr_1fr]` → balanced `[1.05fr_0.95fr]`, `items-center`; added a full-width `border-b border-border` section boundary keyline under the fold.
+- **Panel visible on all breakpoints** (concrete content stacks on mobile — no longer a desktop-only column).
+- Kept exact headline + subheadline; CTAs unchanged.
+
+**`src/components/app-content.tsx`:** removed the homepage `ServiceSuggester` mount — the "Diagnose a Breakdown" floating AI pill no longer appears on the homepage. Service/bytes-page floating widgets untouched.
+
+### Before / after
+
+| | Before | After |
+|---|---|---|
+| Right column | abstract prose (3 poetic lines), low density | concrete Operating Functions panel (4 rows, plain capabilities) |
+| Fold density | empty, blank-landing-page feel | grounded, contained, institutional |
+| "What does Raystrat build?" | implied | answered in <5s by the panel |
+| Floating pill | "Diagnose a Breakdown" present | removed from homepage |
+| Structure | open whitespace | keylines + bordered panel + section boundary |
+
+### Browser inspection (Playwright/CDP — mandatory)
+
+`/tmp/af-{desktop,tablet,mobile}.png` at 1440 / 834 / 390:
+- **Desktop:** balanced 2-col (`605px / 547px`), 58px headline, Operating Functions panel with header bar + 4 keyline rows; section-boundary keyline; **no floating pill** (bottom-right clean).
+- **Tablet:** panel beside headline, balanced, no awkward gaps.
+- **Mobile:** documentary stack — headline → subheadline → CTAs → panel (visible, rows wrap cleanly).
+- **DOM truth:** h1 exact, subheadline exact, CTAs correct, `heroSvgCount: 0`, `bannedCopy: false`, desktop grid `604.8/547.2`.
+
+### Verification
+
+`scripts/verification/021-above-fold-authority.sh` — **31/31 PASS**: exact copy; six banned phrases absent (`Demand and follow-through`, `manual chasing`, `individual memory`, `spreadsheet assembly`, `Reporting that stays current`, `Support and operations`); panel + 4 rows + all four function names present; contained-panel + keyline structure; no SVG/switcher/telemetry/live/prod/metrics/version above fold; `ServiceSuggester` unmounted from `app-content.tsx`; section boundary + width choreography.
+
+Reconcile: `020` right-column check (border-l keyline → Operating Functions panel); `015` branch family += `feature/above-fold-authority-pass`.
+
+Full suite **004–021 green**. TypeScript: baseline only (zero new errors in hero.tsx / app-content.tsx).
+
+### Remaining risks
+
+- Operating Functions row copy uses common product nouns ("dashboards", "pipeline") — concrete and plain per directive; not telemetry/metrics. If a future pass wants even more restraint, the descriptions can shorten further.
+- Mobile header still renders both far-left logo and centered lockup (pre-existing header quirk, out of scope).
+
+### Status
+
+`ABOVE_FOLD_AUTHORITY_READY_FOR_REVIEW`
+

@@ -18,5 +18,9 @@
   "hero-reposition": {
     "state": "TASK_GRAPH_LOCKED",
     "updated_at": "2026-05-27T03:46:51Z"
+  },
+  "above-fold-authority": {
+    "state": "TASK_GRAPH_LOCKED",
+    "updated_at": "2026-05-27T04:10:03Z"
   }
 }

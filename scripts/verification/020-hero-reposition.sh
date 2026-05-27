@@ -45,8 +45,10 @@ absent  'Book Operational Audit →'    "decorative arrow removed from primary C
 
 # ── D. Structure ─────────────────────────────────────────────────────────────
 section "D. Asymmetric institutional layout"
-grep -Eq 'md:grid-cols-\[1\.[0-9]+fr_1fr\]' "$HERO" && ok "asymmetric md two-column grid present" || fail "asymmetric md grid missing"
-grep -Fq 'border-l border-border' "$HERO" && ok "right column uses subtle 1px keyline" || fail "right column keyline missing"
+# above-fold-authority pass widened the asymmetry and replaced the border-l prose
+# block with a contained Operating Functions panel; assert the panel structure.
+grep -Eq 'md:grid-cols-\[1[\.0-9]*fr_[0-9.]+fr\]' "$HERO" && ok "asymmetric md two-column grid present" || fail "asymmetric md grid missing"
+grep -Fq 'Operating functions Raystrat builds for' "$HERO" && ok "right column carries Operating Functions panel" || fail "right column panel missing"
 
 # ── E. No theatrical UI above the fold ───────────────────────────────────────
 section "E. Visual restraint (no theater in hero)"
