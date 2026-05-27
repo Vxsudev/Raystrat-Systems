@@ -1,7 +1,20 @@
 // src/lib/firebase/client.ts
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+
+// Lazy, side-effect-free Firebase client bootstrap.
+//
+// Initialization is deferred to first runtime access (browser / authenticated
+// surfaces). Importing this module performs NO side effects, so public and
+// documentary routes can be statically prerendered at build time WITHOUT
+// bootstrapping the Firebase client SDK. (Eager init at module load threw
+// `auth/invalid-api-key` during prerender whenever NEXT_PUBLIC_FIREBASE_* config
+// was absent — e.g. in the App Hosting build environment.)
+//
+// Auth-dependent surfaces (dashboard, auth form, auth context) call the
+// accessors below at runtime, inside effects/handlers — never at module load
+// and never during server prerendering.
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,9 +26,27 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+let _app: FirebaseApp | undefined;
+let _auth: Auth | undefined;
+let _db: Firestore | undefined;
 
-export { app, auth, db };
+export function getFirebaseApp(): FirebaseApp {
+  if (!_app) {
+    _app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  }
+  return _app;
+}
+
+export function getFirebaseAuth(): Auth {
+  if (!_auth) {
+    _auth = getAuth(getFirebaseApp());
+  }
+  return _auth;
+}
+
+export function getFirebaseDb(): Firestore {
+  if (!_db) {
+    _db = getFirestore(getFirebaseApp());
+  }
+  return _db;
+}

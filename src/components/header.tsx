@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { navigationLinks } from '@/data/content';
 import { CalendlyButton } from './ui/calendly-button';
 import { useAuth } from '@/contexts/auth-context';
-import { auth } from '@/lib/firebase/client';
+import { getFirebaseAuth } from '@/lib/firebase/client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -90,7 +90,7 @@ export function Header() {
                 <Link href="/dashboard/settings">Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => auth.signOut()}>
+            <DropdownMenuItem onClick={() => getFirebaseAuth().signOut()}>
                 Log out
             </DropdownMenuItem>
         </DropdownMenuContent>
@@ -175,7 +175,7 @@ export function Header() {
                 {user && (
                   <div className="flex flex-col gap-3 pt-6 border-t border-border">
                     <Link href="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>Dashboard</Link>
-                    <Button variant="ghost" onClick={() => auth.signOut()}>Log out</Button>
+                    <Button variant="ghost" onClick={() => getFirebaseAuth().signOut()}>Log out</Button>
                   </div>
                 )}
               </div>

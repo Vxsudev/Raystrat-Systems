@@ -8,7 +8,7 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { auth } from '@/lib/firebase/client';
+import { getFirebaseAuth } from '@/lib/firebase/client';
 import { LogOut, CalendarCheck, TrendingUp, ShieldCheck, PauseCircle, CheckCircle, Inbox, Users, PlusCircle, Mail, Play, Upload } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -366,7 +366,7 @@ export default function DashboardPage() {
               <h1 className="text-3xl font-bold font-headline">Follow-Up Agent Dashboard</h1>
               <p className="text-muted-foreground">Real-time performance for your automated sequences.</p>
             </div>
-             <Button variant="outline" onClick={() => auth.signOut()}>
+             <Button variant="outline" onClick={() => getFirebaseAuth().signOut()}>
                 <LogOut className="mr-2 h-4 w-4" /> Logout
             </Button>
           </div>

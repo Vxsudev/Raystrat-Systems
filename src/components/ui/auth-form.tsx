@@ -11,7 +11,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { getFirebaseAuth } from '@/lib/firebase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -50,6 +50,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
+      const auth = getFirebaseAuth();
       if (mode === 'login') {
         await signInWithEmailAndPassword(auth, values.email, values.password);
         toast({ title: 'Success', description: "You're now logged in." });
@@ -74,6 +75,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
+        const auth = getFirebaseAuth();
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
         toast({ title: 'Success', description: "You're now logged in with Google." });
