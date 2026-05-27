@@ -3,7 +3,14 @@
 **Date deferred:** 2026-05-27
 **Capability:** `HIDE_DEFERRED_LEGAL_TRUST_SURFACES`
 **Branch:** `feature/hide-deferred-legal-trust-surfaces`
-**Status:** HIDDEN FROM PUBLIC UI — routes preserved, intentional deferral
+**Status:** PARTIALLY RESURFACED — Privacy + Terms now published; the other four remain hidden
+
+> **Update — 2026-05-28 (`LEGAL_FOUNDATION_SURFACES_V1`, branch
+> `feature/legal-foundation-surfaces`):** Privacy and Terms have been **resurfaced**.
+> Both now have real, authored route content (`src/app/privacy/page.tsx`,
+> `src/app/terms/page.tsx`) and are linked from the footer utility bar (Privacy + Terms only,
+> as low-noise inline links — not a restored "Legal" column). **Documentation, Trust,
+> Principal, and Continuity remain deferred** under the conditions below.
 
 > This is a **deliberate deferral, not accidental dead code.** The surfaces below
 > are removed from the public footer/nav because they are unfinished and would
@@ -33,14 +40,17 @@ Hiding them until they are real is the conservative, trust-preserving choice.
 
 ## Hidden surfaces + current route/file paths
 
-| Surface | Footer link (removed) | Route file | File status |
+| Surface | Footer link | Route file | File status |
 |---|---|---|---|
-| Documentation | `/documentation` | `src/app/documentation/page.tsx` | EXISTS (stub) — retained |
-| Privacy | `#` (placeholder) | (none) | no route file; link removed |
-| Terms | `#` (placeholder) | (none) | no route file; link removed |
-| Trust | `#` (placeholder) | (none) | no route file; link removed |
-| Principal | `/principal` | `src/app/principal/page.tsx` | EXISTS (stub) — retained |
-| Continuity | `/continuity` | `src/app/continuity/page.tsx` | EXISTS (stub) — retained |
+| Documentation | (hidden) | `src/app/documentation/page.tsx` | EXISTS (stub) — retained, still deferred |
+| Privacy | `/privacy` | `src/app/privacy/page.tsx` | **RESURFACED 2026-05-28** — authored, footer-linked |
+| Terms | `/terms` | `src/app/terms/page.tsx` | **RESURFACED 2026-05-28** — authored, footer-linked |
+| Trust | (hidden) | (none) | no route file; still deferred |
+| Principal | (hidden) | `src/app/principal/page.tsx` | EXISTS (stub) — retained, still deferred |
+| Continuity | (hidden) | `src/app/continuity/page.tsx` | EXISTS (stub) — retained, still deferred |
+
+The four still-deferred surfaces (Documentation, Trust, Principal, Continuity) remain absent
+from the public footer and header. Privacy + Terms are the only resurfaced surfaces.
 
 What changed in the UI:
 - `src/components/footer.tsx` — `legalLinks` array deleted; the entire "Legal" footer
@@ -83,6 +93,12 @@ Re-enable a surface in the footer only when ALL of the following hold for that s
 
 ## Verification
 
-Gate: `scripts/verification/022-hide-deferred-legal-trust-surfaces.sh` enforces that the
-six surfaces are absent from footer/header, the retained route files still exist, this
-deferred doc exists and names all six surfaces, and the footer still renders Systems/Engage cleanly.
+Gate: `scripts/verification/022-hide-deferred-legal-trust-surfaces.sh` (reconciled
+2026-05-28) enforces that the **four still-deferred surfaces** (Documentation, Trust,
+Principal, Continuity) are absent from footer/header, that Privacy + Terms are now published
+(routes exist and footer-linked), the retained route files still exist, this deferred doc
+exists and names all six surfaces, and the footer still renders Systems/Engage cleanly.
+
+Gate: `scripts/verification/023-legal-foundation-surfaces.sh` enforces the resurfaced
+Privacy + Terms surfaces (routes, footer links, required content, no banned compliance
+language, no cookie banner).
