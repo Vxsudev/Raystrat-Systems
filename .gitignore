@@ -39,3 +39,6 @@ sendgrid.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local secrets (never commit)
+.env
