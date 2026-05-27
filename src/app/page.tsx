@@ -9,7 +9,6 @@ import { Governance } from '@/components/sections/governance';
 import { Industries } from '@/components/sections/industries';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
-import { TweaksPanel } from '@/components/ui/tweaks-panel';
 import { Contact } from '@/components/sections/contact';
 import { getAuthenticatedUser } from '@/lib/auth/getAuthenticatedUser';
 import { ByteOfTheWeek } from '@/components/sections/byte-of-the-week';
@@ -70,7 +69,6 @@ export default async function Home() {
         </main>
         <Footer />
       </div>
-      {process.env.NODE_ENV !== 'production' && <TweaksPanel />}
     </div>
   );
 }

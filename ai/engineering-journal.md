@@ -1765,6 +1765,16 @@ modified:   ai/state_registry.json
 
 The homepage now carries no simulated operational evidence. Services and Industries read as a *deployable operational systems catalog* (grounded cards) rather than conceptual essay fragments. Governance is a written doctrine block, not a dark observability panel. Bytes is an editorial archive teaser, not a classified-document UI. The hero is typography-first and severe. Trust-evidence diagrams remain available to a procurement reader who navigates to `/audit` — the dedicated engagement surface — where lifecycle context makes them legible, rather than being scattered as homepage decoration. The site reads as a real systems-engineering company.
 
+### Browser Verification (Playwright/CDP ground truth)
+
+Inspected the running dev server (`localhost:3000`) via headless Chromium over the DevTools Protocol (cached `chromium-1117`, Node built-in WebSocket — no npm deps). Full-page + section screenshots captured at 1440px desktop width; DOM/computed-CSS probed.
+
+**Confirmed clean:** 8-section arc in order (top → failure-thesis → systems → governance → industries → contact → byte-of-the-week → faq); 0 console errors; hero typography-first with no SVG/border panel and the restrained right-column text block present; Services + Industries render as 3-col card grids (`394px × 3`, 6 and 3 cards) with icons + Check bullets; Bytes restrained ("Latest Insight" card, no metadata sidecard); governance section is pure light (`bg-background`, no dark audit band — `governanceDarkChild:false`, `governanceAuditText:false`); 40 homepage SVGs are all 16–20px lucide icons (`svgWithViewBox>200px: 0` — zero decorative diagrams); "Failure Mode Registry" text survives only as the OUT-02 audit-deliverable name in Contact (legitimate).
+
+**Issue caught that code-reading missed:** the **Ledger / Editorial / Blueprint** mode switcher (`TweaksPanel`) rendered on the dev server. The detheatricalization pass had gated it `NODE_ENV !== 'production'`, which hides it in prod builds but not in `npm run dev`. Decosplay directive #1 requires removing it **entirely**. Fixed: removed the mount + import from `page.tsx`, deleted `src/components/ui/tweaks-panel.tsx`, removed the now-dead `body.mode-editorial/blueprint/ledger` selectors from `globals.css`. Re-screenshot confirms `tweaksPanelVisible: false`. 018 gate check updated (gate → absence); 019 gained checks M (switcher removed) + dead mode-CSS — now 53/53.
+
+**Out of scope (flagged):** the floating route-gated AI widgets (bottom-left avatar, "Diagnose a Breakdown" pill from `app-content.tsx`) persist across all marketing pages; not part of the directive's 8-section homepage scope.
+
 ### Status
 
 `RHYTHM_LAB_DECOSPLAY_READY_FOR_REVIEW`

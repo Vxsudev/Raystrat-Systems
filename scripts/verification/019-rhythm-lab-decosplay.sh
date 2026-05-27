@@ -122,6 +122,13 @@ section "L. Dead CSS"
 assert_absent 'hero-status-panel' src/app/globals.css "dead .hero-status-panel selector removed"
 assert_absent '#results'          src/app/globals.css "dead #results mode selector removed"
 assert_absent '#evidence'         src/app/globals.css "dead #evidence mode selector removed"
+assert_absent 'mode-editorial|mode-blueprint|mode-ledger' src/app/globals.css "dead mode-* selectors removed"
+
+# ── M. Ledger/Editorial/Blueprint switcher removed (directive #1) ────────────
+section "M. Mode switcher removed"
+
+assert_absent_file src/components/ui/tweaks-panel.tsx "tweaks-panel.tsx (Ledger/Editorial/Blueprint) deleted"
+assert_absent 'TweaksPanel' src/app/page.tsx          "TweaksPanel mount removed from homepage"
 
 # ── Summary ─────────────────────────────────────────────────────────────────
 echo ""

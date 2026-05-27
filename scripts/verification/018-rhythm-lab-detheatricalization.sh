@@ -127,10 +127,12 @@ section "F. Header"
 assert_absent 'SystemPulse'  src/components/header.tsx "header no longer references SystemPulse"
 assert_absent 'system-pulse' src/components/header.tsx "header no longer imports system-pulse"
 
-# ── G. TweaksPanel gating ───────────────────────────────────────────────────
-section "G. TweaksPanel production gate"
+# ── G. TweaksPanel removed ──────────────────────────────────────────────────
+section "G. TweaksPanel fully removed (decosplay directive #1)"
 
-assert_present "NODE_ENV !== 'production'" src/app/page.tsx "TweaksPanel gated to non-production"
+# Decosplay removed the Ledger/Editorial/Blueprint switcher entirely (it rendered on
+# the dev server under the prior NODE_ENV gate). Mount + component now deleted.
+assert_absent 'TweaksPanel' src/app/page.tsx "TweaksPanel mount removed from page.tsx"
 
 # ── H. Preservation invariants ──────────────────────────────────────────────
 section "H. Preservation invariants"
