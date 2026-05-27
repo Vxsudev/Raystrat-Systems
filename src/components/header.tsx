@@ -104,16 +104,16 @@ export function Header() {
       <div className="container flex items-center justify-between h-16">
         {/* Left side: Logo + Desktop Nav */}
         <div className="flex items-center flex-1 gap-8 md:flex-none">
-          <Link href={logoHref} className="flex items-center gap-3" aria-label="Raystrat Systems home">
+          <Link href={logoHref} className="hidden md:flex items-center gap-3.5" aria-label="Raystrat Systems home">
             <Image
               src="/raystrat-logo.png"
               alt=""
-              width={32}
-              height={32}
+              width={40}
+              height={40}
               priority
-              className="h-8 w-8"
+              className="h-10 w-10"
             />
-            <span className="hidden text-base font-semibold md:inline font-headline">Raystrat Systems</span>
+            <span className="hidden text-lg font-semibold tracking-tight md:inline font-headline">Raystrat Systems</span>
           </Link>
           {!isDashboard && (
             <nav className="items-center hidden gap-6 md:flex" aria-label="Primary">
@@ -124,16 +124,16 @@ export function Header() {
 
         {/* Centered logo for mobile */}
         <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:hidden">
-            <Link href={logoHref} className="flex items-center gap-2" aria-label="Raystrat Systems home">
+            <Link href={logoHref} className="flex items-center gap-2.5" aria-label="Raystrat Systems home">
                 <Image
                   src="/raystrat-logo.png"
                   alt=""
-                  width={28}
-                  height={28}
+                  width={32}
+                  height={32}
                   priority
-                  className="h-7 w-7"
+                  className="h-8 w-8"
                 />
-                <span className="text-base font-semibold font-headline">Raystrat Systems</span>
+                <span className="text-base font-semibold tracking-tight font-headline">Raystrat Systems</span>
             </Link>
         </div>
 

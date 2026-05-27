@@ -28,16 +28,16 @@ export function Footer() {
     >
       <div className="container py-12 md:py-16">
         <div className="flex flex-col gap-6 pb-10 border-b border-white/10 md:flex-row md:items-start md:justify-between md:gap-12">
-          <div className="flex items-start gap-4 max-w-xl">
+          <div className="flex items-start gap-5 max-w-xl">
             <Image
               src="/raystrat-logo.png"
               alt=""
-              width={40}
-              height={40}
-              className="h-10 w-10 shrink-0"
+              width={48}
+              height={48}
+              className="h-12 w-12 shrink-0"
             />
             <div>
-              <p className="text-lg font-semibold font-headline">Raystrat Systems</p>
+              <p className="text-xl font-semibold tracking-tight font-headline">Raystrat Systems</p>
               <p className="mt-2 text-sm leading-relaxed text-[hsl(var(--structure-foreground))]/70">
                 Governed operational infrastructure for businesses where audit
                 accountability, SLA compliance, and continuity are not optional.

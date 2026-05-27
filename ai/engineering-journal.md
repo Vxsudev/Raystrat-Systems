@@ -1905,3 +1905,53 @@ Full suite **004–021 green**. TypeScript: baseline only (zero new errors in he
 
 `ABOVE_FOLD_AUTHORITY_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-22 — Header/Footer Logo Scale Pass
+
+**Capability:** `HEADER_FOOTER_LOGO_SCALE_PASS` (patch)
+**Branch:** `feature/above-fold-authority-pass` (continuation; patches gate 021)
+**Author:** Claude Opus 4.6
+**Mode:** RECON → IMPLEMENTATION → VERIFICATION. Browser inspection mandatory.
+
+### Problem
+
+The logo mark was too small to function as an institutional brand identity — it read as browser-chrome noise rather than identity (header 32px, footer 40px).
+
+### What changed
+
+**`src/components/header.tsx`:**
+- Desktop logo mark 32px → **40px** (`h-8 w-8` → `h-10 w-10`, `width/height` props 32 → 40 for crisp 512px-source downscale); wordmark `text-base` → **`text-lg`** + `tracking-tight`; mark↔wordmark gap `gap-3` → `gap-3.5`.
+- Mobile centered logo 28px → **32px** (`h-7 w-7` → `h-8 w-8`); gap `gap-2` → `gap-2.5`; wordmark + `tracking-tight`.
+- Navbar height **kept at `h-16` (64px)** — restrained, not oversized (40px mark leaves 12px breathing room).
+
+**`src/components/footer.tsx`:**
+- Logo mark 40px → **48px** (`h-10 w-10` → `h-12 w-12`); wordmark `text-lg` → **`text-xl`** + `tracking-tight`; lockup gap `gap-4` → `gap-5`.
+
+### Browser-caught fix (mobile double-logo)
+
+Browser inspection at 390px revealed a **double logo**: the left desktop logo link was never hidden on mobile (only its wordmark carried `hidden md:inline`), so a bare 40px mark rendered on the left *alongside* the centered 32px lockup. The scale-up amplified it. Fixed by adding `hidden md:flex` to the desktop logo link — mobile now shows only the centered lockup. (This was the pre-existing header quirk flagged in the hero-reposition entry; resolved here.)
+
+### Browser verification (Playwright/CDP — rendered px ground truth)
+
+| Surface | Logo rendered | Navbar | Wordmark |
+|---|---|---|---|
+| Header desktop (1440) | 40×40px | 64px | 18px / 600 |
+| Header tablet (834) | 40×40px | 64px | 18px / 600 |
+| Header mobile (390) | 32×32px (single, centered) | 64px | 18px / 600 |
+| Footer (1440) | 48×48px | — | 20px / 600 |
+
+Crops `/tmp/lh-{desktop,tablet,mobile}.png` + `/tmp/lf.png` confirm: crisp, balanced, immediately legible; no double logo; navbar restrained; no gradient/glow/animation/oversize.
+
+### Verification
+
+Gate `021-above-fold-authority.sh` extended (+11 checks → **41/41**): header desktop ≥40px (`h-10`) with matching width prop, mobile ≥32px (`h-8`), wordmark legible weight/size, navbar restrained (`h-16`, no `h-20+`), footer ≥48px (`h-12`) with matching width prop, footer wordmark `text-xl`. Full suite **004–021 green**. TypeScript baseline unchanged.
+
+### Note
+
+The footer mark sits on its own white-canvas field (the logo PNG is white-native per Phase A) against the dark footer surface — pre-existing asset behavior, out of this patch's scope.
+
+### Status
+
+`HEADER_FOOTER_LOGO_SCALE_READY_FOR_REVIEW`
+
