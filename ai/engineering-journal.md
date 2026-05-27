@@ -2146,3 +2146,52 @@ outcomes. Trust/compliance surfaces that cannot yet be backed remain deferred.
 ### Status
 
 `LEGAL_FOUNDATION_SURFACES_V1` → RELEASE_APPROVED
+
+---
+
+### 2026-05-28 (promotion)
+
+### Feature
+
+legal-foundation-surfaces — PUSH AND PROMOTION
+
+### Capability
+
+`LEGAL_FOUNDATION_SURFACES_V1_PUSH_AND_PROMOTION` — feature branch pushed to origin,
+merged into main, main pushed to origin.
+
+### Actions
+
+- `git push -u origin feature/legal-foundation-surfaces` — feature branch at
+  `c0efbf6877d8603302154a29c01e81db532f37f3` pushed cleanly.
+- `git checkout main && git pull origin main` — main confirmed up-to-date at `7d74a16`.
+- `git merge --no-ff feature/legal-foundation-surfaces` — merge commit `804a3a1`.
+  Strategy: `ort`, no conflicts, 15 files changed (1166 insertions, 31 deletions).
+- `git push origin main` — origin/main advanced `7d74a16 → 804a3a1`. No force push.
+
+### Post-merge verification
+
+- 022-hide-deferred-legal-trust-surfaces.sh: 35/35 PASS
+- 023-legal-foundation-surfaces.sh: 57/57 PASS
+- 021-above-fold-authority.sh: 43/43 PASS (homepage authority unchanged)
+- npm run build: EXIT 0 — /privacy + /terms prerendered static
+- No Firebase/auth regression; footer grid unchanged; deferred four still hidden
+
+### Final branch topology
+
+```
+*   804a3a1  Merge branch 'feature/legal-foundation-surfaces'   ← origin/main
+|\
+| * c0efbf6  feat(legal): publish Privacy + Terms surfaces      ← origin/feature/legal-foundation-surfaces
+|/
+*   7d74a16  fix: scope Firebase auth runtime...                ← previous main
+```
+
+### Cookie banner
+
+Intentionally deferred. Triggers: ads, retargeting, advanced analytics,
+EU-specific compliance expansion. See ai/deferred/cookie-consent-banner.md.
+
+### Status
+
+RELEASE_APPROVED → merged to origin/main. Deploy-ready.
