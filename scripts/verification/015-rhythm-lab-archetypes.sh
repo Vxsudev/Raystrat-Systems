@@ -28,7 +28,7 @@ LAB_FILE="src/app/rhythm-lab/page.tsx"
 # Check 1: Currently on rhythm-lab branch family (archetypes / detheatricalization descendant / main)
 CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 case "${CURRENT_BRANCH}" in
-  rhythm-lab-archetypes|feature/rhythm-lab-detheatricalization|rhythm-lab-decosplay-pass|feature/above-fold-authority-pass|feature/hide-deferred-legal-trust-surfaces|main)
+  rhythm-lab-archetypes|feature/rhythm-lab-detheatricalization|rhythm-lab-decosplay-pass|feature/above-fold-authority-pass|feature/hide-deferred-legal-trust-surfaces|release/homepage-authority-pass|main)
     echo "  PASS: on rhythm-lab branch family (${CURRENT_BRANCH})"
     PASS=$((PASS + 1))
     ;;
