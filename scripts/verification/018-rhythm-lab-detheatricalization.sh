@@ -156,7 +156,7 @@ else
 fi
 
 # Hero typography-first (decosplay removed the detheatricalization-era schematic panel)
-assert_present 'Operational Breakdown' src/components/sections/hero.tsx "hero retains headline"
+assert_present 'Systems That Run the Business' src/components/sections/hero.tsx "hero retains category headline"
 assert_absent 'HeroSurfaceReference' src/components/sections/hero.tsx "hero schematic panel removed (decosplay)"
 
 # Governance audit panel removed by decosplay (property grid retained)

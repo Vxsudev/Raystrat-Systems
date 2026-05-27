@@ -52,7 +52,7 @@ section "D. Hero cleanup"
 assert_absent 'HeroSurfaceReference' src/components/sections/hero.tsx "hero has no HeroSurfaceReference schematic panel"
 assert_absent 'Schematic Reference'  src/components/sections/hero.tsx "hero has no schematic-reference chrome"
 assert_absent '/ 05'                 src/components/sections/hero.tsx "hero has no /05 counter"
-assert_present 'Operational Breakdown' src/components/sections/hero.tsx "hero retains headline"
+assert_present 'Systems That Run the Business' src/components/sections/hero.tsx "hero retains category headline"
 assert_present 'CalendlyButton'        src/components/sections/hero.tsx "hero retains CTA"
 
 # ── E. FailureThesis — static documentary list ───────────────────────────────

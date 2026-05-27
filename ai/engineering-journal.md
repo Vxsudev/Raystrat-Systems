@@ -1779,3 +1779,64 @@ Inspected the running dev server (`localhost:3000`) via headless Chromium over t
 
 `RHYTHM_LAB_DECOSPLAY_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-22 — Hero Reposition + Above-the-Fold De-theatricalization
+
+**Capability:** `HERO_REPOSITION`
+**Branch:** `rhythm-lab-decosplay-pass` (continuation)
+**Spec authority:** `specs/hero-reposition.md`
+**Author:** Claude Opus 4.6
+**Mode:** RECON → IMPLEMENTATION → VERIFICATION (OS pipeline: compile-spec → generate-tasks). Browser inspection mandatory.
+
+### Why the prior hero failed
+
+The decosplay-era hero led with `Operational Breakdown / Is Preventable.` + a consulting-thesis body ("Businesses don't fail because people aren't trying… governed infrastructure") and a right column of two abstract governance paragraphs. It read as operational *philosophy* / manifesto — it never answered the buyer's first question, **"what does Raystrat actually do?"** The energy was TED-talk, not institutional firm.
+
+### What changed (single file: `src/components/sections/hero.tsx`)
+
+**Exact copy replacement (per directive — verbatim, not rewritten):**
+- Headline: `Operational Breakdown / Is Preventable.` → **`Systems That Run the Business`**
+- Subheadline: consulting-thesis paragraph → **`Raystrat builds systems for sales, support, operations, and reporting — so execution doesn't depend on memory, spreadsheets, or manual follow-through.`**
+
+**Right column:** deleted both governance paragraphs ("Raystrat engineers governed execution systems…" / "Each engagement begins with an operational audit…"). Replaced with ONE compact, low-emphasis operational descriptor — three short concrete statements (demand/follow-through, support/operations, reporting) on a single subtle 1px `border-l` keyline. Reads as supporting context, not a system panel. No metadata, counters, metrics, schematic refs, or governance UI.
+
+**CTAs:** `Book Operational Audit` (decorative `→` removed) + `View Systems`. Restrained, unchanged styling.
+
+**Institutional restraint:** headline scale reduced from `clamp(40,6.4vw,80px)` → `clamp(38,5.4vw,64px)` (paper-cover-page weight, not billboard); section padding increased `py-20/28/32` → `py-24/32/40`; grid asymmetry widened `[1.3fr_1fr]` → `[1.4fr_1fr]`, gap `12/16` → `12/20`. Typography dominates; whitespace breathes.
+
+### Before / after positioning
+
+| | Before | After |
+|---|---|---|
+| First message | "operational breakdown is preventable" (philosophy) | "Systems That Run the Business" (category) |
+| Body | why businesses fail (thesis) | what Raystrat builds, for which functions (material) |
+| Tone | manifesto / consulting | institutional documentation |
+| Right column | two governance paragraphs (preaching) | three plain operational descriptors (context) |
+| Buyer question answered | no | yes — immediately |
+
+### Browser inspection (Playwright/CDP — mandatory, ground truth)
+
+Headless Chromium over CDP at three breakpoints (`/tmp/hero-{desktop,tablet,mobile}.png`):
+- **Desktop (1440):** calm 2-col asymmetric (`672px / 480px`), 64px headline dominant, restrained right keyline block, generous whitespace — institutional paper-cover-page rhythm.
+- **Tablet (834):** controlled 2-col collapse, balanced, no awkward whitespace gaps.
+- **Mobile (390):** documentary single-column stack (`grid: 358px`), right descriptor hidden (`display:none`), CTAs stacked — no giant centered startup hero.
+- **DOM truth:** h1 exact, subheadline exact, CTAs `["Book Operational Audit","View Systems"]`, `heroSvgCount: 0`, `bannedCopy: false`.
+
+### Verification
+
+`scripts/verification/020-hero-reposition.sh` — **22/22 PASS** (banned copy removed, exact headline+subheadline, CTA preservation + arrow removed, asymmetric grid + keyline, no SVG/counters/metrics/schematic/switcher above fold).
+
+Regression reconcile: `005` Check 2 (hero failure-framing → operational-systems category framing), `018`/`019` "hero retains headline" repointed `Operational Breakdown` → `Systems That Run the Business`.
+
+Full suite **004–020 green**. TypeScript: pre-existing baseline only (zero hero.tsx errors). Build: compiles clean ("Compiled with warnings in 5.4s"); fails only at the pre-existing genkit `contextualAssistantFlow` export mismatch (documented baseline).
+
+### Remaining aesthetic risks
+
+- The floating route-gated AI widgets (avatar bottom-left, "Diagnose a Breakdown" pill bottom-right, from `app-content.tsx`) remain above the fold on all marketing pages — pre-existing, outside the hero scope, but they are the last residual "product" chrome on the fold. Flag for a future pass if full documentary severity is wanted.
+- Mobile header renders both a far-left logo and the centered logo lockup (pre-existing header layout quirk, not introduced here).
+
+### Status
+
+`HERO_REPOSITION_READY_FOR_REVIEW`
+

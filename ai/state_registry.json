@@ -14,5 +14,9 @@
   "rhythm-lab-decosplay": {
     "state": "TASK_GRAPH_LOCKED",
     "updated_at": "2026-05-27T03:17:46Z"
+  },
+  "hero-reposition": {
+    "state": "TASK_GRAPH_LOCKED",
+    "updated_at": "2026-05-27T03:46:51Z"
   }
 }

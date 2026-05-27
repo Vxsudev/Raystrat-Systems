@@ -23,12 +23,13 @@ else
   PASS=$((PASS + 1))
 fi
 
-# Check 2: Hero contains operational failure framing
-if grep -q "Operational Breakdown\|operational breakdown\|prevent" src/components/sections/hero.tsx 2>/dev/null; then
-  echo "  PASS: Hero contains operational failure framing"
+# Check 2: Hero communicates operational-systems category (hero-reposition spec:
+# category-first headline replaced the failure-thesis framing; still operational-systems positioning)
+if grep -qiE "Systems That Run the Business|systems for sales, support, operations|operational systems engineering" src/components/sections/hero.tsx 2>/dev/null; then
+  echo "  PASS: Hero communicates operational-systems category"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: Hero does not contain operational failure framing"
+  echo "  FAIL: Hero does not communicate operational-systems category"
   FAIL=$((FAIL + 1))
 fi
 
