@@ -77,7 +77,7 @@ Page Content Summary:
 Based on all the rules, context, and the user's query, provide a concise and professional response. Focus on operational governance, system capabilities, and deployment context. Leave 'suggestedService' empty unless a clear prerequisite system is needed.`,
 });
 
-const contextualAssistantFlow = ai.defineFlow(
+export const contextualAssistantFlow = ai.defineFlow(
   {
     name: 'contextualAssistantFlow',
     inputSchema: ContextualAssistantInputSchema,

@@ -75,7 +75,7 @@ CTA:
 `,
 });
 
-const notesAnalyzerFlow = ai.defineFlow(
+export const notesAnalyzerFlow = ai.defineFlow(
   {
     name: 'notesAnalyzerFlow',
     inputSchema: NotesAnalyzerInputSchema,
