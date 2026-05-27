@@ -30,11 +30,12 @@ export function Footer() {
         <div className="flex flex-col gap-6 pb-10 border-b border-white/10 md:flex-row md:items-start md:justify-between md:gap-12">
           <div className="flex items-start gap-5 max-w-xl">
             <Image
-              src="/raystrat-logo.png"
+              src="/raystrat-mark-light.png"
               alt=""
-              width={48}
-              height={48}
-              className="h-12 w-12 shrink-0"
+              width={56}
+              height={56}
+              unoptimized
+              className="h-14 w-14 shrink-0"
             />
             <div>
               <p className="text-xl font-semibold tracking-tight font-headline">Raystrat Systems</p>

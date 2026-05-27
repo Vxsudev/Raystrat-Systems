@@ -77,19 +77,22 @@ grep -Eq 'md:grid-cols-\[1\.[0-9]+fr_0\.[0-9]+fr\]|md:grid-cols-\[1fr_1fr\]' "$H
 section "G. Logo scale"
 HDR="src/components/header.tsx"
 FTR="src/components/footer.tsx"
-# Header desktop mark ≥ 40px (h-10) and props match for crisp downscale
-present 'className="h-10 w-10"' "$HDR" "header desktop logo scaled to 40px (h-10)"
-present 'width={40}'            "$HDR" "header logo width prop = 40 (crisp render)"
+# Cropped mark asset (triangle only — full lockup PNG had padding + baked-in text)
+present 'raystrat-mark.png' "$HDR" "header uses cropped mark asset (not padded lockup)"
+present 'raystrat-mark-light.png' "$FTR" "footer uses light mark variant (legible on dark surface)"
+# Header desktop mark 44px (h-11) and props match for crisp downscale
+present 'className="h-11 w-11"' "$HDR" "header desktop mark scaled to 44px (h-11)"
+present 'width={44}'            "$HDR" "header mark width prop = 44 (crisp render)"
 present 'Raystrat Systems'      "$HDR" "header wordmark present"
 present 'text-lg font-semibold' "$HDR" "header wordmark legible weight/size"
-# Header mobile mark ≥ 32px (h-8)
-present 'className="h-8 w-8"'   "$HDR" "header mobile logo scaled to 32px (h-8)"
+# Header mobile mark 36px (h-9)
+present 'className="h-9 w-9"'   "$HDR" "header mobile mark scaled to 36px (h-9)"
 # Navbar height stays restrained (h-16, not oversized)
 present 'h-16' "$HDR" "navbar height remains restrained (h-16)"
 absent_re 'h-2[0-9]\b' "$HDR" "navbar not oversized (no h-20+ container)"
-# Footer mark ≥ 48px (h-12)
-present 'h-12 w-12 shrink-0' "$FTR" "footer logo scaled to 48px (h-12)"
-present 'width={48}'         "$FTR" "footer logo width prop = 48 (crisp render)"
+# Footer mark 56px (h-14)
+present 'h-14 w-14 shrink-0' "$FTR" "footer mark scaled to 56px (h-14)"
+present 'width={56}'         "$FTR" "footer mark width prop = 56 (crisp render)"
 present 'text-xl font-semibold' "$FTR" "footer wordmark legible weight/size"
 
 echo ""

@@ -104,14 +104,15 @@ export function Header() {
       <div className="container flex items-center justify-between h-16">
         {/* Left side: Logo + Desktop Nav */}
         <div className="flex items-center flex-1 gap-8 md:flex-none">
-          <Link href={logoHref} className="hidden md:flex items-center gap-3.5" aria-label="Raystrat Systems home">
+          <Link href={logoHref} className="hidden md:flex items-center gap-3" aria-label="Raystrat Systems home">
             <Image
-              src="/raystrat-logo.png"
+              src="/raystrat-mark.png"
               alt=""
-              width={40}
-              height={40}
+              width={44}
+              height={44}
               priority
-              className="h-10 w-10"
+              unoptimized
+              className="h-11 w-11"
             />
             <span className="hidden text-lg font-semibold tracking-tight md:inline font-headline">Raystrat Systems</span>
           </Link>
@@ -126,12 +127,13 @@ export function Header() {
         <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:hidden">
             <Link href={logoHref} className="flex items-center gap-2.5" aria-label="Raystrat Systems home">
                 <Image
-                  src="/raystrat-logo.png"
+                  src="/raystrat-mark.png"
                   alt=""
-                  width={32}
-                  height={32}
+                  width={36}
+                  height={36}
                   priority
-                  className="h-8 w-8"
+                  unoptimized
+                  className="h-9 w-9"
                 />
                 <span className="text-base font-semibold tracking-tight font-headline">Raystrat Systems</span>
             </Link>

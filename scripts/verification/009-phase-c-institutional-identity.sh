@@ -56,7 +56,7 @@ else
 fi
 
 # Check 5: Logo mark image referenced in header
-if grep -q "raystrat-logo" src/components/header.tsx 2>/dev/null; then
+if grep -qE "raystrat-(logo|mark)" src/components/header.tsx 2>/dev/null; then
   echo "  PASS: header.tsx references raystrat-logo asset"
   PASS=$((PASS + 1))
 else
@@ -142,7 +142,7 @@ else
 fi
 
 # Check 14: Footer logo mark integration
-if grep -q "raystrat-logo" src/components/footer.tsx 2>/dev/null; then
+if grep -qE "raystrat-(logo|mark)" src/components/footer.tsx 2>/dev/null; then
   echo "  PASS: footer.tsx references raystrat-logo asset"
   PASS=$((PASS + 1))
 else

@@ -1955,3 +1955,42 @@ The footer mark sits on its own white-canvas field (the logo PNG is white-native
 
 `HEADER_FOOTER_LOGO_SCALE_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-27 — Logo Scale Correction (asset was the real problem)
+
+**Capability:** `HEADER_FOOTER_LOGO_SCALE_PASS` (correction)
+**Branch:** `feature/above-fold-authority-pass`
+**Trigger:** User: "absolutely nothing changed — make the logos bigger" (with screenshots).
+
+### Root cause the first pass missed
+
+Bumping the container 32→40px was imperceptible because `raystrat-logo.png` is a **full 512×512 logo lockup** — triangle mark *plus* "RAYSTRAT SYSTEMS" text baked in, on a white background with ~20% padding. Rendered at 40px next to a *separate* "Raystrat Systems" text wordmark, the actual visible mark was ~15px (and duplicated the wordmark). Scaling the box just scaled mostly-padding. Inspecting the raw asset (via Read) made this obvious — code-only reasoning had assumed the PNG was a tight mark.
+
+### Fix
+
+1. **Cropped the asset to the mark.** PIL: detected the triangle's bbox in the upper region (excluding the baked-in text), cropped tight, keyed the white background to transparent (`alpha = 255 − min(r,g,b)`), centered on a transparent square → `public/raystrat-mark.png` (286×286 RGBA). A 44px render now shows a 44px *triangle* (~2.6× the old visible mark).
+2. **Light variant for the dark footer.** The mark's dark slash was invisible on the dark footer (`hsl(220 24% 12%)`). Generated `public/raystrat-mark-light.png` — dark ink → near-white, blue → bright blue (`#3b96f6`) for dark-surface legibility.
+3. **Header** uses `raystrat-mark.png` at **44px** (desktop, `h-11`) / **36px** (mobile, `h-9`); **footer** uses `raystrat-mark-light.png` at **56px** (`h-14`). Navbar stays `h-16`.
+4. **`unoptimized` on all three logo `<Image>`s** — the Next.js image optimizer (`/_next/image`) intermittently returned `naturalWidth 0` for the freshly-added files; serving the raw static PNG is reliable and these marks are tiny.
+
+### Browser verification (the load issues this surfaced)
+
+Two non-obvious issues caught only by in-browser probing (not code):
+- **Optimizer failure:** `/_next/image` gave `naturalWidth: 0`; raw asset served `200`. → `unoptimized`.
+- **Lazy-load:** the footer mark is below-fold and Next defaults non-`priority` images to `loading="lazy"` — it reads `naturalWidth 0` until scrolled into view (expected). After `scrollIntoView`, natW = 286 and the mark renders. Header carries `priority` (eager).
+
+Final rendered ground truth (CDP):
+- Header desktop/tablet **44×44px**, mobile **36×36px**, navbar **64px**, wordmark 18px/600 — clean two-tone triangle, no padding tile.
+- Footer **56×56px** white+blue mark, clearly legible on the dark surface.
+
+Crops: `/tmp/v-hdr.png`, `/tmp/v-ftr3.png`.
+
+### Verification
+
+Gate `021` updated to assert the cropped mark assets (`raystrat-mark.png` header, `raystrat-mark-light.png` footer) + new sizes (h-11 / h-9 / h-14) — **43/43**. `009` logo-presence grep widened to `raystrat-(logo|mark)`. Full suite **004–021 green**. TypeScript baseline unchanged.
+
+### Status
+
+`LOGO_SCALE_CORRECTED_READY_FOR_REVIEW`
+
