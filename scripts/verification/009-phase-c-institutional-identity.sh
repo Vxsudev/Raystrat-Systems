@@ -114,30 +114,31 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 11: Footer carries Principal institutional anchor
-if grep -q "Principal" src/components/footer.tsx 2>/dev/null; then
-  echo "  PASS: footer.tsx contains Principal anchor"
+# Check 11: Principal institutional surface preserved as a route
+# (deferred from public footer per HIDE_DEFERRED_LEGAL_TRUST_SURFACES; route retained)
+if [ -f src/app/principal/page.tsx ]; then
+  echo "  PASS: Principal route preserved (deferred from footer)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: footer.tsx missing Principal anchor"
+  echo "  FAIL: Principal route missing"
   FAIL=$((FAIL + 1))
 fi
 
-# Check 12: Footer carries Documentation institutional anchor
-if grep -q "Documentation" src/components/footer.tsx 2>/dev/null; then
-  echo "  PASS: footer.tsx contains Documentation anchor"
+# Check 12: Documentation institutional surface preserved as a route
+if [ -f src/app/documentation/page.tsx ]; then
+  echo "  PASS: Documentation route preserved (deferred from footer)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: footer.tsx missing Documentation anchor"
+  echo "  FAIL: Documentation route missing"
   FAIL=$((FAIL + 1))
 fi
 
-# Check 13: Footer carries Continuity institutional anchor
-if grep -q "Continuity" src/components/footer.tsx 2>/dev/null; then
-  echo "  PASS: footer.tsx contains Continuity anchor"
+# Check 13: Continuity institutional surface preserved as a route
+if [ -f src/app/continuity/page.tsx ]; then
+  echo "  PASS: Continuity route preserved (deferred from footer)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: footer.tsx missing Continuity anchor"
+  echo "  FAIL: Continuity route missing"
   FAIL=$((FAIL + 1))
 fi
 

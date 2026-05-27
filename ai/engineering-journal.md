@@ -1994,3 +1994,64 @@ Gate `021` updated to assert the cropped mark assets (`raystrat-mark.png` header
 
 `LOGO_SCALE_CORRECTED_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-27 — Hide Deferred Legal / Trust Surfaces
+
+**Capability:** `HIDE_DEFERRED_LEGAL_TRUST_SURFACES`
+**Branch:** `feature/hide-deferred-legal-trust-surfaces`
+**Author:** Claude Sonnet 4.6
+
+### Surfaces hidden
+
+The footer "Legal" column linked six unfinished institutional/legal surfaces:
+**Documentation, Privacy, Terms, Trust, Principal, Continuity.** Documentation/Principal/
+Continuity were Phase C v1 stubs; Privacy/Terms/Trust were `#` placeholders with no route
+files. All six are now removed from the public footer.
+
+### What changed
+
+- **`src/components/footer.tsx`** — deleted the `legalLinks` array and the entire "Legal"
+  footer column; footer grid reduced `md:grid-cols-3` → 2-column (Systems + Engage). Added an
+  explanatory comment pointing to the deferred registry (worded so it does not name the six
+  surfaces, keeping the rendered/source footer free of those terms).
+- **Header / mobile nav** — never linked these surfaces; unchanged. `navigationLinks`
+  (Systems / Governance / Bytes) unchanged.
+- **Route files retained** — `src/app/documentation`, `src/app/principal`, `src/app/continuity`
+  all preserved; direct navigation still resolves. No route files deleted.
+
+### Deferred registry
+
+`ai/deferred/deferred-public-trust-surfaces.md` — records date, reason, the six surfaces +
+current route/file paths, resurfacing conditions (real content; privacy/terms reviewed;
+trust/compliance claims bounded; principal/continuity procurement-safe substance; footer
+re-enabled intentionally), a mechanical resurfacing procedure, and an explicit statement that
+this is a deliberate deferral, not accidental dead code.
+
+### Why this reduces premature trust/compliance signaling
+
+A procurement reviewer who clicks "Privacy", "Terms", or "Trust" and finds a placeholder — or
+"Documentation" and finds a stub — downgrades institutional credibility. Exposing legal/compliance
+chrome the firm cannot yet back is a trust *risk*. Hiding these until they carry real,
+procurement-safe substance is the conservative choice; preserving the routes + registry keeps the
+path to resurfacing explicit and intentional.
+
+### Verification
+
+New gate `scripts/verification/022-hide-deferred-legal-trust-surfaces.sh` — **37/37 PASS**:
+six surfaces absent from footer + header + `navigationLinks`; documentation/principal/continuity
+route files preserved; deferred registry exists and names all six + intentional-deferral +
+resurfacing language; footer still renders brand + Systems/Engage columns; grid rebalanced; no
+dangling `legalLinks`; imports intact.
+
+Doctrine reconcile (footer-anchor assertions → route-existence, surfaces deferred from footer):
+`009` checks 11/12/13 (Principal/Documentation/Continuity); `010`/`011`/`012` combined Phase C
+anchor check. Browser-verified: footer columns = [Systems, Engage], `hasLegalWords: false`.
+
+Full suite **004–022 green**. TypeScript baseline unchanged. Build compiles (only pre-existing
+genkit export-mismatch failure).
+
+### Status
+
+`HIDE_DEFERRED_LEGAL_TRUST_SURFACES_READY_FOR_REVIEW`
+

@@ -11,14 +11,10 @@ const engageLinks = [
   { name: 'Industries', href: '/#industries' },
 ];
 
-const legalLinks = [
-  { name: 'Documentation', href: '/documentation' },
-  { name: 'Privacy', href: '#' },
-  { name: 'Terms', href: '#' },
-  { name: 'Trust', href: '#' },
-  { name: 'Principal', href: '/principal' },
-  { name: 'Continuity', href: '/continuity' },
-];
+// NOTE: The legal/institutional footer column is intentionally hidden while
+// those surfaces are unfinished. Their routes are preserved and the full list
+// + resurfacing conditions are tracked in
+// ai/deferred/deferred-public-trust-surfaces.md. Deliberate deferral, not dead code.
 
 export function Footer() {
   return (
@@ -47,7 +43,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-10 py-10 sm:grid-cols-2 md:grid-cols-3 md:gap-12">
+        <div className="grid grid-cols-1 gap-10 py-10 sm:grid-cols-2 md:gap-12">
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-[hsl(var(--structure-foreground))]/60 mb-4">
               Systems
@@ -72,24 +68,6 @@ export function Footer() {
             </p>
             <ul className="space-y-3">
               {engageLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[hsl(var(--structure-foreground))]/80 transition-colors hover:text-[hsl(var(--structure-foreground))]"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-[hsl(var(--structure-foreground))]/60 mb-4">
-              Legal
-            </p>
-            <ul className="space-y-3">
-              {legalLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
