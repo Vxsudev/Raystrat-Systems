@@ -2195,3 +2195,72 @@ EU-specific compliance expansion. See ai/deferred/cookie-consent-banner.md.
 ### Status
 
 RELEASE_APPROVED → merged to origin/main. Deploy-ready.
+
+---
+
+### 2026-05-28 (production deployment)
+
+### Feature
+
+RAYSTRAT_PRODUCTION_DEPLOY_V1
+
+### Capability
+
+`RAYSTRAT_PRODUCTION_DEPLOY_V1` — Firebase App Hosting deployment of canonical
+`origin/main` at commit `bcb0d60` to project `raystrat-systems`, backend `studio`.
+
+### Deployment
+
+- Command: `firebase deploy --only apphosting`
+- Project: raystrat-systems (ID: 120940808370)
+- Backend: studio
+- Source zip: gs://firebaseapphosting-sources-120940808370-us-central1/studio--16005-Wnrl6WY7SuI0-.zip
+- Deployed commit: bcb0d60
+- Timestamp: 2026-05-27T20:34:27Z
+- Status: ✔ Rollout for backend studio complete
+- URL: https://studio--raystrat-systems.us-central1.hosted.app
+- Console: https://console.firebase.google.com/project/raystrat-systems/apphosting
+
+### Pre-deploy verification
+
+- 021-above-fold-authority: 43/43 PASS
+- 022-hide-deferred-legal-trust-surfaces: 35/35 PASS
+- 023-legal-foundation-surfaces: 57/57 PASS
+- npm run build: EXIT 0 — /privacy + /terms prerendered static
+
+### Post-deploy production verification
+
+Routes (https://raystratsystems.com):
+- /        → 200
+- /privacy → 200
+- /terms   → 200
+- /audit   → 200
+- /systems/frontline-support → 200
+- /services/frontline-support → 200
+
+Content checks (13/13 PASS):
+- "Systems That Run the Business" present
+- Privacy + Terms links in footer; Documentation/Trust/Principal/Continuity absent
+- No cookie consent banner (intentional deferral)
+- No Firebase auth/invalid-api-key errors
+- No hydration warnings
+- Privacy Notice: effective date, cookie disclosure section, Firebase disclosed, team@raystratsystems.com present
+- No banned compliance phrases in any legal page
+- Terms: governing law = India, no-guarantee clause, AI disclaimer, client responsibilities present
+
+### Cookie banner
+
+Intentionally absent. Conditions for future implementation:
+ads, retargeting, advanced analytics, EU-specific compliance expansion.
+See ai/deferred/cookie-consent-banner.md.
+
+### Remaining deferred surfaces
+
+Documentation, Trust, Principal, Continuity — remain hidden from public
+footer/header. See ai/deferred/deferred-public-trust-surfaces.md for resurfacing
+conditions.
+
+### Status
+
+PRODUCTION-LIVE at https://raystratsystems.com and
+https://studio--raystrat-systems.us-central1.hosted.app
