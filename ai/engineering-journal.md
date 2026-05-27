@@ -1646,3 +1646,126 @@ modified:   ai/state_registry.json (compile-spec advanced state)
 
 `RHYTHM_LAB_DETHEATRICALIZATION_READY_FOR_REVIEW`
 
+---
+
+## 2026-05-22 — Rhythm-Lab De-Cosplay / De-Hype Reduction Pass
+
+**Capability:** `RHYTHM_LAB_DECOSPLAY_PASS`
+**Branch:** `rhythm-lab-decosplay-pass` (forked from committed `feature/rhythm-lab-detheatricalization`)
+**Spec authority:** `specs/rhythm-lab-decosplay.md`
+**Recon authority:** `ai/recon/rhythm-lab-decosplay-recon.md`
+**Author:** Claude Opus 4.6
+**Mode:** RECON → MUTATION PLAN → IMPLEMENTATION → VERIFICATION (OS pipeline: compile-spec → generate-tasks)
+
+### Mission
+
+The detheatricalization pass removed *fake-live runtime semantics* but preserved schematic diagrams, registries, and operational-evidence metrics as "trust evidence." The principal's subsequent judgment: those artifacts are themselves **cosplay** — decorative systems-fiction that makes the homepage read as a "designed concept system" rather than a "real institutional operating surface." Where no real deployment evidence exists, the site must not *simulate* it. Target emotion: *quiet institutional confidence* — not *"look at our cool governance UI."*
+
+### Doctrine Tension (recorded)
+
+This pass **reverses** parts of prior ratified phases D1/D1.5/D2/D2.5/E (which *added* the homepage diagrams, registries, and metrics) and the homepage-design-v2 / pdf-exact-match passes. The principal owns positioning; this is a deliberate strategic reversal. Resolution: the trust-evidence component files (`FailureModeRegistryPreview`, `DeploymentLifecycleDiagram`, etc.) are **retained on `/audit`** (Phase E canonical engagement surface) — only their **homepage mounts** are removed. The diagrams are not destroyed; they are relocated out of the homepage scroll.
+
+### Implementation — eight tracks
+
+1. **Hero cleanup** (`hero.tsx`) — removed `HeroSurfaceReference` schematic panel, `/05`, all runtime chrome. Now typography-first: headline/body/CTA in a constrained column; right column is a restrained two-paragraph documentary text block (border-left keyline, no panel chrome). Single client-free server component.
+2. **Five Choke Points** (`failure-thesis.tsx`) — removed `ChokeDiagram` mount + `SCHEMATIC.V1 · OPERATIONAL PIPELINE` footer; converted the interactive (`useState` + `<button>`) list into a static documentary list. **Deleted** `src/components/ui/choke-diagram.tsx` (orphaned).
+3. **Six Operational Systems** (`services.tsx`) — reverted from flat SYS-XX whitepaper slabs to the Phase B (`9156713`) grounded card grid: 3-col responsive `Card` primitives with `service.icon`, `Check`-bulleted features, "View System →". Kept current palette/spacing.
+4. **Audit Trail panel** (`governance.tsx`) — **deleted** the dark `bg-[hsl(220_24%_12%)]` "Audit Trail — Entry Format" schematic exhibit panel entirely (no replacement). Kept the 6-property "Governance by design" grid. Component reverted to server component; `auditSeed` import dropped.
+5. **High-Accountability Environments** (`industries.tsx`) — reverted from SEG-XX essay slabs to Phase B card grid: 3-col `Card` primitives with industry icons (`Landmark`/`Scale`/`HeartPulse`), `Check`-bulleted features, at the D1.5-corrected `p-2.5`/`w-5 h-5` icon density.
+6. **Operational Evidence** — **deleted** `results.tsx` + homepage import/mount. `FailureModeRegistryPreview` + `DeploymentLifecycleDiagram` component files retained (canonical `/audit` mount).
+7. **Failure Mode Registry** — **deleted** `failure-mode-registry.tsx` + homepage import/mount. Removed dead `failureRegistry` export from `content.ts`.
+8. **Bytes** (`byte-of-the-week.tsx`) — reverted to the `0674de8` restrained 2-col layout. Removed the giant metadata sidecard, "Operational Intelligence" label, and oversized `B-XX` emphasis. Reads as institutional writing archive.
+
+### Cleanup
+
+- `content.ts`: removed orphaned `auditSeed` (14 entries) + `failureRegistry` (6 entries).
+- `globals.css`: removed dead `mode-*` selectors referencing deleted surfaces (`.hero-status-panel`, `.hero-meta-row`, `#results`, `#evidence`, `.audit-cta-block`).
+- `page.tsx`: final 8-section arc — Hero → FailureThesis → Services → Governance → Industries → Contact → ByteOfTheWeek → FAQ.
+
+### New homepage section arc (8, down from 10)
+
+```
+Hero (typography-first) → FailureThesis (static list) → Services (card grid)
+→ Governance (6-property grid) → Industries (card grid) → Contact (dark band)
+→ ByteOfTheWeek (restrained) → FAQ
+```
+
+Deleted from scroll: Operational Evidence, Failure Mode Registry. Lower-page rhythm carried by the dark Contact band + secondary Bytes band — no dead-zone introduced (sections removed cleanly, not blanked).
+
+### Verification
+
+New `scripts/verification/019-rhythm-lab-decosplay.sh` — **50/50 PASS** (deletions, orphan sweep, dead-data removal, hero/governance/services/industries/bytes reverts, 8-section arc, preservation of contact/faq/`/audit` mounts, dead-CSS removal).
+
+**Regression-script doctrine reconciliation** (same precedent as D2.5 → 012/013, and detheatricalization → 015-017):
+
+| Script | Reconciliation |
+|---|---|
+| 010 | FM-registry-preview mount check repointed from `results.tsx` → `/audit` |
+| 011 | industries icon checks restored to original D1.5 *density* intent (no oversized `p-3`/`w-6 h-6`); flipped icon-absence checks to assert icons present at corrected `p-2.5`/`w-5 h-5` (decosplay restored card+icon) |
+| 012 | lifecycle + FM-preview mount checks repointed `results.tsx` → `/audit` |
+| 013 | lifecycle mount check repointed `results.tsx` → `/audit` |
+| 014 | `EXPECTED_SECTIONS` 12 → 10; lifecycle mount check repointed → `/audit` |
+| 015 | branch family += `rhythm-lab-decosplay-pass`; `EXPECTED_SECTIONS` 12 → 10 |
+| 016 | rewritten as anti-regression guard (design-v2 interactive cosplay must not return) |
+| 017 | rewritten as anti-regression guard (pdf-exact-match runtime theater must not return) |
+| 018 | stale preservation/replacement checks updated to decosplay reality (hero typography-first, governance panel removed, sections deleted); all anti-theater FORBIDDEN checks retained |
+
+### Verification Counts
+
+| Script | Pass | Fail |
+|---|---|---|
+| 004-invariants | 3 | 0 |
+| 005-positioning | 10 | 0 |
+| 006-refinement | 15 | 0 |
+| 007-phase-a | 11 | 0 |
+| 008-phase-b | 15 | 0 |
+| 009-phase-c | 34 | 0 |
+| 010-phase-d (reconciled) | 27 | 0 |
+| 011-d1-5 (reconciled) | 30 | 0 |
+| 012-d2 (reconciled) | 35 | 0 |
+| 013-d2-5 (reconciled) | 22 | 0 |
+| 014-phase-e (reconciled) | 40 | 0 |
+| 015-rhythm-lab (reconciled) | 34 | 0 |
+| 016-design-v2 (supersession guard) | 9 | 0 |
+| 017-pdf-exact-match (supersession guard) | 10 | 0 |
+| 018-detheatricalization (reconciled) | 54 | 0 |
+| **019-decosplay** | **50** | **0** |
+| **TOTAL** | **399** | **0** |
+
+### Build / Typecheck / Lint
+
+- `npm run typecheck`: 21 pre-existing baseline errors only (functions/index.ts firebase-functions, actions.ts, genkit route export mismatches, `headers().get()` Next 15 Promise, marquee.tsx, ai-suggestor-section.tsx, getAuthenticatedUser.ts). **Zero reference any file touched by this pass.** page.tsx error line numbers shifted (22→20) from import removal but are the same pre-existing `headers()` error.
+- `npm run build`: reaches compilation completion ("Skipping validation of types", "Collecting page data") — all modified section files compile. Fails at page-data collection on the **pre-existing** genkit export mismatch (`contextualAssistantFlow`/`notesAnalyzerFlow`) + `./5611.js` webpack crash, documented as a known build failure in every prior journal entry. Zero new build errors.
+- `npm run lint`: SKIP — no ESLint config (project baseline; `next lint` prompts interactive setup). Consistent with all prior entries.
+
+### Files Changed
+
+```
+deleted:    src/components/sections/results.tsx
+deleted:    src/components/sections/failure-mode-registry.tsx
+deleted:    src/components/ui/choke-diagram.tsx
+modified:   src/components/sections/hero.tsx
+modified:   src/components/sections/failure-thesis.tsx
+modified:   src/components/sections/services.tsx
+modified:   src/components/sections/governance.tsx
+modified:   src/components/sections/industries.tsx
+modified:   src/components/sections/byte-of-the-week.tsx
+modified:   src/app/page.tsx
+modified:   src/app/globals.css
+modified:   src/data/content.ts (removed auditSeed + failureRegistry)
+added:      ai/recon/rhythm-lab-decosplay-recon.md
+added:      specs/rhythm-lab-decosplay.md
+added:      tasks/rhythm-lab-decosplay-001.md
+added:      scripts/verification/019-rhythm-lab-decosplay.sh
+modified:   scripts/verification/010,011,012,013,014,015,016,017,018 (doctrine reconcile)
+modified:   ai/state_registry.json
+```
+
+### Rationale
+
+The homepage now carries no simulated operational evidence. Services and Industries read as a *deployable operational systems catalog* (grounded cards) rather than conceptual essay fragments. Governance is a written doctrine block, not a dark observability panel. Bytes is an editorial archive teaser, not a classified-document UI. The hero is typography-first and severe. Trust-evidence diagrams remain available to a procurement reader who navigates to `/audit` — the dedicated engagement surface — where lifecycle context makes them legible, rather than being scattered as homepage decoration. The site reads as a real systems-engineering company.
+
+### Status
+
+`RHYTHM_LAB_DECOSPLAY_READY_FOR_REVIEW`
+

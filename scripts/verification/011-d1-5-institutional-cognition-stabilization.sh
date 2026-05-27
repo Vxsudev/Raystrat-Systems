@@ -215,41 +215,41 @@ fi
 # TRACK 4: Industries — icon density correction (P1)
 # ============================================================
 
-# Check 21: p-3 removed from industries icon containers
-# (spec homepage-pdf-exact-match removed icons from industries cards entirely — checks 22/24 updated)
+# Check 21: oversized p-3 icon density absent (D1.5 corrected to p-2.5)
+# (decosplay pass restored card+icon architecture at the D1.5-corrected density)
 if grep -q '"p-3 rounded-md bg-primary/10"' src/components/sections/industries.tsx 2>/dev/null; then
-  echo "  FAIL: industries.tsx icon container retains p-3"
+  echo "  FAIL: industries.tsx icon container retains oversized p-3"
   FAIL=$((FAIL + 1))
 else
-  echo "  PASS: p-3 absent from industries.tsx icon containers"
+  echo "  PASS: oversized p-3 absent from industries.tsx icon containers"
   PASS=$((PASS + 1))
 fi
 
-# Check 22: icon containers absent (homepage-pdf-exact-match spec removes icons from industries)
-if grep -q "w-6 h-6 text-primary\|w-5 h-5 text-primary\|p-2.5 rounded-md bg-primary" src/components/sections/industries.tsx 2>/dev/null; then
-  echo "  FAIL: industries.tsx retains icon containers (should be removed per pdf-exact-match spec)"
-  FAIL=$((FAIL + 1))
-else
-  echo "  PASS: industries.tsx icon containers removed per pdf-exact-match spec"
+# Check 22: icon containers present at corrected density (decosplay restored Card+icon)
+if grep -q "p-2.5 rounded-md bg-primary" src/components/sections/industries.tsx 2>/dev/null; then
+  echo "  PASS: industries.tsx uses corrected p-2.5 icon container density"
   PASS=$((PASS + 1))
+else
+  echo "  FAIL: industries.tsx missing corrected p-2.5 icon container"
+  FAIL=$((FAIL + 1))
 fi
 
-# Check 23: w-6 h-6 removed from industries icons
+# Check 23: oversized w-6 h-6 icons absent (D1.5 corrected to w-5 h-5)
 if grep -q "w-6 h-6 text-primary" src/components/sections/industries.tsx 2>/dev/null; then
-  echo "  FAIL: industries.tsx icons retain w-6 h-6"
+  echo "  FAIL: industries.tsx icons retain oversized w-6 h-6"
   FAIL=$((FAIL + 1))
 else
-  echo "  PASS: w-6 h-6 absent from industries.tsx icons"
+  echo "  PASS: oversized w-6 h-6 absent from industries.tsx icons"
   PASS=$((PASS + 1))
 fi
 
-# Check 24: icon size tokens absent (icons removed per pdf-exact-match spec)
+# Check 24: icons present at corrected w-5 h-5 density (decosplay restored icons)
 if grep -q "w-5 h-5 text-primary" src/components/sections/industries.tsx 2>/dev/null; then
-  echo "  FAIL: industries.tsx retains w-5 h-5 icon tokens (icons should be fully removed)"
-  FAIL=$((FAIL + 1))
-else
-  echo "  PASS: w-5 h-5 icon tokens absent from industries.tsx"
+  echo "  PASS: industries.tsx uses corrected w-5 h-5 icon density"
   PASS=$((PASS + 1))
+else
+  echo "  FAIL: industries.tsx missing corrected w-5 h-5 icon density"
+  FAIL=$((FAIL + 1))
 fi
 
 # ============================================================

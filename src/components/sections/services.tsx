@@ -1,14 +1,8 @@
 import { services } from '@/data/content';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Check } from 'lucide-react';
 import Link from 'next/link';
-
-const SYS_CODES = [
-  'SYS-01 · DEMAND',
-  'SYS-02 · FOLLOW-THROUGH',
-  'SYS-03 · FRONTLINE',
-  'SYS-04 · OPERATIONS',
-  'SYS-05 · COMMAND',
-  'SYS-06 · CUSTOM',
-];
+import { cn } from '@/lib/utils';
 
 export function Services() {
   return (
@@ -26,33 +20,38 @@ export function Services() {
           workflow. Operational backbone.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
-          {services.map((service, i) => (
-            <div key={service.slug} className="bg-card p-7 flex flex-col">
-              <p className="font-mono text-xs text-muted-foreground uppercase tracking-widest mb-2">
-                {SYS_CODES[i]}
-              </p>
-              <h3 className="font-bold font-headline text-xl mb-1">
-                {service.title}
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                {service.subhead}
-              </p>
-              <ul className="space-y-2 mb-6">
-                {service.bullets.map((bullet, index) => (
-                  <li key={index} className="flex items-start text-sm text-foreground/80">
-                    <span className="mr-2 text-muted-foreground">→</span>
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={`/systems/${service.slug}`}
-                className="mt-auto text-xs font-mono uppercase tracking-widest text-primary hover:underline"
-              >
-                VIEW SYSTEM ↗
-              </Link>
-            </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <Link key={service.slug} href={`/systems/${service.slug}`} className="block group">
+              <Card className="flex flex-col h-full transition-colors duration-150 border border-border group-hover:border-primary">
+                <CardHeader className="flex flex-row items-center gap-4">
+                  <div className="p-2.5 rounded-md bg-primary/10 shrink-0">
+                    <service.icon className={cn('w-5 h-5', service.iconClassName || 'text-primary')} />
+                  </div>
+                  <div className="flex flex-col">
+                    <CardTitle className="text-base font-semibold font-headline leading-snug">
+                      {service.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground mt-0.5">
+                      {service.subhead}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-1">
+                  <ul className="space-y-3">
+                    {service.bullets.map((bullet, index) => (
+                      <li key={index} className="flex items-start">
+                        <Check className="w-4 h-4 mr-3 text-primary shrink-0 mt-0.5" />
+                        <span className="text-sm text-foreground/80">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <span className="mt-4 inline-block text-sm font-medium text-primary group-hover:underline">
+                    View System →
+                  </span>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>

@@ -319,9 +319,10 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 28: No new section files added to src/components/sections/ (homepage IA not bloated)
-# Updated to 12: failure-mode-registry.tsx added in homepage-pdf-exact-match (authorized in spec)
-EXPECTED_SECTIONS=12
+# Check 28: section file count (homepage IA not bloated)
+# 10: decosplay pass deleted results.tsx + failure-mode-registry.tsx (Operational Evidence
+# and Failure Mode Registry removed from homepage; trust-evidence remains on /audit)
+EXPECTED_SECTIONS=10
 ACTUAL_SECTIONS=$(find src/components/sections -name "*.tsx" 2>/dev/null | wc -l | tr -d ' ')
 if [ "$ACTUAL_SECTIONS" -eq "$EXPECTED_SECTIONS" ]; then
   echo "  PASS: src/components/sections unchanged at ${EXPECTED_SECTIONS} files"
@@ -388,12 +389,13 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 34: DeploymentLifecycleDiagram still mounted on results.tsx (homepage evidence retained)
-if grep -q "DeploymentLifecycleDiagram" src/components/sections/results.tsx 2>/dev/null; then
-  echo "  PASS: DeploymentLifecycleDiagram still mounted on results.tsx"
+# Check 34: DeploymentLifecycleDiagram mounted on canonical /audit surface
+# (decosplay pass removed homepage results.tsx; /audit is the canonical and sole mount)
+if grep -q "DeploymentLifecycleDiagram" src/app/audit/page.tsx 2>/dev/null; then
+  echo "  PASS: DeploymentLifecycleDiagram mounted on /audit (canonical home)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: DeploymentLifecycleDiagram removed from results.tsx"
+  echo "  FAIL: DeploymentLifecycleDiagram removed from /audit"
   FAIL=$((FAIL + 1))
 fi
 

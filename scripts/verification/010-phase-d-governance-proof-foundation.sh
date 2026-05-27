@@ -64,12 +64,13 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 5: Failure Mode Registry Preview mounted on results.tsx
-if grep -q "FailureModeRegistryPreview" src/components/sections/results.tsx 2>/dev/null; then
-  echo "  PASS: results.tsx imports/mounts FailureModeRegistryPreview"
+# Check 5: Failure Mode Registry Preview mounted on canonical /audit surface
+# (decosplay pass deleted homepage results.tsx; /audit is the canonical mount per Phase E)
+if grep -q "FailureModeRegistryPreview" src/app/audit/page.tsx 2>/dev/null; then
+  echo "  PASS: /audit mounts FailureModeRegistryPreview (canonical home)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: results.tsx does not mount FailureModeRegistryPreview"
+  echo "  FAIL: /audit does not mount FailureModeRegistryPreview"
   FAIL=$((FAIL + 1))
 fi
 

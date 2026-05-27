@@ -157,12 +157,13 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 14: DeploymentLifecycleDiagram still mounted on results.tsx
-if grep -q "DeploymentLifecycleDiagram" src/components/sections/results.tsx 2>/dev/null; then
-  echo "  PASS: DeploymentLifecycleDiagram still mounted on results.tsx"
+# Check 14: DeploymentLifecycleDiagram mounted on canonical /audit surface
+# (decosplay pass deleted homepage results.tsx; /audit is the canonical mount per Phase E)
+if grep -q "DeploymentLifecycleDiagram" src/app/audit/page.tsx 2>/dev/null; then
+  echo "  PASS: DeploymentLifecycleDiagram mounted on /audit (canonical home)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: DeploymentLifecycleDiagram removed from results.tsx"
+  echo "  FAIL: DeploymentLifecycleDiagram removed from /audit"
   FAIL=$((FAIL + 1))
 fi
 

@@ -99,12 +99,13 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 9: DeploymentLifecycleDiagram mounted on results.tsx
-if grep -q "DeploymentLifecycleDiagram" src/components/sections/results.tsx 2>/dev/null; then
-  echo "  PASS: results.tsx imports/mounts DeploymentLifecycleDiagram"
+# Check 9: DeploymentLifecycleDiagram mounted on canonical /audit surface
+# (decosplay pass deleted homepage results.tsx; /audit is the canonical mount per Phase E)
+if grep -q "DeploymentLifecycleDiagram" src/app/audit/page.tsx 2>/dev/null; then
+  echo "  PASS: /audit mounts DeploymentLifecycleDiagram (canonical home)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: results.tsx does not mount DeploymentLifecycleDiagram"
+  echo "  FAIL: /audit does not mount DeploymentLifecycleDiagram"
   FAIL=$((FAIL + 1))
 fi
 
@@ -306,12 +307,13 @@ else
   FAIL=$((FAIL + 1))
 fi
 
-# Check 27: FailureModeRegistryPreview still mounted on results.tsx
-if grep -q "FailureModeRegistryPreview" src/components/sections/results.tsx 2>/dev/null; then
-  echo "  PASS: FailureModeRegistryPreview still mounted on results.tsx"
+# Check 27: FailureModeRegistryPreview mounted on canonical /audit surface
+# (decosplay pass deleted homepage results.tsx; /audit is the canonical mount per Phase E)
+if grep -q "FailureModeRegistryPreview" src/app/audit/page.tsx 2>/dev/null; then
+  echo "  PASS: FailureModeRegistryPreview mounted on /audit (canonical home)"
   PASS=$((PASS + 1))
 else
-  echo "  FAIL: FailureModeRegistryPreview removed from results.tsx"
+  echo "  FAIL: FailureModeRegistryPreview removed from /audit"
   FAIL=$((FAIL + 1))
 fi
 

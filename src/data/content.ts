@@ -5,7 +5,6 @@ import { BarChart, IndianRupee, Search, Sparkles, TrendingUp, Cpu, Workflow, Dat
 export const navigationLinks = [
   { name: 'Systems', href: '/systems' },
   { name: 'Governance', href: '/#governance' },
-  { name: 'Evidence', href: '/#results' },
   { name: 'Bytes', href: '/bytes' },
 ];
 
@@ -423,41 +422,10 @@ export const chokePoints: {
   },
 ];
 
-export const failureRegistry: {
-  id: string;
-  fn: string;
-  mode: string;
-  sev: 'crit' | 'high' | 'med';
-}[] = [
-  { id: 'FM-001', fn: 'Demand Acquisition', mode: 'In-market signal goes undetected — no system is watching the channel.', sev: 'crit' },
-  { id: 'FM-002', fn: 'Pursuit', mode: 'Lead reaches indeterminate state — neither booked, disqualified, nor escalated.', sev: 'crit' },
-  { id: 'FM-003', fn: 'Frontline Resolution', mode: 'Response time exceeds SLA during peak load or staff absence.', sev: 'high' },
-  { id: 'FM-004', fn: 'Operations', mode: 'Routine process fails to execute — depends on individual memory.', sev: 'high' },
-  { id: 'FM-005', fn: 'Command Intelligence', mode: 'Report assembled from stale, siloed, or manually filtered sources.', sev: 'med' },
-  { id: 'FM-006', fn: 'Pursuit', mode: 'Escalation routed without context — duplicate effort downstream.', sev: 'med' },
-];
-
 export const auditDeliverables: { id: string; ttl: string; desc: string }[] = [
   { id: 'OUT-01', ttl: 'Operational Gap Map', desc: 'A precise analysis of which of your five functions are running on structural risk.' },
   { id: 'OUT-02', ttl: 'Failure Mode Registry', desc: 'The specific ways each gap will manifest as the business scales.' },
   { id: 'OUT-03', ttl: 'System Architecture Proposal', desc: 'A proposed governance system design, scoped to your operational profile.' },
-];
-
-export const auditSeed: { sys: string; ev: string; out: 'ok' | 'esc' | 'disq' }[] = [
-  { sys: 'DMND', ev: 'Signal scored above qualification threshold — record advanced to pursuit.', out: 'ok' },
-  { sys: 'PRSU', ev: 'Cadence step 3/6 executed via WhatsApp; awaiting response window.', out: 'ok' },
-  { sys: 'FRNT', ev: 'Tier-1 inquiry resolved at intake — no escalation required.', out: 'ok' },
-  { sys: 'OPS',  ev: 'Invoice INV-44219 dispatched; reminder scheduled T+7d.', out: 'ok' },
-  { sys: 'CMND', ev: 'Anomaly detected: 14d reply-rate trending −12% vs. baseline.', out: 'esc' },
-  { sys: 'DMND', ev: 'Record failed contactability gate — withheld from pipeline.', out: 'disq' },
-  { sys: 'PRSU', ev: 'Terminal state reached: BOOKED — pursuit closed.', out: 'ok' },
-  { sys: 'FRNT', ev: 'Escalation routed with full context to L2 specialist.', out: 'esc' },
-  { sys: 'OPS',  ev: 'Cross-function handoff acknowledged within SLA (00:00:42).', out: 'ok' },
-  { sys: 'CMND', ev: 'Daily KPI snapshot published — lineage verified end-to-end.', out: 'ok' },
-  { sys: 'PRSU', ev: 'Disqualification rule fired: out-of-segment; record archived.', out: 'disq' },
-  { sys: 'DMND', ev: 'New source enrolled — qualification gates inherited from policy.', out: 'ok' },
-  { sys: 'OPS',  ev: 'Retry path engaged after upstream provider 503; recovered.', out: 'ok' },
-  { sys: 'FRNT', ev: 'SLA breach prevented — case auto-routed before threshold.', out: 'ok' },
 ];
 
 

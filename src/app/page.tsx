@@ -7,8 +7,6 @@ import { FailureThesis } from '@/components/sections/failure-thesis';
 import { Services } from '@/components/sections/services';
 import { Governance } from '@/components/sections/governance';
 import { Industries } from '@/components/sections/industries';
-import { Results } from '@/components/sections/results';
-import { FailureModeRegistry } from '@/components/sections/failure-mode-registry';
 import { Faq } from '@/components/sections/faq';
 import { Footer } from '@/components/footer';
 import { TweaksPanel } from '@/components/ui/tweaks-panel';
@@ -66,8 +64,6 @@ export default async function Home() {
           <Services />
           <Governance />
           <Industries />
-          <Results />
-          <FailureModeRegistry />
           <Contact />
           <ByteOfTheWeek />
           <Faq />

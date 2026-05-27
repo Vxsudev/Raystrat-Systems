@@ -135,14 +135,12 @@ assert_present "NODE_ENV !== 'production'" src/app/page.tsx "TweaksPanel gated t
 # ── H. Preservation invariants ──────────────────────────────────────────────
 section "H. Preservation invariants"
 
-# Section arc (10 imports in order)
+# Section arc (8 sections — decosplay deleted Results + FailureModeRegistry)
 assert_present 'Hero'                src/app/page.tsx "page.tsx imports Hero"
 assert_present 'FailureThesis'       src/app/page.tsx "page.tsx imports FailureThesis"
 assert_present 'Services'            src/app/page.tsx "page.tsx imports Services"
 assert_present 'Governance'          src/app/page.tsx "page.tsx imports Governance"
 assert_present 'Industries'          src/app/page.tsx "page.tsx imports Industries"
-assert_present 'Results'             src/app/page.tsx "page.tsx imports Results"
-assert_present 'FailureModeRegistry' src/app/page.tsx "page.tsx imports FailureModeRegistry"
 assert_present 'Contact'             src/app/page.tsx "page.tsx imports Contact"
 assert_present 'ByteOfTheWeek'       src/app/page.tsx "page.tsx imports ByteOfTheWeek"
 assert_present 'Faq'                 src/app/page.tsx "page.tsx imports Faq"
@@ -155,21 +153,13 @@ else
   fail "expected 5 diagrams, found $DIAGRAM_COUNT"
 fi
 
-# Asymmetric hero layout preserved
-assert_present 'grid-cols-\[1.15fr_1fr\]' src/components/sections/hero.tsx "hero asymmetric 1.15fr_1fr layout preserved"
+# Hero typography-first (decosplay removed the detheatricalization-era schematic panel)
+assert_present 'Operational Breakdown' src/components/sections/hero.tsx "hero retains headline"
+assert_absent 'HeroSurfaceReference' src/components/sections/hero.tsx "hero schematic panel removed (decosplay)"
 
-# Replacement schematic component present
-assert_present 'HeroSurfaceReference' src/components/sections/hero.tsx "HeroSurfaceReference replacement present"
-assert_present 'Operational Surfaces' src/components/sections/hero.tsx "hero surface-reference label present"
-assert_present 'Schematic reference'  src/components/sections/hero.tsx "hero schematic disclosure present"
-
-# Governance schematic labels
-assert_present 'SCHEMATIC'              src/components/sections/governance.tsx "governance panel labeled SCHEMATIC"
-assert_present 'Audit Trail — Entry Format' src/components/sections/governance.tsx "governance panel header replaced"
-
-# Results re-framed
-assert_present 'Operational ranges across deployments\.' src/components/sections/results.tsx "results H2 re-framed"
-assert_present 'Illustrative ranges'                    src/components/sections/results.tsx "results disclosure label present"
+# Governance audit panel removed by decosplay (property grid retained)
+assert_present 'Governance by design' src/components/sections/governance.tsx "governance retains 6-property grid"
+assert_absent 'Audit Trail — Entry Format' src/components/sections/governance.tsx "governance audit panel removed (decosplay)"
 
 # Token preservation (Phase A primary + structure)
 assert_present '--primary: 214 98% 40%'  src/app/globals.css "Phase A primary token preserved"

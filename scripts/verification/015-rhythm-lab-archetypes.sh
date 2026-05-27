@@ -28,7 +28,7 @@ LAB_FILE="src/app/rhythm-lab/page.tsx"
 # Check 1: Currently on rhythm-lab branch family (archetypes / detheatricalization descendant / main)
 CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 case "${CURRENT_BRANCH}" in
-  rhythm-lab-archetypes|feature/rhythm-lab-detheatricalization|main)
+  rhythm-lab-archetypes|feature/rhythm-lab-detheatricalization|rhythm-lab-decosplay-pass|main)
     echo "  PASS: on rhythm-lab branch family (${CURRENT_BRANCH})"
     PASS=$((PASS + 1))
     ;;
@@ -187,8 +187,8 @@ else
 fi
 
 # Check 16: Sections directory baseline (rhythm-lab must not add production sections)
-# Updated to 12: failure-mode-registry.tsx added in homepage-pdf-exact-match (authorized in spec)
-EXPECTED_SECTIONS=12
+# 10: decosplay pass deleted results.tsx + failure-mode-registry.tsx from homepage
+EXPECTED_SECTIONS=10
 ACTUAL_SECTIONS=$(find src/components/sections -name "*.tsx" 2>/dev/null | wc -l | tr -d ' ')
 if [ "${ACTUAL_SECTIONS}" -eq "${EXPECTED_SECTIONS}" ]; then
   echo "  PASS: sections dir unchanged at ${EXPECTED_SECTIONS} files"
