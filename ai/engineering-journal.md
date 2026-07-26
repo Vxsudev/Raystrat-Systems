@@ -2284,3 +2284,41 @@ https://studio--raystrat-systems.us-central1.hosted.app
 **Deploy:** `firebase deploy --only apphosting` → rollout complete. All four routes return 200. Formatting classes confirmed in production HTML.
 
 **Commit:** 58cb1a9
+
+---
+
+## 2026-07-26 · RAYSTRAT_WEBSITE_VERCEL_RESTORE_V1
+
+**Trigger:** `raystratsystems.com` nameservers were already pointed at Vercel DNS (ns1/ns2.vercel-dns.com), but no Vercel project was attached to the domain — apex and www were unrouted. Site had previously been served via Firebase App Hosting (see RAYSTRAT_PRODUCTION_DEPLOY_V1). Task: restore the marketing site as its own Vercel project without touching `raystrat-proposals` or the Zoho mail DNS records.
+
+### Provisioning
+
+- Created new Vercel project `raystrat-systems` (team `raystrat-systems`), linked to this repo directory via CLI (not Git-connected)
+- `npm run build` verified clean locally before deploying (Next.js 15.5.9, 39 routes)
+- Deployed via `vercel deploy --prod` → `dpl_6E5ydjjB4QqhQwZcUH9RQCKCDnRU` (READY / PROMOTED)
+- Attached `raystratsystems.com` and `www.raystratsystems.com` to the project via `vercel domains add`
+
+### Known issue encountered
+
+The first production deploy's `targets.production.alias` didn't include the custom domains (they were attached to the project after that deploy finished). A forced redeploy (`vercel deploy --prod --force`) corrected the alias list, but public edge routing still returned `NOT_FOUND` for ~30 minutes afterward (zero function invocations per `vercel logs`) despite DNS, TLS cert, domain verification, and alias bindings all being confirmed correct via the Vercel API. No Vercel status-page incident was active. Resolved on its own — likely edge-config propagation lag specific to a brand-new project; root cause not otherwise identified. Avoided `vercel domains rm` as a workaround since its scope risked releasing the domain's DNS zone (Zoho MX/SPF/DKIM/DMARC live there).
+
+### Post-deploy verification
+
+Routes (`https://raystratsystems.com`):
+- `/` → 200 (title "Raystrat Systems — Operational Systems Engineering", "Systems That Run the Business" present)
+- `/privacy` → 200
+- `/terms` → 200
+- `/systems` → 200
+- `/services` → 308 (permanent redirect to `/systems`, by design — see `next.config.js`)
+- `www.raystratsystems.com` → 200
+
+### Confirmed untouched
+
+- `proposals.raystratsystems.com` → 200, attached only to `raystrat-proposals`
+- Zoho DNS (MX, SPF, DKIM, DMARC, verification TXT) — unchanged, diffed before/after via `vercel dns ls`
+- Nameservers — unchanged (ns1/ns2.vercel-dns.com)
+- No other Vercel projects (`ndt-storefront`, `aiw-trinity-tree-llc`) modified
+
+### Status
+
+PRODUCTION-LIVE at `https://raystratsystems.com` and `https://www.raystratsystems.com` (Vercel project `raystrat-systems`).
