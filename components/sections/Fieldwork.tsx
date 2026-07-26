@@ -42,7 +42,7 @@ export default function Fieldwork() {
         </ul>
       </div>
       <div className={styles.actions}>
-        <a href="#deploy" className={`cmd ${styles.cmdSecondaryPaper}`}>
+        <a href="#fieldwork" className={`cmd ${styles.cmdSecondaryPaper}`}>
           View Fieldwork
         </a>
       </div>

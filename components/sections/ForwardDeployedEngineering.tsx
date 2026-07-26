@@ -28,7 +28,7 @@ export default function ForwardDeployedEngineering() {
       </div>
       <div className={styles.actions}>
         <a
-          href="#intervention"
+          href="#forward-deployed-engineering"
           className={`cmd ${styles.cmdSecondaryPaper}`}
         >
           Understand the Model

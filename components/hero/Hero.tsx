@@ -9,10 +9,9 @@ import styles from "./hero.module.css";
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), { ssr: false });
 
 const NAV_ITEMS = [
-  "Forward-Deployed Engineering",
-  "Deployments",
-  "Fieldwork",
-  "Company",
+  { label: "Forward-Deployed Engineering", href: "#forward-deployed-engineering" },
+  { label: "Deployments", href: "#deployments" },
+  { label: "Fieldwork", href: "#fieldwork" },
 ];
 
 export default function Hero() {
@@ -34,16 +33,16 @@ export default function Hero() {
   return (
     <div className={styles.hero}>
       <header className={styles.nav}>
-        <a href="#" className={styles.wordmark}>
+        <a href="/" className={styles.wordmark}>
           Raystrat <span>Systems</span>
         </a>
         <nav className={styles.navLinks} aria-label="Primary">
           {NAV_ITEMS.map((item) => (
-            <a key={item} href="#" className={styles.navLink}>
-              {item}
+            <a key={item.label} href={item.href} className={styles.navLink}>
+              {item.label}
             </a>
           ))}
-          <a href="#" className={styles.navCmd}>
+          <a href="#deploy" className={styles.navCmd}>
             Deploy Raystrat
           </a>
         </nav>
@@ -92,10 +91,10 @@ export default function Hero() {
             business forward.
           </p>
           <div className={styles.commands}>
-            <a href="#" className="cmd cmd-primary">
+            <a href="#deploy" className="cmd cmd-primary">
               Deploy Raystrat
             </a>
-            <a href="#" className="cmd cmd-secondary">
+            <a href="#forward-deployed-engineering" className="cmd cmd-secondary">
               What is forward-deployed engineering?
             </a>
           </div>

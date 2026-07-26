@@ -29,7 +29,7 @@ export default function FinalAction() {
           <span className={styles.arrivalNode} />
         </span>
         {/* The Deploy node (Node 7) is future — command is a placeholder. */}
-        <a href="#" className="cmd cmd-primary">
+        <a href="#deploy" className="cmd cmd-primary">
           Deploy Raystrat
         </a>
       </div>

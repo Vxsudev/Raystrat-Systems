@@ -14,16 +14,19 @@ fail() { echo "  FAIL  $1"; FAIL=1; }
 
 MD5() { md5 -r "$1" 2>/dev/null | awk '{print $1}' || md5sum "$1" 2>/dev/null | awk '{print $1}'; }
 
-# ── V1. Hero locked (byte-for-byte via recorded md5 baseline) ──────────────
-echo "V1. Hero + locked shells unchanged"
+# ── V1. Hero 3D/motion/fallback system locked (byte-for-byte via md5) ──────
+# Scope narrowed 2026-07-26 by raystrat-node-1-production-readiness (highest
+# authority for that capability, documented in its recon/spec): Hero.tsx
+# (nav/CTA hrefs) and app/layout.tsx (metadata/viewport) are explicitly
+# authorized to change there. What must never change is the hero's 3D scene/
+# motion/fallback system itself, checked here and re-asserted in 007.
+echo "V1. Hero 3D/motion/fallback system unchanged"
 declare_baseline() { echo "$1  $2"; }
 BASELINE="dc5f94fed31af540faaf45a229cff3f0 components/hero/AlignmentField.tsx
-72f4cfd45291804a111cfab570726060 components/hero/Hero.tsx
 8bcdc4fb7e92a88658a70cd36953a1ad components/hero/HeroCanvas.tsx
 e5e9c81bf999f9c1ece860c4131132fa components/hero/HeroFallback.tsx
 2485649adffeee499165c5315d5375c6 components/hero/fallback.module.css
 30821fc2e9ce6611e130605800722aa7 components/hero/hero.module.css
-8e6bc33bae3b1928c7e64f9d77779c35 app/layout.tsx
 13a95f02b56fb4898b99862213c0c514 lib/webgl.ts"
 while IFS= read -r row; do
   want=$(echo "$row" | awk '{print $1}')

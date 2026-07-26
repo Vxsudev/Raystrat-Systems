@@ -57,7 +57,7 @@ export default function DeploymentSurface() {
         ))}
       </div>
       <div className={styles.actions}>
-        <a href="#deploy" className="cmd cmd-secondary">
+        <a href="#deployments" className="cmd cmd-secondary">
           Explore Deployments
         </a>
       </div>

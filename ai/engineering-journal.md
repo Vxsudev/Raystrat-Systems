@@ -370,3 +370,137 @@ friendly: YES · 10 restraint preserved: YES.
 
 NOT DEPLOYED / NOT COMMITTED (per directive). Working tree ready for operator
 review. Production promotion requires explicit authorization.
+
+---
+
+### 2026-07-26
+
+### Feature
+
+raystrat-node-1-production-readiness
+
+### Phase
+
+phase-ui
+
+### Spec
+
+specs/raystrat-node-1-production-readiness.md
+
+### Tasks
+
+
+- tasks/raystrat-node-1-production-readiness-001.md [frontend]
+- tasks/raystrat-node-1-production-readiness-002.md [verification]
+
+### Implementation Notes
+
+Executed by execution-supervisor.sh at 2026-07-26T16:31:46Z.
+All 2 tasks completed. Verification passed.
+
+### Pattern Updates
+
+None.
+
+### Incidents
+
+None.
+
+---
+
+### 2026-07-26 — CAPABILITY RECORD (detailed) — raystrat-node-1-production-readiness
+
+### Pipeline
+
+RECON_READY → SPEC_LOCKED → TASK_GRAPH_LOCKED → EXECUTION_ACTIVE →
+VERIFICATION_REQUIRED → RELEASE_APPROVED, via canonical runtime.
+
+### Artifacts
+
+- Recon: ai/recon/raystrat-node-1-production-readiness.md
+- Spec: specs/raystrat-node-1-production-readiness.md (SPEC_LOCKED)
+- Tasks: tasks/raystrat-node-1-production-readiness-001/002.md (both done)
+- Wrapper: scripts/verification/007-raystrat-node-1-production-readiness.sh
+- Evidence: ai/design/evidence/prod-hero-final.png; /tmp/meta-check/*.png
+  (icon, apple-icon, OG, Twitter images — inspected, not committed, ephemeral)
+
+### What changed
+
+- Twelve href corrections across Hero.tsx + 4 section files (see spec §2 for
+  the full before/after table); three overrode existing non-`#` values
+  (Fieldwork, ForwardDeployedEngineering, DeploymentSurface) per explicit
+  directive instruction. Company nav item removed entirely (no dead link).
+- app/layout.tsx: added metadataBase, alternates.canonical, openGraph,
+  twitter, and a new viewport export (themeColor "#0b0c0e"). Title,
+  description, font loading, and JSX structure unchanged.
+- New: app/icon.tsx (32x32), app/apple-icon.tsx (180x180),
+  app/opengraph-image.tsx + app/twitter-image.tsx (1200x630) — all via
+  next/og ImageResponse, zero new dependencies, no runtime export added.
+
+### Hero-lock scope revision (transparent, directive-authorized)
+
+The predecessor wrapper (006) byte-locked 8 files including Hero.tsx and
+app/layout.tsx. This directive explicitly required editing both. Revised
+the lock to the 6 files that constitute the hero's actual 3D/motion/fallback
+system (AlignmentField.tsx, HeroCanvas.tsx, HeroFallback.tsx,
+fallback.module.css, hero.module.css, lib/webgl.ts) and updated 006's
+baseline to match, documented inline in that script and here. Hero.tsx and
+layout.tsx are now understood as "wiring/metadata surface," not "3D system."
+
+### Verification results
+
+001 typecheck PASS · 002 lint SKIP · 003 build PASS · 004 invariants 6/6 ·
+005 PASS · 006 PASS (revised scope) · 007 PASS (hero-lock, no href="#",
+all 12 corrected hrefs + anchors resolve, 3 nav links, 4 image routes 200
+image/png, canonical/OG/Twitter/theme-color head tags present, First Load
+353kB uncompressed envelope). Playwright: keyboard tab order confirmed
+(wordmark→/, 3 nav items with correct hrefs, no Company stop, nav command,
+hero CTAs), click-through confirmed each nav link scrolls to its matching
+section, zero console/page errors. Icon/apple-icon/OG/Twitter images
+downloaded and visually inspected: correct dimensions (32/180/1200x630 x2),
+on-brand design (near-black field, copper accent, bold legible glyph at
+favicon size, OG image reads as an authentic hero extension). First Load
+JS 106 kB (build output), unchanged from predecessor baseline.
+
+### Design Quality Gate — PASS
+
+All nav/CTA destinations resolve to real content. Company's absence is
+clean (no dead link). Favicon legible at 32px. OG/Twitter card reads as an
+authentic system extension, not a template. Metadata complete and correct
+in real rendered HTML. Hero motion/compositions/copy/performance/
+accessibility/reduced-motion/WebGL-fallback all provably unchanged.
+
+### Incidents
+
+1. First supervisor run FAILED on 006 (expected — its hero-lock baseline
+   still asserted the OLD 8-file scope this directive explicitly supersedes)
+   and on 007 (two false negatives in my own new wrapper: (a) a substring
+   match on the word "company" hit the unrelated locked copy "The company
+   is moving." — fixed by scoping the check to the `<nav aria-label="Primary">`
+   region only; (b) a `navLink` class-count grep also matched the
+   container's own `navLinks` class as a substring — fixed with an explicit
+   exclusion). The underlying implementation was correct throughout; both
+   fixes were to my verification scripts, confirmed by re-running 007
+   standalone before re-running the governed pipeline (reset → compile-spec
+   → supervisor; task files preserved via SKIP).
+2. Task 002's worker initially printed "Status: blocked, not proceeding"
+   citing missing `ai/execution-orchestrator.md`, `ai/coding-patterns.md`,
+   `ai/runtime-contracts.md` (referenced by the vendored supervisor's
+   worker-dispatch prompt, which do not exist at those paths in this
+   OS-ENABLED/adapter repo — `execution-orchestrator.md` actually lives at
+   `vendor/engineering-os/core-docs/`, and the other two don't exist
+   anywhere). This is the SAME gap worker 001 flagged as "OS-hygiene debt"
+   in the very first Node 1 capability. It did not actually halt the run
+   this time (the worker's own task file was self-contained, found full
+   conformance, and completed — task 002 shows `done`, verification PASS,
+   RELEASE_APPROVED reached). Per this capability's own locked mutation
+   boundary, `vendor/**` is out of scope here, so the vendored prompt was
+   deliberately left unpatched. Recorded again as OS-hygiene debt — a
+   dedicated future capability should either restore
+   `ai/coding-patterns.md`/`ai/runtime-contracts.md` or repoint the
+   vendored prompt at `vendor/engineering-os/core-docs/execution-orchestrator.md`.
+
+### Deployment status
+
+Pending commit + Vercel preview (this run). No production promotion, no
+domain/DNS/alias changes.
