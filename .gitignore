@@ -3,3 +3,6 @@ node_modules
 .vercel
 .env*
 npm-debug.log*
+
+# Secret files outside .env* pattern
+sendgrid.env

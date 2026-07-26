@@ -1,0 +1,293 @@
+/* Hero — Command Surface composition */
+
+.hero {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Navigation rail ─────────────────────────────────────────── */
+
+.nav {
+  position: relative;
+  z-index: 3;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--frame-inset);
+  border-bottom: 1px solid var(--line);
+  background: var(--ink-0);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.wordmark span {
+  color: var(--steel);
+  font-weight: 500;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navLink {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+  transition: color 140ms ease-out;
+}
+
+.navLink:hover {
+  color: var(--paper);
+}
+
+.navCmd {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-0);
+  background: var(--signal);
+  border: 1px solid var(--signal);
+  border-radius: 0;
+  padding: 10px 18px;
+  transition:
+    background-color 160ms ease-out,
+    border-color 160ms ease-out;
+}
+
+.navCmd:hover {
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+/* ── Structural frame ────────────────────────────────────────── */
+
+.stage {
+  position: relative;
+  flex: 1;
+  margin: var(--frame-inset);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+
+.corner {
+  position: absolute;
+  z-index: 3;
+  padding: 14px 16px;
+}
+
+.cornerTL {
+  top: 0;
+  left: 0;
+}
+
+.cornerTR {
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+
+.cornerBR {
+  bottom: 0;
+  right: 0;
+  text-align: right;
+}
+
+.marker {
+  transition: color 400ms ease-out;
+}
+
+.markerEstablished {
+  color: var(--signal);
+}
+
+/* ── Canvas / fallback field ─────────────────────────────────── */
+
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  animation: fieldIn 900ms ease-out 150ms forwards;
+}
+
+@keyframes fieldIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ── Copy block ──────────────────────────────────────────────── */
+
+.content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px min(7vw, 96px);
+  max-width: 100%;
+}
+
+.eyebrow {
+  color: var(--steel);
+  margin-bottom: 28px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(44px, 6.6vw, 100px);
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  max-width: 11ch;
+  color: var(--paper);
+}
+
+.lede {
+  margin-top: 32px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.4;
+  color: var(--paper);
+  max-width: 44ch;
+}
+
+.para {
+  margin-top: 18px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  color: var(--steel);
+  max-width: 58ch;
+}
+
+.commands {
+  margin-top: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+/* ── Declaration band — one quiet line ───────────────────────── */
+
+.declarations {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink-0) 82%, transparent);
+}
+
+.declarationsLine {
+  padding: 18px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--steel);
+  max-width: 110ch;
+}
+
+.declarationsLine span {
+  color: var(--signal);
+  padding: 0 6px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .navLinks {
+    gap: 20px;
+  }
+
+  .navLink {
+    display: none;
+  }
+
+  /* Mobile: the 3D field is a framed observation window above the copy —
+     not a backdrop fighting the type. */
+  .field {
+    inset: 0 0 auto 0;
+    height: 30dvh;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .content {
+    justify-content: flex-start;
+    margin-top: 30dvh;
+    padding: 28px 24px 36px;
+  }
+
+  .title {
+    font-size: clamp(40px, 11vw, 64px);
+  }
+
+  .declarations {
+    grid-template-columns: 1fr;
+  }
+
+  .declaration + .declaration {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .cornerBR {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .commands {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Nav must hold one row down to 320px */
+  .nav {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .wordmark {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .navCmd {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    padding: 8px 10px;
+  }
+
+  /* Short viewports: the observation window is small — keep only the
+     state marker over it. */
+  .cornerTL {
+    display: none;
+  }
+}
