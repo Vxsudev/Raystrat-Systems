@@ -5,6 +5,7 @@ node_modules
 !.env.example
 npm-debug.log*
 *.tsbuildinfo
+__pycache__/
 
 # Secret files outside .env* pattern
 sendgrid.env
