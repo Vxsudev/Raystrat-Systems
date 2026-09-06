@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { FORMSPREE_ENDPOINT } from "../lib/site";
 
 type Fields = {
   name: string;
@@ -22,6 +23,10 @@ const EMPTY: Fields = { name: "", email: "", company: "", message: "" };
 const FALLBACK_ERROR =
   "We could not send your enquiry. Your details are still in the form — please try again, or email founder@raystratsystems.com.";
 
+// Formspree's own field name for its honeypot spam filter. If this field
+// arrives non-empty, Formspree silently discards the submission server-side.
+const HONEYPOT_FIELD = "_gotcha";
+
 function validate(values: Fields): Errors {
   const errors: Errors = {};
   if (!values.name.trim()) errors.name = "Please enter your name.";
@@ -42,12 +47,37 @@ function validate(values: Fields): Errors {
   return errors;
 }
 
+// Formspree's field-level error responses use { field, message } (or
+// { field, code } with no message on some plans) per its documented
+// SubmissionError shape. Only fields we actually render are mapped; anything
+// else falls back to the top-level error/generic message so nothing is
+// silently dropped.
+const RENDERED_FIELDS = ["name", "email", "company", "message"] as const;
+
+function isRenderedField(value: unknown): value is keyof Fields {
+  return (RENDERED_FIELDS as readonly unknown[]).includes(value);
+}
+
+function mapFormspreeFieldErrors(
+  formspreeErrors: unknown
+): Errors | null {
+  if (!Array.isArray(formspreeErrors)) return null;
+  const mapped: Errors = {};
+  for (const entry of formspreeErrors as unknown[]) {
+    const field = (entry as { field?: unknown } | null)?.field;
+    const message = (entry as { message?: unknown } | null)?.message;
+    if (isRenderedField(field) && typeof message === "string") {
+      mapped[field] = message;
+    }
+  }
+  return Object.keys(mapped).length > 0 ? mapped : null;
+}
+
 export default function ContactForm() {
   const [values, setValues] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const honeypot = useRef("");
-  const mountedAt = useRef(Date.now());
 
   const update = (key: keyof Fields) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,6 +89,7 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status.kind === "sending") return; // belt-and-braces against double submit
     const nextErrors = validate(values);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
@@ -68,32 +99,50 @@ export default function ContactForm() {
 
     setStatus({ kind: "sending" });
     try {
-      const res = await fetch("/enquiry/submit", {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
-          ...values,
-          website: honeypot.current,
-          elapsedMs: Date.now() - mountedAt.current,
+          name: values.name,
+          email: values.email,
+          company: values.company,
+          message: values.message,
+          _replyto: values.email,
+          [HONEYPOT_FIELD]: honeypot.current,
         }),
       });
       const data = await res.json().catch(() => ({}));
 
-      if (res.ok && data?.ok) {
+      // Formspree signals failure via response shape (an `error` string
+      // and/or an `errors` array), not solely via HTTP status — treat
+      // either as present as a rejection, matching how its own client
+      // libraries discriminate success from error responses.
+      const hasError =
+        typeof data?.error === "string" ||
+        (Array.isArray(data?.errors) && data.errors.length > 0);
+
+      if (res.ok && !hasError) {
         const sentName = values.name.split(" ")[0] || "there";
         setValues(EMPTY);
-        mountedAt.current = Date.now();
         setStatus({ kind: "success", name: sentName });
         return;
       }
 
-      if (data?.reason === "validation" && data.errors) {
-        setErrors(data.errors as Errors);
+      const fieldErrors = mapFormspreeFieldErrors(data?.errors);
+      if (fieldErrors) {
+        setErrors(fieldErrors);
         setStatus({ kind: "idle" });
         return;
       }
 
-      setStatus({ kind: "error", message: data?.message ?? FALLBACK_ERROR });
+      const message =
+        typeof data?.error === "string" && data.error.trim()
+          ? data.error
+          : FALLBACK_ERROR;
+      setStatus({ kind: "error", message });
     } catch {
       setStatus({ kind: "error", message: FALLBACK_ERROR });
     }
@@ -202,7 +251,7 @@ export default function ContactForm() {
         <label htmlFor="website">Website</label>
         <input
           id="website"
-          name="website"
+          name={HONEYPOT_FIELD}
           type="text"
           tabIndex={-1}
           autoComplete="off"

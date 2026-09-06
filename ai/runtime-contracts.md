@@ -10,63 +10,88 @@ takeover.sh`, the adapted pytest suite, and direct source reading), not
 what the archive's `HANDOFF.md` merely claims — where verification and
 claim diverge, that is called out explicitly.
 
-## Contract 1 — One server-side endpoint; everything else is static
+**Updated 2026-09-06 (same day, later revision)**: Contracts 1 and 2
+rewritten again — the archive's Resend-based `/enquiry/submit` Route
+Handler was replaced with a direct client-side submission to Formspree.
+The delivery mechanism changed; nothing else in this document changed.
 
-**Boundary:** the only server-side logic in the app is
-`app/enquiry/submit/route.ts`. All three page routes, the sitemap, and
-robots.txt are static or file-convention-generated; none read request
-state beyond what Next.js provides automatically.
+## Contract 1 — No server-side logic at all; everything is static
 
-**Why:** matches the archive's own description (`HANDOFF.md` §0): "Static
-marketing site with one server-side endpoint... No database. No
-authentication."
+**Boundary:** there is no Route Handler, Server Action, or other
+server-side logic anywhere in the app. All three page routes, the
+sitemap, and robots.txt are static or file-convention-generated. The
+enquiry form submits directly from the browser to Formspree
+(`https://formspree.io/f/mbgjagaz`) — a third-party origin, not a route on
+this site.
 
-**Status:** RATIFIED — verified directly: no other file under `app/`
-imports from `next/server` or defines a Route Handler; confirmed by
-reading the full `app/` tree during this capability's implementation.
+**Why:** removes the one server-side surface this app used to have
+(`app/enquiry/submit/route.ts`, a Resend-backed Route Handler) in favour
+of a form-delivery provider, per explicit instruction to replace the
+unused Resend integration.
 
-## Contract 2 — The enquiry endpoint's full request contract
+**Status:** RATIFIED — verified directly: no file under `app/` imports
+from `next/server` or defines a Route Handler; `app/enquiry/` no longer
+exists.
 
-**Boundary:** `POST /enquiry/submit`.
+## Contract 2 — The enquiry form's submission contract (Formspree)
 
-1. Malformed JSON body → `400 { ok:false, reason:"bad_request" }`.
-2. Honeypot (`website` field non-empty) or `elapsedMs < 2500` →
-   `422 { ok:false, reason:"rejected" }`, checked **before** validation.
-3. Field validation (name ≤120 chars required; email required, ≤254
-   chars, must match `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/`; company required
-   ≤160 chars; message required, 10–4000 chars) → on failure,
-   `400 { ok:false, reason:"validation", errors:{...} }` with one message
-   per invalid field.
-4. Rate limit: in-memory `Map` keyed by `x-forwarded-for` (falling back to
-   `x-real-ip`, then the literal string `"unknown"`), 3 requests per 15
-   minutes, counted only for requests that already passed steps 2–3 →
-   `429 { ok:false, reason:"rate_limited" }`.
-5. If `ENQUIRY_DELIVERY_ENABLED !== "true"` OR any of `RESEND_API_KEY` /
-   `ENQUIRY_FROM_EMAIL` / `ENQUIRY_TO_EMAIL` is unset →
-   `503 { ok:false, reason:"not_configured" }`. This is the *default*
-   state — delivery has never been enabled outside this check.
-6. Otherwise: direct `fetch` to `https://api.resend.com/emails` (no SDK),
-   `to` fixed from `ENQUIRY_TO_EMAIL` (never from the request body),
-   visitor's address set only as `reply_to`, both HTML (values
-   HTML-escaped) and plain-text bodies sent. Non-2xx from Resend →
-   `502 { ok:false, reason:"provider_error" }`; network failure →
-   `502 { ok:false, reason:"network_error" }`; success →
-   `200 { ok:true, id }`.
+**Boundary:** `app/components/ContactForm.tsx` (`"use client"`) posts
+directly to `FORMSPREE_ENDPOINT` (`app/lib/site.ts`,
+`https://formspree.io/f/mbgjagaz`) — no server-side code on this site is
+involved.
 
-**Why:** server-side validation independent of the client, spam
-resistance without a CAPTCHA, and a fixed non-client-supplied recipient so
-the endpoint cannot be used to relay mail anywhere else.
+1. Client-side field validation is unchanged from the Resend-era
+   implementation (name ≤120 chars required; email required, ≤254 chars,
+   must match `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/`; company required ≤160
+   chars; message required, 10–4000 chars) — runs before any network
+   request, exactly as before.
+2. Request: `POST` to the Formspree endpoint, `Accept: application/json` +
+   `Content-Type: application/json`, JSON body
+   `{ name, email, company, message, _replyto: email, _gotcha: "" }`.
+   `_gotcha` is Formspree's own recognised honeypot field name (a filled
+   value causes Formspree to silently discard the submission server-side);
+   `_replyto` is a widely-documented Formspree convention that, if
+   honoured by the account's plan, sets the notification email's Reply-To
+   to the visitor's own address.
+3. Response handling (matches Formspree's own client-library discriminator
+   logic, confirmed against its public `formspree-core` source — success
+   is a body shaped `{ next: string }`; error is `{ error: string,
+   errors？: [{ field?, message }] }` — not solely an HTTP status code):
+   a response is treated as failed if `data.error` is a string or
+   `data.errors` is a non-empty array, **even if the HTTP status was 2xx**.
+   Field-level `errors[].field` entries matching `name`/`email`/`company`/
+   `message` are mapped back onto the form's own error display; anything
+   else surfaces `data.error` or a generic fallback message. A thrown
+   `fetch` (network failure) is caught and shown as the same generic
+   fallback.
+4. Success is shown **only** when the response is both HTTP-ok and
+   error-shape-free — the form is cleared and a thank-you message shown
+   only then. On any failure, all typed values remain in the form
+   (`setValues` is never called except on confirmed success).
+5. Duplicate submission is prevented by disabling the submit button while
+   `status.kind === "sending"`, plus an early-return guard in the submit
+   handler itself if a submission is already in flight.
 
-**Status:** steps 1–5 **RATIFIED** — every branch through step 5 was
-exercised directly by `011-raystrat-emergent-site-takeover.sh` (the
-`503 not_configured` path) and the adapted pytest suite (validation,
-honeypot, timing, rate-limit sequence — 9/9 passing against the local dev
-server). **Step 6 is CANDIDATE, not ratified** — no message has ever been
-sent through Resend from this codebase; the delivery branch has never
-been exercised end-to-end by any capability, including this one
-(`ENQUIRY_DELIVERY_ENABLED` was never set to `true` during verification,
-by design — directive §12 forbids it). Do not treat step 6 as proven
-until an actual send has been confirmed received.
+**Why:** delivery moved to a managed provider (Formspree) rather than a
+direct email API, per explicit instruction; recipient routing, the
+sending domain, and spam/reCAPTCHA handling are configured in the
+Formspree dashboard for that specific form, not in this codebase — no
+credential of any kind is required client-side because the form endpoint
+itself is not a secret (Formspree's own model: the `/f/{id}` URL is the
+public submission target, not an authentication token).
+
+**Status:** the client-side contract (steps 1, 4, 5) is **RATIFIED** —
+verified directly by mocked-response browser testing (success, field
+error, generic error, and network-failure paths all produce the intended
+UI state, values preserved on every failure path). **Step 2/3's exact
+wire contract against the real Formspree API is CANDIDATE** — confirmed
+against Formspree's own published `formspree-core` source (not assumed),
+but never exercised against the live `mbgjagaz` form with a real
+network round-trip as of this revision; a real controlled test submission
+is a separate, explicitly-gated step (recipient routing must be confirmed
+first — see the engineering journal). Do not treat provider acceptance or
+inbox delivery as proven until that real test has been run and both
+outcomes reported.
 
 ## Contract 3 — `SITE_ENV` is the sole indexing switch
 

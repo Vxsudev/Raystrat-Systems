@@ -3,9 +3,10 @@
 #
 # Serves the production build on :3111 and asserts the replaced Emergent
 # site's three routes render with their real copy, the sitemap/robots/
-# headers behave correctly in non-production mode, the enquiry endpoint's
-# disabled-delivery contract holds, the private recipient never leaks into
-# rendered HTML, and no Emergent hostname survives into the shipped app.
+# headers behave correctly in non-production mode, the enquiry form
+# targets Formspree with the retired Resend route fully gone, the private
+# recipient never leaks into rendered HTML, and no Emergent hostname
+# survives into the shipped app.
 # Assumes 003-build has produced .next (scripts run in numeric order).
 # Does not set SITE_ENV (defaults to non-production / preview behaviour).
 
@@ -118,18 +119,14 @@ for route in "/" "/ai-solutions" "/forward-deployed-engineering"; do
   echo "$XRT" | grep -qi "noindex" && echo "$XRT" | grep -qi "nofollow" && pass "$route: X-Robots-Tag noindex,nofollow" || fail "$route: X-Robots-Tag missing/incorrect ($XRT)"
 done
 
-# ── V7. Enquiry endpoint: disabled-delivery contract ───────────────────────
-echo "V7. Enquiry endpoint (delivery disabled)"
-ENQ_RESP=$(curl -s -w "\n%{http_code}" -X POST "http://localhost:$PORT/enquiry/submit" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Verification Run","email":"verify@example.com","company":"Raystrat QA","message":"Local verification submission, not a real enquiry.","elapsedMs":5000}')
-ENQ_CODE=$(echo "$ENQ_RESP" | tail -1)
-ENQ_BODY=$(echo "$ENQ_RESP" | sed '$d')
-if [ "$ENQ_CODE" = "503" ] && echo "$ENQ_BODY" | grep -q '"reason":"not_configured"'; then
-  pass "enquiry endpoint: 503 not_configured (delivery correctly disabled)"
-else
-  fail "enquiry endpoint: expected 503 not_configured, got $ENQ_CODE: $ENQ_BODY"
-fi
+# ── V7. Enquiry form targets Formspree; the retired route is gone ─────────
+# The submission fetch runs inside a client-component event handler, not an
+# HTML form `action` attribute, so it never appears in server-rendered HTML
+# — it's only in the compiled client JS. Check the actual shipped bundle.
+echo "V7. Enquiry form (Formspree, no server route on this site)"
+OLD_ROUTE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "http://localhost:$PORT/enquiry/submit")
+[ "$OLD_ROUTE_CODE" = "404" ] && pass "retired /enquiry/submit route is gone (404)" || fail "/enquiry/submit still resolves ($OLD_ROUTE_CODE) — Resend route not fully removed"
+grep -rlF "formspree.io/f/mbgjagaz" .next/static > /dev/null 2>&1 && pass "shipped client bundle targets the Formspree endpoint" || fail "Formspree endpoint not found in shipped client bundle"
 
 # ── V8. Route scope: no app/*/ directory outside the INV-003 allowlist ────
 echo "V8. Route scope"

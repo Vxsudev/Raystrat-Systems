@@ -86,16 +86,17 @@ the same way — real interactivity, not convenience.
 
 ### 3. Environment variables are read at module scope, server-side only
 
-`SITE_ENV`, `ENQUIRY_DELIVERY_ENABLED`, `RESEND_API_KEY`,
-`ENQUIRY_FROM_EMAIL`, `ENQUIRY_TO_EMAIL` — none prefixed `NEXT_PUBLIC_`,
-none reach the browser bundle, all read directly via `process.env.X` at
-module scope in server-only files (`app/lib/site.ts`,
-`app/enquiry/submit/route.ts`, `app/layout.tsx`). Because they're read at
-module scope, **the server must be restarted after changing any of them**
-— Next.js does not hot-reload `.env` files. This is an established fact
-about this app, not a suggestion.
+`SITE_ENV` — the only environment variable this app reads — is not
+prefixed `NEXT_PUBLIC_`, does not reach the browser bundle, and is read
+directly via `process.env.SITE_ENV` at module scope in server-only files
+(`app/lib/site.ts`, `app/layout.tsx`). Because it's read at module scope,
+**the server must be restarted after changing it** — Next.js does not
+hot-reload `.env` files. This is an established fact about this app, not
+a suggestion. (The Resend-era `ENQUIRY_DELIVERY_ENABLED`/`RESEND_API_KEY`/
+`ENQUIRY_FROM_EMAIL`/`ENQUIRY_TO_EMAIL` variables are retired along with
+that integration — see #4.)
 
-### 4. The enquiry endpoint is the only server-side logic in the app
+### 4. The enquiry form submits client-side to Formspree — no server-side logic in the app at all
 
 Full contract in `ai/runtime-contracts.md` Contract 2. Any future change
 to validation limits, spam gating, or the delivery provider should update
@@ -135,10 +136,13 @@ client names, or metrics exist anywhere in the copy (enforced by
   markup uses semantic landmarks, labelled inputs, `aria-invalid`/
   `aria-describedby`, `aria-live` status regions, and native `<details>`
   for FAQs. The markup patterns exist; the audit does not.
-- **Email delivery has never been proven end-to-end.** No message has
-  ever been sent through Resend from this codebase; `ENQUIRY_DELIVERY_
-  ENABLED` has never been `true` outside a disabled/local state. Do not
-  describe delivery as working — only as implemented-but-unproven.
+- **Email delivery has never been proven end-to-end.** The form now
+  submits directly to Formspree (`https://formspree.io/f/mbgjagaz`); no
+  real submission has been sent through it from this codebase, so neither
+  Formspree's acceptance of a real submission nor actual inbox receipt at
+  whatever address the Formspree dashboard routes to is confirmed. Do not
+  describe delivery as working — only as implemented-but-unproven — until
+  a real, explicitly-authorised test send is confirmed received.
 - **Canonical-vs-sitemap trailing-slash inconsistency on the root URL** —
   a known, harmless, disclosed cosmetic mismatch (Next.js normalises the
   `<link rel="canonical">` tag without a trailing slash; the sitemap's

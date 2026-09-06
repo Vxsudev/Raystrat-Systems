@@ -8,13 +8,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const deliveryConfigured = Boolean(
-  process.env.ENQUIRY_DELIVERY_ENABLED === "true" &&
-    process.env.RESEND_API_KEY &&
-    process.env.ENQUIRY_FROM_EMAIL &&
-    process.env.ENQUIRY_TO_EMAIL
-);
-
 const applications = [
   {
     num: "01",
@@ -231,24 +224,13 @@ export default function Home() {
                 needs to improve.
               </p>
               <p>You do not need to arrive with a technical specification.</p>
-              {deliveryConfigured ? (
-                <p className="form-note" data-testid="form-delivery-note">
-                  Enquiries go directly to the Raystrat team. You can also email{" "}
-                  <a href={`mailto:${PUBLIC_EMAIL}`} data-testid="contact-email-link">
-                    {PUBLIC_EMAIL}
-                  </a>
-                  .
-                </p>
-              ) : (
-                <p className="form-note" data-testid="form-preview-note">
-                  Note: email delivery is not yet switched on, so submissions are validated but not
-                  sent. In the meantime, email{" "}
-                  <a href={`mailto:${PUBLIC_EMAIL}`} data-testid="contact-email-link">
-                    {PUBLIC_EMAIL}
-                  </a>
-                  .
-                </p>
-              )}
+              <p className="form-note" data-testid="form-delivery-note">
+                Enquiries go directly to the Raystrat team. You can also email{" "}
+                <a href={`mailto:${PUBLIC_EMAIL}`} data-testid="contact-email-link">
+                  {PUBLIC_EMAIL}
+                </a>
+                .
+              </p>
             </div>
             <ContactForm />
           </div>
