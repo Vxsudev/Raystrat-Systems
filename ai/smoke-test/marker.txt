@@ -1,0 +1,1 @@
+raystrat-os-bootstrap-smoke-test: supervised worker executed successfully in the isolated worktree.
