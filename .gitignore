@@ -2,7 +2,9 @@ node_modules
 .next
 .vercel
 .env*
+!.env.example
 npm-debug.log*
+*.tsbuildinfo
 
 # Secret files outside .env* pattern
 sendgrid.env

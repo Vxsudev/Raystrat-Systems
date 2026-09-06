@@ -14,5 +14,13 @@
   "raystrat-node-1-production-readiness": {
     "state": "RELEASE_APPROVED",
     "updated_at": "2026-07-26T16:31:46Z"
+  },
+  "raystrat-emergent-site-takeover": {
+    "state": "RELEASE_APPROVED",
+    "updated_at": "2026-09-05T16:07:18Z"
+  },
+  "raystrat-os-bootstrap-smoke-test": {
+    "state": "RELEASE_APPROVED",
+    "updated_at": "2026-09-06T00:57:16Z"
   }
 }

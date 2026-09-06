@@ -13,7 +13,7 @@ export default async function TwitterImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#0b0c0e",
+          background: "#0f0f0e",
           padding: 80,
         }}
       >
@@ -28,26 +28,26 @@ export default async function TwitterImage() {
               textTransform: "uppercase",
             }}
           >
-            FORWARD-DEPLOYED ENGINEERING
+            AI SOLUTIONS · FORWARD-DEPLOYED ENGINEERING
           </span>
           <span
             style={{
               marginTop: 32,
               fontFamily: "system-ui, -apple-system, sans-serif",
               fontWeight: 700,
-              fontSize: 68,
+              fontSize: 64,
               lineHeight: 1.1,
               color: "#edeae3",
             }}
           >
-            Raystrat will find the way forward.
+            AI built on what your business knows.
           </span>
           <div
             style={{
               marginTop: 40,
               width: 160,
               height: 4,
-              background: "#b4703a",
+              background: "#2743d4",
             }}
           />
         </div>
