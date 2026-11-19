@@ -7,16 +7,15 @@ export default function SiteFooter() {
       <div className="container">
         <div className="footer-inner">
           <Link href="/" className="wordmark" data-testid="footer-wordmark">
-            <span className="mark" aria-hidden="true" />
-            <span>Raystrat<span className="sub">&nbsp;Systems</span></span>
+            Raystrat Systems
           </Link>
           <nav className="footer-nav" aria-label="Footer">
             <Link href="/ai-solutions" data-testid="footer-link-ai-solutions">AI Solutions</Link>
             <Link href="/forward-deployed-engineering" data-testid="footer-link-forward-deployed">
               Forward-Deployed Engineering
             </Link>
-            <Link href="/#how-we-work" data-testid="footer-link-how-we-work">How We Work</Link>
-            <Link href="/#contact" data-testid="footer-link-contact">Discuss Your Project</Link>
+            <Link href="/#how" data-testid="footer-link-how-we-work">How we work</Link>
+            <Link href="/#contact" data-testid="footer-link-contact">Discuss your system</Link>
           </nav>
         </div>
         <div className="footer-contact" data-testid="footer-contact">
@@ -34,8 +33,7 @@ export default function SiteFooter() {
           </a>
         </div>
         <p className="footer-legal">
-          © {new Date().getFullYear()} Raystrat Systems. AI solutions and forward-deployed
-          engineering.
+          © {new Date().getFullYear()} Raystrat Systems. Design · Build · Connect · Operate.
         </p>
       </div>
     </footer>

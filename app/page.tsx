@@ -8,44 +8,97 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const applications = [
+const activities = [
   {
     num: "01",
-    title: "Prepare reports for review",
-    body: "Bring information from source files and business systems into a draft report. Identify missing information and inconsistencies, with the supporting sources available to the reviewer.",
+    title: "Design",
+    commission: "A plan for a new system, or for significant changes to one you already run.",
+    responsibility:
+      "Turning your business requirements into a defined scope, an architecture suited to that system, and a sequence of work.",
   },
   {
     num: "02",
-    title: "Answer questions using company knowledge",
-    body: "Help teams find and use information across internal documents and systems. Return answers with supporting references, within the user’s access permissions.",
+    title: "Build",
+    commission: "New software, or improvements and extensions to software you already use.",
+    responsibility:
+      "Delivering it in agreed phases, each one checked against acceptance criteria we set with you.",
   },
   {
     num: "03",
-    title: "Turn incoming documents into work",
-    body: "Extract relevant information, check it against defined requirements and route it to the next person or system. Flag exceptions for human review.",
-  },
-];
-
-const steps = [
-  {
-    num: "01",
-    title: "Define the result",
-    body: "Choose a specific workflow and agree what success means: output quality, time required, review effort or another relevant measure.",
-  },
-  {
-    num: "02",
-    title: "Build with real examples",
-    body: "Develop the solution using representative data and test it with the people responsible for the work.",
-  },
-  {
-    num: "03",
-    title: "Put it into operation",
-    body: "Complete the integrations, access controls, evaluation and user preparation needed for production use.",
+    title: "Connect",
+    commission:
+      "Integration between your systems, third-party services and the tools your teams already work in.",
+    responsibility:
+      "Making those systems exchange information as agreed, including how errors are detected and handled.",
   },
   {
     num: "04",
-    title: "Review and extend",
-    body: "Compare results against the agreed measures. Improve the system and expand where there is a clear business case.",
+    title: "Operate",
+    commission: "Ongoing care for systems we’ve built or taken on.",
+    responsibility: "Maintenance, monitoring and incident response, within an agreed scope.",
+  },
+];
+
+const principles = [
+  {
+    title: "Clear requirements",
+    body: "Before each build phase, we agree what it must deliver and how it will be accepted.",
+  },
+  {
+    title: "Deliberate technical decisions",
+    body: "We choose the architecture to suit the system’s requirements and constraints, and document the main decisions.",
+  },
+  {
+    title: "Verification",
+    body: "Each phase is checked against its acceptance criteria before you sign it off.",
+  },
+  {
+    title: "Controlled change",
+    body: "Requirements change. Each change is assessed for its effect on scope, time and cost, and agreed before it enters the work.",
+  },
+  {
+    title: "Maintainability",
+    body: "Code, decisions and handover material are kept so that others can understand the system and work on it.",
+  },
+];
+
+type WorkItem = { title: string; detail?: string };
+
+const selectedWork: {
+  id: string;
+  title: string;
+  need: string;
+  responsibility: string;
+  items: WorkItem[];
+}[] = [
+  {
+    id: "analytical-device",
+    title: "Software systems for an analytical-device manufacturer",
+    need: "An X-ray fluorescence analyzer company needed the software that forms a central part of its product, while its requirements changed through several product pivots.",
+    responsibility:
+      "Designing and building that software across three distinct systems, within one ongoing engagement.",
+    items: [
+      {
+        title: "Inspection and reporting platform",
+        detail: "Multi-tenant, with instrument data ingestion and device synchronization.",
+      },
+      { title: "Laboratory work-order and test-allocation system" },
+      { title: "Manufacturing workflow" },
+    ],
+  },
+  {
+    id: "health-data",
+    title: "Health-data company",
+    need: "Bring in health data and make it available to partners under controlled access.",
+    responsibility: "Building the core platform.",
+    items: [
+      { title: "Ingestion and standardization pipeline" },
+      { title: "Partner APIs", detail: "Scoped keys, rate limits and audit logging." },
+      {
+        title: "Operator console",
+        detail: "For managing keys, services and data synchronization.",
+      },
+    ],
   },
 ];
 
@@ -54,182 +107,145 @@ export default function Home() {
     <>
       <SiteHeader />
 
-      <main id="top">
+      <main id="top" className="home">
         {/* Hero */}
-        <section className="hero" data-testid="hero-section">
+        <section className="home-hero" data-testid="hero-section">
           <div className="container">
-            <span className="eyebrow" data-testid="hero-eyebrow">
-              AI Solutions · Forward-Deployed Engineering
-            </span>
-            <h1 data-testid="hero-heading">AI built on what your business knows.</h1>
-            <div className="hero-lead">
-              <p>
-                Your data, documents and operating knowledge contain context that general-purpose
-                AI does not have.
-              </p>
-              <p>
-                Raystrat builds AI systems around that context and integrates them into your
-                team’s work. Our forward-deployed engineers work with you from the first use case
-                through production deployment.
-              </p>
-            </div>
+            <p className="home-kicker" data-testid="hero-eyebrow">
+              Design · Build · Connect · Operate
+            </p>
+            <h1 data-testid="hero-heading">Software systems businesses run on.</h1>
+            <p className="home-hero-lead">
+              Raystrat designs, builds, connects and operates the software systems businesses run
+              on. We take responsibility for the software your business depends on, from the first
+              requirements through to day-to-day operation.
+            </p>
             <div className="hero-actions">
               <a href="#contact" className="btn btn-primary" data-testid="hero-primary-cta">
-                Discuss Your Project
+                Discuss your system
               </a>
-              <a href="/ai-solutions" className="btn btn-secondary" data-testid="hero-secondary-cta">
-                Explore AI Solutions
+              <a href="#what" className="home-text-link" data-testid="hero-secondary-cta">
+                See what you can commission
               </a>
             </div>
           </div>
         </section>
 
-        {/* The problem */}
-        <section className="section section-alt" id="problem" data-testid="problem-section">
-          <div className="container split">
-            <div className="split-head">
-              <span className="eyebrow">The problem</span>
-              <h2>Access to AI is not the same as an advantage.</h2>
-            </div>
-            <div className="prose" data-testid="problem-copy">
-              <p className="lead">The models are available to everyone. Your company’s knowledge is not.</p>
-              <p>
-                It sits across business systems, reports, conversations and the experience of your
-                people. An AI tool does not become useful simply because it can access some of
-                those documents. It needs the context to interpret them and a place in the workflow
-                where its output can be used.
-              </p>
-              <p>
-                Then comes delivery: connecting systems, evaluating results, managing access and
-                making the software dependable in daily use.
-              </p>
-              <p className="strong">Raystrat brings that work together.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* The offer */}
-        <section className="section" id="offer" data-testid="offer-section">
+        {/* What you can hire Raystrat to do */}
+        <section className="home-band" id="what" data-testid="activities-section">
           <div className="container">
-            <div className="section-head">
-              <span className="eyebrow">The offer</span>
-              <h2>Build an AI system. Or bring engineering into your team.</h2>
-            </div>
-            <div className="offer">
-              <div className="offer-col" id="ai-solutions" data-testid="offer-ai-solutions">
-                <h3>AI Solutions</h3>
-                <p className="offer-for">
-                  For businesses that need a working system built around a specific use case.
-                </p>
-                <p>
-                  We connect the relevant information, develop the application and integrations, and
-                  evaluate the output with the people who will use it. The engagement covers the work
-                  required to put the system into operation.
-                </p>
-                <a href="#contact" className="text-link" data-testid="offer-ai-solutions-cta">
-                  Discuss Your Project <span aria-hidden="true">→</span>
-                </a>
-              </div>
-              <div className="offer-col" id="forward-deployed" data-testid="offer-forward-deployed">
-                <h3>Forward-Deployed Engineering</h3>
-                <p className="offer-for">
-                  For teams that need engineering ownership inside an existing initiative.
-                </p>
-                <p>
-                  We work alongside your business and technical teams to resolve requirements, make
-                  product decisions, build integrations and move the software into production.
-                </p>
-                <a href="/forward-deployed-engineering" className="text-link" data-testid="offer-forward-deployed-cta">
-                  Explore Forward-Deployed Engineering <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Where AI can help */}
-        <section className="section section-alt" id="applications" data-testid="applications-section">
-          <div className="container">
-            <div className="section-head">
-              <span className="eyebrow">Where AI can help</span>
-              <h2>Start with work your team already needs to get done.</h2>
-            </div>
-            <div className="apps">
-              {applications.map((item) => (
-                <div className="app" key={item.num} data-testid={`application-${item.num}`}>
-                  <span className="num">{item.num}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </div>
+            <h2>What you can hire Raystrat to do</h2>
+            <p className="home-sub">You can engage us for one activity or all four.</p>
+            <div className="activities">
+              {activities.map((a) => (
+                <article
+                  className="activity"
+                  key={a.num}
+                  data-testid={`activity-${a.title.toLowerCase()}`}
+                >
+                  <div className="activity-head">
+                    <span className="activity-num" aria-hidden="true">
+                      {a.num}
+                    </span>
+                    <h3>{a.title}</h3>
+                  </div>
+                  <div className="activity-part">
+                    <p className="home-label">You commission</p>
+                    <p>{a.commission}</p>
+                  </div>
+                  <div className="activity-part activity-part-rule">
+                    <p className="home-label">We’re responsible for</p>
+                    <p>{a.responsibility}</p>
+                  </div>
+                </article>
               ))}
-            </div>
-            <p className="apps-note" data-testid="applications-note">
-              The right starting point depends on your workflow, the information available and what
-              a useful result must look like.
-            </p>
-          </div>
-        </section>
-
-        {/* The enduring value */}
-        <section className="section" id="knowledge" data-testid="knowledge-section">
-          <div className="container split">
-            <div className="split-head">
-              <span className="eyebrow">The enduring value</span>
-              <h2>Keep the knowledge behind the work.</h2>
-            </div>
-            <div className="prose" data-testid="knowledge-copy">
-              <p>
-                A useful AI system needs more than access to files. It needs the definitions,
-                exceptions and decisions that explain how your business operates.
-              </p>
-              <p>
-                We design for that context to be maintained and reused. Feedback and reviewed
-                outcomes help identify what needs to change as the system develops.
-              </p>
-              <p className="strong">
-                The objective is a capability your team can keep using and improving—not another
-                isolated experiment.
-              </p>
             </div>
           </div>
         </section>
 
         {/* How we work */}
-        <section className="section section-alt" id="how-we-work" data-testid="how-we-work-section">
-          <div className="container">
-            <div className="section-head">
-              <span className="eyebrow">How we work</span>
-              <h2>Prove it in one workflow. Then expand.</h2>
+        <section className="home-section" id="how" data-testid="how-we-work-section">
+          <div className="container home-split">
+            <h2 className="home-split-head">How we work</h2>
+            <ul className="principles">
+              {principles.map((p) => (
+                <li key={p.title}>
+                  <p className="principle-title">{p.title}</p>
+                  <p>{p.body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Who we work with */}
+        <section className="home-dark" aria-labelledby="who-heading" data-testid="who-section">
+          <div className="container home-split">
+            <h2 id="who-heading" className="home-split-head">
+              Who we work with
+            </h2>
+            <div className="home-split-body">
+              <p className="home-dark-lead">
+                Businesses commissioning software they will depend on, whether it serves customers,
+                runs internal workflows or supports operations. We work across industries.
+              </p>
+              <p className="home-dark-note">
+                We don’t take on marketing work, campaign systems or content systems.
+              </p>
             </div>
-            <div className="steps">
-              {steps.map((item) => (
-                <div className="step" key={item.num} data-testid={`step-${item.num}`}>
-                  <span className="num">{item.num}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </div>
+          </div>
+        </section>
+
+        {/* Selected work */}
+        <section className="home-section" id="work" data-testid="selected-work-section">
+          <div className="container">
+            <h2>Selected work</h2>
+            <div className="work-list">
+              {selectedWork.map((w) => (
+                <article className="work" key={w.id} data-testid={`work-${w.id}`}>
+                  <div className="work-intro">
+                    <h3>{w.title}</h3>
+                    <div>
+                      <p className="home-label">Business need</p>
+                      <p>{w.need}</p>
+                    </div>
+                    <div>
+                      <p className="home-label">Raystrat’s responsibility</p>
+                      <p>{w.responsibility}</p>
+                    </div>
+                  </div>
+                  <div className="work-items">
+                    <p className="home-label">Work</p>
+                    <ul>
+                      {w.items.map((item) => (
+                        <li key={item.title}>
+                          <p className="work-item-title">{item.title}</p>
+                          {item.detail && <p className="work-item-detail">{item.detail}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Final action */}
-        <section className="section" id="contact" data-testid="contact-section">
+        {/* Contact */}
+        <section className="home-band home-contact" id="contact" data-testid="contact-section">
           <div className="container contact-wrap">
             <div className="contact-copy">
-              <span className="eyebrow">Discuss your project</span>
-              <h2>Where could AI make a practical difference in your business?</h2>
+              <h2>Tell us about the system you need.</h2>
               <p>
-                Tell us what your team is trying to accomplish, how the work happens today and what
-                needs to improve.
+                Whether it needs to be designed, built, connected or operated, the first
+                conversation is about understanding it and whether Raystrat is the right team for
+                the work.
               </p>
-              <p>You do not need to arrive with a technical specification.</p>
               <p className="form-note" data-testid="form-delivery-note">
-                Enquiries go directly to the Raystrat team. You can also email{" "}
+                Or write to{" "}
                 <a href={`mailto:${PUBLIC_EMAIL}`} data-testid="contact-email-link">
                   {PUBLIC_EMAIL}
                 </a>
-                .
               </p>
             </div>
             <ContactForm />

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { label: "AI Solutions", href: "/ai-solutions", key: "ai-solutions" },
-  { label: "Forward-Deployed Engineering", href: "/forward-deployed-engineering", key: "forward-deployed" },
-  { label: "How We Work", href: "/#how-we-work", key: "how-we-work" },
+  { label: "What we do", href: "/#what", key: "what-we-do" },
+  { label: "How we work", href: "/#how", key: "how-we-work" },
+  { label: "Selected work", href: "/#work", key: "selected-work" },
 ];
 
 export default function SiteHeader() {
@@ -24,8 +24,7 @@ export default function SiteHeader() {
           aria-label="Raystrat Systems, home"
           onClick={() => setOpen(false)}
         >
-          <span className="mark" aria-hidden="true" />
-          <span>Raystrat<span className="sub">&nbsp;Systems</span></span>
+          Raystrat Systems
         </Link>
 
         <nav className="nav" aria-label="Primary">
@@ -44,7 +43,7 @@ export default function SiteHeader() {
 
         <div className="nav-actions">
           <Link href="/#contact" className="btn btn-primary" data-testid="nav-discuss-project-button">
-            Discuss Your Project
+            Discuss your system
           </Link>
         </div>
 
@@ -80,7 +79,7 @@ export default function SiteHeader() {
             onClick={() => setOpen(false)}
             data-testid="mobile-nav-discuss-project-button"
           >
-            Discuss Your Project
+            Discuss your system
           </Link>
         </div>
       </div>

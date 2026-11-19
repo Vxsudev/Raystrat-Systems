@@ -39,7 +39,7 @@ done
 # ── V1. All three routes return 200 with real, distinctive copy ───────────
 echo "V1. Routes render with real copy"
 declare -A ROUTE_COPY=(
-  ["/"]="AI built on what your business knows."
+  ["/"]="Software systems businesses run on."
   ["/ai-solutions"]="AI systems built around your operations."
   ["/forward-deployed-engineering"]="Engineers embedded in the work."
 )

@@ -39,7 +39,7 @@ function validate(values: Fields): Errors {
   if (!values.company.trim()) errors.company = "Please enter your company.";
   else if (values.company.trim().length > 160)
     errors.company = "Please keep your company under 160 characters.";
-  if (!values.message.trim()) errors.message = "Please tell us what you want to solve.";
+  if (!values.message.trim()) errors.message = "Please tell us about the system.";
   else if (values.message.trim().length < 10)
     errors.message = "Please add a little more detail (at least 10 characters).";
   else if (values.message.trim().length > 4000)
@@ -226,7 +226,7 @@ export default function ContactForm() {
 
       <div className="field">
         <label htmlFor="message">
-          What are you trying to solve? <span className="req-star" aria-hidden="true">*</span>
+          Tell us about the system <span className="req-star" aria-hidden="true">*</span>
         </label>
         <textarea
           id="message"
@@ -267,7 +267,7 @@ export default function ContactForm() {
         disabled={sending}
         data-testid="contact-submit-button"
       >
-        {sending ? "Sending…" : "Discuss Your Project"}
+        {sending ? "Sending…" : "Discuss your system"}
       </button>
 
       <div aria-live="polite">
