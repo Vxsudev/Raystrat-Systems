@@ -2,6 +2,9 @@
   "name": "raystrat-systems",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "start": "next start -H 0.0.0.0 -p 3000",
