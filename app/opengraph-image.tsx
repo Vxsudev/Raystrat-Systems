@@ -28,7 +28,7 @@ export default async function OpengraphImage() {
               textTransform: "uppercase",
             }}
           >
-            AI SOLUTIONS · FORWARD-DEPLOYED ENGINEERING
+            DESIGN · BUILD · CONNECT · OPERATE
           </span>
           <span
             style={{
@@ -40,7 +40,7 @@ export default async function OpengraphImage() {
               color: "#edeae3",
             }}
           >
-            AI built on what your business knows.
+            Software systems businesses run on.
           </span>
           <div
             style={{

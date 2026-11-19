@@ -22,5 +22,9 @@
   "raystrat-os-bootstrap-smoke-test": {
     "state": "RELEASE_APPROVED",
     "updated_at": "2026-09-06T00:57:16Z"
+  },
+  "raystrat-homepage-production-release": {
+    "state": "RELEASE_APPROVED",
+    "updated_at": "2026-11-19T23:10:18Z"
   }
 }

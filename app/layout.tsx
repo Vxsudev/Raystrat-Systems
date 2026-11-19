@@ -7,29 +7,28 @@ export const metadata: Metadata = {
   robots: IS_PRODUCTION
     ? { index: true, follow: true }
     : { index: false, follow: false, nocache: true },
-  title: "Raystrat Systems — AI systems built for your business",
+  title: "Raystrat Systems — Software systems businesses run on",
   description:
-    "Raystrat builds and deploys customer-specific AI systems using your business data, knowledge and workflows. Forward-deployed engineers work directly with your team, from defining the problem to putting the system into use.",
+    "Raystrat designs, builds, connects and operates the software systems businesses run on, from the first requirements through to day-to-day operation.",
   keywords: [
-    "AI systems",
-    "forward-deployed engineering",
-    "custom AI",
-    "AI deployment",
-    "enterprise AI",
+    "software systems",
+    "custom software development",
+    "system integration",
+    "software operations",
     "Raystrat Systems",
   ],
   openGraph: {
-    title: "Raystrat Systems — AI systems built for your business",
+    title: "Raystrat Systems — Software systems businesses run on",
     description:
-      "Customer-specific AI systems and forward-deployed engineering. Built around your data, knowledge and workflows, and deployed into real use.",
+      "Raystrat designs, builds, connects and operates the software systems businesses run on.",
     type: "website",
     siteName: "Raystrat Systems",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Raystrat Systems — AI systems built for your business",
+    title: "Raystrat Systems — Software systems businesses run on",
     description:
-      "Customer-specific AI systems and forward-deployed engineering, deployed into real workflows.",
+      "Raystrat designs, builds, connects and operates the software systems businesses run on.",
   },
 };
 
@@ -42,7 +41,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
